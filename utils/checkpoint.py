@@ -1,10 +1,11 @@
-import pdb
+import os, glob, pdb
 import numpy as np
 from termcolor import colored
 from loguru import logger
 import torch
 from utils.misc import extract_params_from_config, convert_torch_to_numpy
 
+@logger.catch
 def initialize_objectives(config):
     '''
     '''
@@ -29,7 +30,7 @@ def finalize_objectives(best):
         best0, *remaining_bests = best
         return best0, *remaining_bests
 
-def update_and_save_result(model, config, best, performance_metrics, global_step):
+def update_and_save_result(model, optimizer, config, best, performance_metrics, global_step):
     '''
     Update the best result according to the optimization target.
     
@@ -53,18 +54,41 @@ def update_and_save_result(model, config, best, performance_metrics, global_step
         variables = [format_float(v, n_digits) for v in variables]
         return '_'.join(variables)
 
-    def save_checkpoint(model, best, conf, global_step):
+    def save_checkpoint(model, optimizer, best, conf, global_step):
         # save a checkpoint
         model_path = \
-            f'{conf.dir_ckptlogs}/  '\
+            f'{conf.dir_ckptlogs}/'\
             f'ckpt_step{global_step}_target_'\
             f'{conf.optimization_target}{concatenate_variables(best, n_digits=4)}'\
-            f'.pth'
-        torch.save(model, model_path)
+            f'.pt'
+        torch.save({
+            'model_state_dict': model.state_dict(),
+            'optimizer_state_dict': optimizer.state_dict(),
+            
+        }, model_path)
         logger.info(colored('Saved checkpoint', 'cyan') + f' at step {global_step}.')
 
+
+    def keep_max_num_saved_models(conf: dict, max_to_keep: int = 1) -> None:
+        '''
+        This function ensures that PyTorch saves a maximum number of checkpoint files (.pth format) in a given directory.
+        If there are more saved models than the specified limit, it will delete the oldest ones, based on their creation time.
+
+        Args:
+        - conf (dict): stores conf.ckptlogs to specify checkpoint log directory.
+        - max_to_keep (int, optional): The maximum number of checkpoint files to save in the directory. Defaults to 1.
+        '''
+        # Get a list of all files in the directory
+        models = glob.glob(f'{conf.dir_ckptlogs}/' + '*.pt')
+
+        # Sort the files based on their creation time
+        models = sorted(models, key=os.path.getmtime)
+        if len(models) > max_to_keep:
+            os.remove(models[0])
+            logger.info(f'Removed the oldest model for {max_to_keep=}')
+            
     # check if necessary parameters are defined in the config file
-    requirements = set(['OPTIMIZATION_CANDIDATES', 'OPTIMIZATION_TARGET', 'DIR_CKPTLOGS'])
+    requirements = set(['OPTIMIZATION_CANDIDATES', 'OPTIMIZATION_TARGET', 'DIR_CKPTLOGS', 'MAX_TO_KEEP'])
     conf = extract_params_from_config(requirements, config)
 
     # Optuna *minimize* the objective by default - give it an error, not accuracy or equivalent
@@ -79,13 +103,14 @@ def update_and_save_result(model, config, best, performance_metrics, global_step
         target = tuple([targets.get(conf.optimization_target.lower())])
     else:
         raise ValueError('Unknown optimization target!')
-
+ 
     indices = [i for i, (x, y) in enumerate(zip(target, best)) if x < y] # smaller is better
     if global_step == 0:
         best = target
     elif indices: # update the best value!
         best = tuple([target[i] if i in indices else x for i, x in enumerate(best)])
         logger.info(colored('Best value updated!', 'cyan'))
-        save_checkpoint(model, best, conf, global_step)
+        save_checkpoint(model, optimizer, best, conf, global_step)
+        keep_max_num_saved_models(conf, conf.max_to_keep)
     return best
 

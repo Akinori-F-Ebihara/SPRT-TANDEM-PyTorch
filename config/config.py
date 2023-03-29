@@ -14,18 +14,19 @@ NUM_CLASSES = 3 # 2
 NUM_TRAIN = 25000 # 19000
 NUM_VAL = 4000 # # 990 
 NUM_TEST = 1000 # 10 
-NUM_TOTAL_DATA = NUM_TRAIN + NUM_VAL + NUM_TEST
-DATA_SUFFIX = f'_{NUM_TOTAL_DATA}_{NUM_CLASSES}class_offset{DATA_SEPARATION}'
+DATA_FOLDER = f'SequentialGaussian_{NUM_CLASSES}class_offset{DATA_SEPARATION}'
+DATA_NAMES = ('data', 'label', 'llr')
+IS_SHUFFLE = True # whether to shuffle training data. It may cause significant overhead
 TB_DIRNAME = 'TensorBoard_events'
 DB_DIRNAME = 'Optuna_databases'
 CKPT_DIRNAME = 'checkpoints'
 IMG_DIRNAME = 'image_logs'
 STDOUT_DIRNAME = 'stdout_logs'
 
-SUBPROJECT_NAME_PREFIX = 'PTdev_' 
+SUBPROJECT_NAME_PREFIX = 'SAM_' 
 SUBPROJECT_NAME_SUFFIX = '' 
 COMMENT = '' # for the log file name
-EXP_PHASE = 'tuning' # 'try', 'tuning', or 'stat'
+EXP_PHASE = 'try' # 'try', 'tuning', or 'stat'
 MODEL_BACKBONE = 'Transformer'
 ORDER_SPRT = 1
 PARAM_MULTIPLET_LOSS = 1.0
@@ -43,12 +44,14 @@ SUBPROJECT_TO_RESUME = '_20230323_040731087ckpt_step1500_target_ausat_confmx0.02
 
 # of frequent use
 GPU = 0
-NUM_TRIALS = 1000
-NUM_ITER = 7501
+BATCH_SIZE = 100
+NUM_TRIALS = 1
+NUM_EPOCHS = 20
+NUM_ITER = NUM_EPOCHS * NUM_TRAIN // BATCH_SIZE # e.g., 20 * 25000 // 100 = 5000
 TRAIN_DISPLAY_STEP = 500
 VALIDATION_STEP = 500
 PRUNER_NAME = 'percentile' # hyperband, median, percentile, etc... set to 'none' if no pruner is needed.
-PRUNER_STARTUP_TRIALS = 100
+PRUNER_STARTUP_TRIALS = 5
 PRUNER_WARMUP_STEPS = 1000
 PRUNER_INTERVAL_STEPS = 500
 
@@ -104,10 +107,12 @@ config = {
     'SUBPROJECT_NAME_SUFFIX': SUBPROJECT_NAME_SUFFIX,
     
     # SDRE datasets
-    'X_PATH': f'{DATA_PATH}x_batch{DATA_SUFFIX}.npy',
-    'Y_PATH': f'{DATA_PATH}y_batch{DATA_SUFFIX}.npy',
-    'GT_LLR_PATH': f'{DATA_PATH}gt_llrms{DATA_SUFFIX}.npy',
-    'NUM_TRAIN': NUM_TRAIN, # total 100000
+    'TRAIN_DATA': f'{DATA_PATH}{DATA_FOLDER}/train_{NUM_TRAIN}',
+    'VAL_DATA': f'{DATA_PATH}{DATA_FOLDER}/val_{NUM_VAL}',
+    'TEST_DATA': f'{DATA_PATH}{DATA_FOLDER}/test_{NUM_TEST}',
+    'DATA_NAMES': DATA_NAMES,
+    'IS_SHUFFLE': IS_SHUFFLE,
+    'NUM_TRAIN': NUM_TRAIN, 
     'NUM_VAL': NUM_VAL,
     'NUM_TEST': NUM_TEST,
     'NUM_CLASSES': NUM_CLASSES,
@@ -139,9 +144,10 @@ config = {
     'FF_DIM': 64,
     'MLP_UNITS': 64,
 
-    # torch.compile (pytorch > 2.0)
-    'IS_COMPILE': False,
-    'MODE': 'default', #'reduce-overhead', 'default', or 'max-autotune' 
+    # for performance
+    'IS_COMPILE': False, # torch.compile (pytorch > 2.0)
+    'MODE': 'reduce-overhead', #'reduce-overhead', 'default', or 'max-autotune' 
+    'NUM_WORKERS': 0, # num_workers argument for pytorch dataloader
 
     # SAT curve
     'AUCLOSS_VERSION': AUCLOSS_VERSION,
@@ -164,11 +170,13 @@ config = {
     'EXP_PHASE': EXP_PHASE,
     'REPRODUCE_TRIAL': REPRODUCE_TRIAL,
     'NUM_TRIALS': NUM_TRIALS,
-    'BATCH_SIZE': 100,
+    'BATCH_SIZE': BATCH_SIZE,
     'LEARNING_RATE': 1e-4,
     'LR_DECAY_STEPS':  [100000000,],
     'WEIGHT_DECAY': 0.0,
     'OPTIMIZER': 'adam',
+    'IS_SAM': True, # Sharpness-aware minimizer
+    'NUM_EPOCHS': NUM_EPOCHS,
     'NUM_ITER': NUM_ITER, #7500
     'TRAIN_DISPLAY_STEP': TRAIN_DISPLAY_STEP,
     'VALIDATION_STEP': VALIDATION_STEP,
@@ -271,7 +279,11 @@ config = {
     },
     'LIST_OPTIMIZER': {
         'PARAM_SPACE': 'categorical',
-        'CATEGORY_SET': ['rmsprop', 'adam']
+        'CATEGORY_SET': ['rmsprop', 'adam', 'sgd']
+    },
+    'LIST_IS_SAM': {
+        'PARAM_SPACE': 'categorical',
+        'CATEGORY_SET': [True, False]
     },
     'LIST_IS_NORMALIZE': {
         'PARAM_SPACE': 'categorical',

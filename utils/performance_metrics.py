@@ -2,7 +2,7 @@ import pdb
 import torch
 from torchmetrics import ConfusionMatrix
 import numpy as np
-from utils.misc import convert_torch_to_numpy, ErrorHandler
+from utils.misc import extract_params_from_config, convert_torch_to_numpy, ErrorHandler
 
 
 def confusion_matrix(preds, labels, num_classes):
@@ -35,13 +35,16 @@ def logits_to_confmx(logits, labels):
 
 # Functions related to differentials of mean hitting times
 ######################################################
-def multiply_diff_mht(acc_eta, hittimes, time_steps):
+def multiply_diff_mht(acc_eta, hittimes):
     """ Multiplies acc_eta by Delta t (ver x hor = area).
     # Args
     acc_eta: ...
     hittingtimes: Shape=(num thresh, batch)
     time_steps: An int.
     """
+    time_steps = hittimes.shape[0]
+    assert time_steps == acc_eta.shape[0], 'Length of time_steps mismatched!'
+
     _device = acc_eta.device
     # Calc differentials of mean hitting times
     mht = torch.mean(hittimes, dim=1) if len(hittimes.shape) > 1 else hittimes
@@ -59,26 +62,60 @@ def multiply_diff_mht(acc_eta, hittimes, time_steps):
 
 
 def initialize_performance_metrics():
-    return {'losses': [], 'mean_abs_error':[], 'sns_conf': 0,
+    '''
+    '''
+    return {'losses': [], 'mean_abs_error':[], 'sns_conf': [],
             'seqconfmx_llr': 0, 
-            'hitting_time': 0, 'acc_eta': 0, 'ausat_from_confmx': 0
+            'hitting_time': [], 'acc_eta': [], 'ausat_from_confmx': None
             }
 
 
-def get_train_flag_and_iter_range(phase, conf):
+def training_setup(phase: str, config):
+    '''
+
+    Returns:
+    - is_train (bool): train flag to decide if trainable weights are updated.
+    - iter_num (int): an index of the last full-size batch.
+    - performance_metrics (dict): dictionary of model performance metrics 
+                                  initialized with zeros or empty list.
+    - barcolor (str): specifies tqdm bar color for each phase.
+    '''
+    # check if necessary parameters are defined in the config file
+    requirements = set(['NUM_TRAIN', 'NUM_VAL', 'NUM_TEST', 'BATCH_SIZE'])
+    conf = extract_params_from_config(requirements, config)
+    
+    is_train = True if 'train' in phase.lower() else False
+    barcolor = 'cyan' if 'train' in phase.lower() else 'yellow'
+
     if 'train' in phase.lower():
-        training = True
-        iter_range = 1
+        iter_num = conf.num_train // conf.batch_size
     elif 'val' in phase.lower():
-        training = False
-        iter_range = conf.num_val // conf.batch_size     
+        iter_num = conf.num_val // conf.batch_size
+    elif 'test' in phase.lower():
+        iter_num = conf.num_test // conf.batch_size
     else:
-        raise ValueError('Unknown phase!')
-    return training, iter_range 
+        raise ValueError('Unknown phase!')   
+    performance_metrics = initialize_performance_metrics()
+    
+    return is_train, iter_num, performance_metrics, barcolor
 
 
-def validation_helper(performance_metrics, y_batch, gt_llrs_batch, conf,
-                        monitored_values, local_step, is_within_loop=True):
+def accumulate_performance(performance_metrics, y_batch, gt_llrs_batch, monitored_values):
+    '''
+    '''
+    
+    performance_metrics['losses'].append(monitored_values['losses'])
+    performance_metrics['mean_abs_error'].append(
+        calc_llr_abserr(monitored_values['llrs'], gt_llrs_batch))# (batch_size, time_steps)
+    performance_metrics['seqconfmx_llr'] += llr_sequential_confmx(monitored_values['llrs'], y_batch)
+    performance_metrics['hitting_time'].append(monitored_values['mht'])
+    performance_metrics['acc_eta'].append(monitored_values['acc_eta_sat'])
+    performance_metrics['sns_conf'].append(monitored_values['sns_from_confmx'])
+    
+    return performance_metrics
+
+
+def summarize_performance(performance_metrics):
     '''
     '''
     def calc_macrec(confmx):
@@ -89,32 +126,20 @@ def validation_helper(performance_metrics, y_batch, gt_llrs_batch, conf,
         - macrec: macro-averaged recall
         '''
         return torch.mean(seqconfmx_to_macro_ave_sns(confmx))
-        
     
-    if is_within_loop:
-        
-        performance_metrics['losses'].append(monitored_values['losses'])
-        performance_metrics['mean_abs_error'].append(
-            calc_llr_abserr(monitored_values['llrs'], gt_llrs_batch))# (batch_size, time_steps)
-        performance_metrics['seqconfmx_llr'] += llr_sequential_confmx(monitored_values['llrs'], y_batch)
-        performance_metrics['hitting_time'] += monitored_values['mht']
-        performance_metrics['acc_eta'] += monitored_values['acc_eta_sat']
-        performance_metrics['sns_conf'] += monitored_values['sns_from_confmx']
-    else: # postprocess 
-        # average
-        performance_metrics['losses'] = average_dicts(performance_metrics['losses'])
-        performance_metrics['mean_macro_recall'] = calc_macrec(performance_metrics['seqconfmx_llr'])
-        performance_metrics['mean_abs_error'] = torch.mean(torch.stack(performance_metrics['mean_abs_error']))
-        performance_metrics['hitting_time'] /= (local_step + 1)
-        performance_metrics['acc_eta'] /= (local_step + 1)
-        performance_metrics['sns_conf'] /= (local_step + 1)
-        performance_metrics['ausat_from_confmx'] = \
-        multiply_diff_mht(performance_metrics['sns_conf'], performance_metrics['hitting_time'], conf.time_steps)
-        # to numpy
-        performance_metrics = convert_torch_to_numpy(performance_metrics)
-    
-    return performance_metrics
+    # average
+    performance_metrics['losses'] = average_dicts(performance_metrics['losses'])
+    performance_metrics['mean_macro_recall'] = calc_macrec(performance_metrics['seqconfmx_llr'])
+    performance_metrics['mean_abs_error'] = torch.mean(torch.stack(performance_metrics['mean_abs_error']))
+    performance_metrics['hitting_time'] = torch.mean(torch.stack(performance_metrics['hitting_time']), dim=0) # each entry has a size of (500)
+    performance_metrics['acc_eta'] = torch.mean(torch.stack(performance_metrics['acc_eta']), dim=0) # each entry has a size of (500)
+    performance_metrics['sns_conf'] = torch.mean(torch.stack(performance_metrics['sns_conf']), dim=0) # each entry has a size of (500, 1)
+    performance_metrics['ausat_from_confmx'] = \
+    multiply_diff_mht(performance_metrics['sns_conf'], performance_metrics['hitting_time'])
+    # to numpy
+    performance_metrics = convert_torch_to_numpy(performance_metrics)
 
+    return performance_metrics
 
 
 def multiplet_sequential_confmx(logits_concat, labels_concat):

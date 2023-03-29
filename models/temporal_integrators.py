@@ -12,51 +12,65 @@ from torchinfo import summary
 from utils.misc import extract_params_from_config, ErrorHandler
 
 
-def import_model(config, device, tb_writer):
+def import_model(config, device, tb_writer=None):
     '''
     Select LSTM- or TRANSFORMER- based temporal integrator.
     If IS_RESUME=True, load a model from saved checkpoint.
 
     Args:
     - config (dict): dictionary that specifies model backbone.
-
+    - device (torch.device): specifies computation device to which data and model are moved.
+    - tb_writer (torch.utils.tensorboard.SummaryWriter): optional, provide to add a network graph to TensorBoard.
+    
     Returns:
     - model (PyTorch model)
     '''
 
     # check if necessary parameters are defined in the config file
-    requirements = set(['IS_RESUME', 'PATH_RESUME', 'MODEL_BACKBONE', 'IS_COMPILE', 'MODE'])
+    requirements = set(['MODEL_BACKBONE', 'IS_COMPILE', 'MODE'])
     conf = extract_params_from_config(requirements, config)
     
-    # If resume
-    if conf.is_resume:
-        assert os.path.exists(conf.path_resume), 'Checkpoint does not exist: {conf.path_resume}'
-        
-        model = torch.load(conf.path_resume)
-
-        logger.info(f'model was loaded from: {conf.path_resume}')      
-
-    else: # setup from scratch
-
-        if any(char in conf.model_backbone.lower() \
-                for char in ['lstm', 'long short-term memory', 'b2bsqrt_tandem']):
-            model = B2BsqrtTANDEM(config)
-        elif any(char in conf.model_backbone.lower() \
-                for char in ['transformer', 'tfmr', 'tandemformer']):
-            model = TANDEMformer(config)
-        else:
-            raise ValueError(f'Unsupported model {conf.model_backbone} found!')
+    if any(char in conf.model_backbone.lower() \
+            for char in ['lstm', 'long short-term memory', 'b2bsqrt_tandem']):
+        model = B2BsqrtTANDEM(config)
+    elif any(char in conf.model_backbone.lower() \
+            for char in ['transformer', 'tfmr', 'tandemformer']):
+        model = TANDEMformer(config)
+    else:
+        raise ValueError(f'Unsupported model {conf.model_backbone} found!')
     # print model layers and #parameters
     model.summarize(tb_writer, device)
     # Note that model.to(device) is actually redundant here because 
     # torchinfo.summary moves the model to device. Keeping it for educational purpose.
     model.to(device) 
     logger.info('model moved onto: ' + colored(f'{device}.', 'yellow'))
-        
-    if conf.is_compile:
-        model = torch.compile(model, mode=conf.mode)
-    return model
 
+    # compile for optimization    
+    if conf.is_compile:
+        logger.info('compiled the model for optimization.')
+        return torch.compile(model, mode=conf.mode)
+    else:
+        return model
+    
+
+def load_pretrained_states(model, optimizer, config) -> None:
+
+    # check if necessary parameters are defined in the config file
+    requirements = set(['IS_RESUME', 'PATH_RESUME'])
+    conf = extract_params_from_config(requirements, config)
+    
+    # If resume
+    if conf.is_resume:
+
+        assert os.path.exists(conf.path_resume), 'Checkpoint does not exist: {conf.path_resume}'
+        
+        checkpoint = torch.load(conf.path_resume)
+        model.load_state_dict(checkpoint['model_state_dict'])
+        optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+
+        logger.info(f'model and optimizer states were loaded from: {conf.path_resume}')      
+    else:
+        return
 
 
 # custom LSTM to accept new activation functions
@@ -359,7 +373,8 @@ class BaseTANDEM(nn.Module):
             # summary table by torchinfo
             sum_str = str(summary(self, example_input.shape, device=device, verbose=0)) # caution: this moves the model to the device
             example_output = self.forward(example_input)
-            tb_writer.add_graph(self, example_input)
+            if tb_writer:
+                tb_writer.add_graph(self, example_input)
         example_output = example_output[0] if isinstance(example_output, tuple) else example_output
         
         logger.info('Network summary:\n' + sum_str)

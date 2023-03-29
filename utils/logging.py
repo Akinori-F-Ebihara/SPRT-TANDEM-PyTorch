@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import matplotlib
 from tqdm import tqdm
 from loguru import logger
+from utils.performance_metrics import initialize_performance_metrics, summarize_performance
 from utils.misc import extract_params_from_config, create_directories_and_log, \
                        format_common_folder_structure, compile_comment, convert_torch_to_numpy
 
@@ -180,9 +181,14 @@ def get_tb_writer(config):
     return SummaryWriter(log_dir=conf.dir_tblogs)
 
 
-def log_training_results(tb_writer, model, global_step:int, config, performance_metrics, phase):
+def log_training_results(tb_writer, model, local_step: int, global_step: int, data_num: int, 
+                         config: dict, performance_metrics: dict, phase: str):
     '''
+    Log training and evaluation results at:
+    - the end of validation phase
+    - evary config['TRAIN_DISPLAY_STEP'] training iteration
     '''
+    
     def subsample_dict(performance_metrics, selected_keys):
         return {k: v for k, v in performance_metrics.items() if k in selected_keys}
 
@@ -194,9 +200,15 @@ def log_training_results(tb_writer, model, global_step:int, config, performance_
 
     # log train results only periodically
     if 'train' in phase.lower() and global_step % conf.train_display_step != 0:
-        return
+        return initialize_performance_metrics() # reset the performance metrics to save GPU memory
+    
+    if 'val' in phase.lower() and local_step != data_num - 1:
+       return performance_metrics
+
+    # summarize performance_metrics
+    performance_metrics = summarize_performance(performance_metrics)
         
-    # log only a subset of performance metrics
+    # select values of interest (I might like to modify here later)
     subset_metrics = subsample_dict(
         performance_metrics, 
         ['losses', 'mean_abs_error', 'mean_macro_recall', 'ausat_from_confmx'])
@@ -245,6 +257,10 @@ def log_training_results(tb_writer, model, global_step:int, config, performance_
     tblog_writer(tb_writer, global_step, phase=phase, 
         metrics=subset_metrics)
 
+    # training phase: reset the performance metrics after the log    
+    # eval phase: needs postprocess, do not reset the performance metrics
+    return initialize_performance_metrics() if 'train' in phase.lower() else performance_metrics
+    
 
 def tblog_writer(tb_writer, global_step, phase, metrics):
     '''
@@ -386,22 +402,23 @@ def plot_example_trajectories(llrm, gt_labels, dice=[None, None],
     return dice
 
 
-def save_sdre_imgs(config, target, global_step, y_batch, gt_llrs, \
-                   monitored_values, performance_metrics):
+def save_sdre_imgs(config, target, global_step, last_example_to_plot, performance_metrics):
     '''
     Save the results of sequential density ratio estimation (SDRE).
     '''
     # check if necessary parameters are defined in the config file
-    requirements = set(['IS_SAVE_FIGURE', 'IS_MULT_SAT', 'OPTIMIZATION_TARGET', 'DIR_IMGLOGS',
-    'AUCLOSS_VERSION', 'PARAM_MULTIPLET_LOSS', 'PARAM_LLR_LOSS', 'PARAM_AUSAT_LOSS', 'NUM_CLASSES'])
+    requirements = set(['IS_SAVE_FIGURE', 'IS_MULT_SAT', 'OPTIMIZATION_TARGET', 
+                        'DIR_IMGLOGS', 'AUCLOSS_VERSION', 'PARAM_MULTIPLET_LOSS', 
+                        'PARAM_LLR_LOSS', 'PARAM_AUSAT_LOSS', 'NUM_CLASSES', 'BATCH_SIZE'])
     conf = extract_params_from_config(requirements, config)
 
     if conf.is_save_figure == False:
         return
 
-    [y_batch, gt_llrs, monitored_values, performance_metrics] = convert_torch_to_numpy([y_batch, gt_llrs, monitored_values, performance_metrics])
+    y_batch, gt_llrs, llrs = last_example_to_plot
+    assert len(y_batch) == len(gt_llrs) == len(llrs) == conf.batch_size
+    performance_metrics = convert_torch_to_numpy(performance_metrics)
     aesthetic_num_traj = np.max([1, 20 // conf.num_classes])
-    llrs = monitored_values['llrs']
 
     plt.rcParams["font.size"] = 25
     fig, ax = plt.subplots(figsize=(30,15))

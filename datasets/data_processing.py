@@ -1,36 +1,14 @@
-import numpy as np
-from loguru import logger
+import pdb
+import pickle
 import torch
+import lmdb
+from termcolor import colored
+from tqdm import tqdm
+from loguru import logger
+import numpy as np
 from scipy.stats import multivariate_normal
 from utils.misc import extract_params_from_config
-
-
-class SequentialDensityRatioData:
-    '''
-    load data for sequential density ratio estimation (SDRE).
-    '''
-    def __init__(self, config):
-        # check if necessary parameters are defined in the config file
-        requirements = set(['X_PATH', 'Y_PATH', 'GT_LLR_PATH',
-                            'NUM_TRAIN', 'NUM_VAL', 'NUM_TEST'])
-        conf = extract_params_from_config(requirements, config)
-        
-        logger.info('Loading SDRE data. This may take a while...')
-        x_pool = np.load(conf.x_path).astype('float32')
-        y_pool = np.load(conf.y_path).astype('int32')
-        gt_llr = np.load(conf.gt_llr_path).astype('float32')
-        assert len(x_pool) == len(y_pool) == len(gt_llr) == \
-               conf.num_train + conf.num_val + conf.num_test
-
-        self.x_train = x_pool[:conf.num_train]
-        self.x_val = x_pool[conf.num_train:conf.num_train + conf.num_val]
-        self.x_test = x_pool[conf.num_train + conf.num_val:]
-        self.y_train = y_pool[:conf.num_train]
-        self.y_val = y_pool[conf.num_train:conf.num_train + conf.num_val]
-        self.y_test = y_pool[conf.num_train + conf.num_val:]
-        self.gt_llr_train = gt_llr[:conf.num_train]
-        self.gt_llr_val = gt_llr[conf.num_train:conf.num_train + conf.num_val]
-        self.gt_llr_test = gt_llr[conf.num_train + conf.num_val:]
+from typing import Callable, Tuple
 
 
 def numpy_to_torch(*args):
@@ -68,62 +46,158 @@ def move_to_device(device, *args):
         moved_args.append(arg)
     return tuple(moved_args)
 
-
-
-def slice_data(data, device, phase, iter, batch_size):
+    
+class LMDBDataset(torch.utils.data.Dataset):
     '''
-    Get sequential density ratio estimation (SDRE) data depending on the phase.
+    A PyTorch dataset for reading data and labels from an LMDB database.
+
+    Attributes:
+    - lmdb_path (str): The path to the LMDB database.
+    - device (torch.device): The device to move the data and labels to.
+    - env (lmdb.Environment): The LMDB environment object.
+    - data_size (int): The number of data points in the dataset.
+
+    Methods:
+    - __len__: Returns the number of data points in the dataset.
+    - __getitem__: Returns the data and label for a given index.
+    
+    '''
+    def __init__(self, lmdb_path: str, names: Tuple[str]):
+        '''
+        Required function for PyTorch Dataset class.
+        Initializes a new LMDBDataset object.
+        
+        Args:
+        -lmdb_path (str): The path to the LMDB database.
+        -names (tuple of str): list of to-be-retrieved data. e.g., ('data', 'label')
+        
+        '''
+        self.lmdb_path = lmdb_path
+        self.names = names
+
+        # Open the LMDB database
+        self.env = lmdb.open(lmdb_path, readonly=True)
+
+        # Open a read transaction
+        # storing data like this enables faster readout, but may cause crash due to the heavy memory load.
+        # suspect here if you encounter an error by using a new dataset
+        self.data = []
+        with self.env.begin() as txn:
+            # Get the total number of data
+            self.data_size = txn.stat()['entries'] // len(names)
+            
+            for i in range(self.data_size):
+                item = {}
+                for name in self.names:
+                    item_bytes = txn.get(f'{i:08}_{name}'.encode('ascii'))
+                    item[name] = pickle.loads(item_bytes)
+                self.data.append(item)
+                
+    def __len__(self) -> int:
+        '''
+        Required function for PyTorch Dataset class.
+        Returns the number of data points in the dataset.
+        '''
+        return self.data_size
+    
+    def __getitem__(self, index: int) -> tuple:
+        '''
+        Required function for PyTorch Dataset class.
+        Returns the data and label for a given index.
+
+        Args:
+            index: The index of the data point.
+
+        Returns:
+            A tuple containing the data and label.
+        '''''
+        item = self.data[index]
+
+        # If you avoid creating self.data above to save memory, use the following code here.
+        # In which case do not forget to define self.data_size under __init__
+        # with self.env.begin(buffers=True) as txn:
+        #     item = {}
+        #     for name in self.names:
+        #         item_bytes = txn.get(f'{index:08}_{name}'.encode('ascii'))
+        #         item[name] = pickle.loads(item_bytes)
+        
+        # Convert the data and label to PyTorch tensors
+        _tensors = []
+        for name in self.names:
+            if 'label' in name:
+                _tensors.append(torch.tensor(item[name]).to(torch.int64))
+            else:
+                _tensors.append(torch.from_numpy(item[name]).to(torch.float32))
+        
+        return tuple(_tensors)
+    
+
+
+def write_lmdb(lmdb_path: str, data: Tuple[np.ndarray], 
+               names: Tuple[str], map_size: int = int(1e12)) -> None:
+    '''
+    Writes the data and labels to an LMDB database.
 
     Args:
-    - data (class): SDRE data.
-    - phase (string): training, validation, or test.
-    - iter (int): training step that is needed to determine data location
-    - batch_size (int): batch size for the to-be-returned data.
-
+    - lmdb_path (str): The path to the LMDB database.
+    - data (tuple of numpy.ndarray): A tuple of numpy arrays containing the data to be saved.
+    - name (tuple of str): A tuple containing the names of the arrays to be saved.
+    - map_size (int, optional): The maximum size of the LMDB database in bytes. 
+                                 Default is 1 terabyte.
     Returns:
-    - x_batch (np.array): SDRE data of shape (batch_size, time_steps, feat_dim)
-    - y_batch (np.array): label of shape (batch_size).
-    - gt_llrs_batch (np.array): ground-truth log-likelihood ratio matrix of size 
-                                (batch_size, time_steps, num_classes, num_clases)
+    - None
     '''
-    if 'train' in phase.lower():
-        x = data.x_train
-        y = data.y_train
-        ground_truth_llr = data.gt_llr_train
-    elif 'val' in phase.lower():
-        x = data.x_val
-        y = data.y_val
-        ground_truth_llr = data.gt_llr_val
-    elif 'test' in phase.lower():
-        x = data.x_test
-        y = data.y_test
-        ground_truth_llr = data.gt_llr_test
-    else:
-        raise ValueError('Unknown phase!')
+    assert len(data) == len(names), 'Number of data and name list must match.'
     
-    assert x.shape[0] == y.shape[0], \
-    'Shape of x and y do not match!'
-    datalen = y.shape[0]
+    # Open a new LMDB database
+    env = lmdb.open(lmdb_path, map_size=map_size)
 
-    start_idx = np.mod(iter * batch_size, datalen)
-    end_idx = np.mod((iter +1) * batch_size, datalen)
+    # Get the number of data points    
+    data_number = data[0].shape[0]
+    for data_array in data:
+        assert data_array.shape[0] == data_number,\
+            f'Total {data_array.shape[0]=} and {data_number=} does not match!'
 
-    if end_idx > start_idx:
-        x_batch = x[start_idx:end_idx]
-        y_batch = y[start_idx:end_idx]
-        gt_llrs_batch = ground_truth_llr[start_idx:end_idx]
-    else:
-        x_batch = np.concatenate((x[start_idx:], x[:end_idx]), axis=0)
-        y_batch = np.concatenate((y[start_idx:], y[:end_idx]), axis=0)
-        gt_llrs_batch = np.concatenate((ground_truth_llr[start_idx:], ground_truth_llr[:end_idx]), axis=0)
+    # Open a write transaction
+    with env.begin(write=True) as txn:
+        for i in tqdm(range(data_number)):
+            # Write each data array to the database
+            for j, data_array in enumerate(data):
+                data_bytes = pickle.dumps(data_array[i])
+                name = names[j]
+                txn.put('{:08}_{}'.format(i, name).encode('ascii'), data_bytes)
 
-    # convert to PyTorch Tensors
-    x_batch, y_batch, gt_llrs_batch = numpy_to_torch(x_batch, y_batch, gt_llrs_batch)
-    y_batch = y_batch.long()
-    # move onto GPU
-    x_batch, y_batch, gt_llrs_batch = move_to_device(device, x_batch, y_batch, gt_llrs_batch)
+    # Close the database
+    env.close()
+
+
+def lmdb_dataloaders(config: dict) -> dict:
+    '''
+    '''
+    # check if necessary parameters are defined in the config file
+    requirements = set(['TRAIN_DATA', 'VAL_DATA', 'TEST_DATA', 'DATA_NAMES', 
+                        'BATCH_SIZE', 'IS_SHUFFLE', 'NUM_WORKERS'])
+    conf = extract_params_from_config(requirements, config)
     
-    return x_batch, y_batch, gt_llrs_batch
+    train_dataset = LMDBDataset(conf.train_data, names=conf.data_names)
+    train_dataloader = torch.utils.data.DataLoader(
+        train_dataset, batch_size=conf.batch_size, pin_memory=True, num_workers=conf.num_workers, shuffle=conf.is_shuffle)
+    
+    val_dataset = LMDBDataset(conf.val_data, names=conf.data_names)
+    val_dataloader = torch.utils.data.DataLoader(
+        val_dataset, batch_size=conf.batch_size, pin_memory=True, num_workers=conf.num_workers, shuffle=False)
+
+    test_dataset = LMDBDataset(conf.test_data, names=conf.data_names)
+    test_dataloader = torch.utils.data.DataLoader(
+        test_dataset, batch_size=conf.batch_size, pin_memory=True, num_workers=conf.num_workers, shuffle=False)
+
+    data_loaders = {'train': train_dataloader,
+                    'val': val_dataloader,
+                    'test': test_dataloader}
+    if conf.num_workers > 0:
+        logger.info(colored(f'{conf.num_workers=}. ', 'yellow') + \
+                    'non-zero value may cause unexpected memory-related error.')
+    return data_loaders
 
 
 def initialize_multivariate_gaussian(conf):
@@ -241,27 +315,6 @@ def generate_likelihood_ratio_matrix(conf):
     return x_iter_pool, y_iter_pool, llrm_iter_pool
 
 
-def decode_feat():
-    pass
-
-
-def reshape_for_featext(x, y, feat_dim):
-    """(batch, duration) to (batch * duration,)"""
-    x_shape = x.shape
-    batch_size = x_shape[0]
-    duration = x_shape[1]
-
-    # disentangle
-    x = x.reshape(-1, feat_dim[0], feat_dim[1], feat_dim[2])
-
-    y = y.repeat(duration)
-    y = y.reshape(duration, batch_size)
-    y = y.transpose(0, 1) 
-    y = y.reshape(-1,)
-
-    return x, y
-
-
 def sequential_slice(x, y, order_sprt):
     """Slice, copy, and concat a batch to make a time-sliced, augumented batch
     Effective batch size will be batch * (duration - order_sprt)).
@@ -322,3 +375,21 @@ def sequential_concat(x_slice, y_slice, duration):
     y_concat = y_slice[:batch_size]
 
     return x_concat, y_concat
+
+
+def reshape_for_featext(x, y, feat_dim):
+    """(batch, duration) to (batch * duration,)"""
+    x_shape = x.shape
+    batch_size = x_shape[0]
+    duration = x_shape[1]
+
+    # disentangle
+    x = x.reshape(-1, feat_dim[0], feat_dim[1], feat_dim[2])
+
+    y = y.repeat(duration)
+    y = y.reshape(duration, batch_size)
+    y = y.transpose(0, 1) 
+    y = y.reshape(-1,)
+
+    return x, y
+

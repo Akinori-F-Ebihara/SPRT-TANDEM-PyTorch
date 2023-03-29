@@ -39,6 +39,7 @@ class PyTorchPhaseManager:
         self.optimizer = optimizer
         self.phase = phase
         self.loss = None
+        self.scaler = torch.cuda.amp.GradScaler()
 
     def __enter__(self):
         '''
@@ -89,8 +90,11 @@ class PyTorchPhaseManager:
         Computes the gradients of the loss with respect to the model parameters using loss.backward()
         and performs the optimization step using optimizer.step().
         '''
-        self.loss.backward()
-        self.optimizer.step()
+        self.scaler.scale(self.loss).backward()
+        self.scaler.step(self.optimizer)
+        self.scaler.update()
+        # self.loss.backward()
+        # self.optimizer.step()
 
     def evaluation_preprocess(self):
         '''
@@ -114,10 +118,11 @@ class StopWatch:
             <code block>
         print('elapsed time (sec):', time.elapsed)
     '''
-    def __init__(self, unit='hours'):
+    def __init__(self, unit='hours', label=''):
         '''
         Args:
-        - unit(str): specifies time unit \in {seconds, minutes, hours}
+        - unit (str): specifies time unit \in {seconds, minutes, hours}
+        - label (str): added to log message
         '''
         if 'sec' in unit:
             self.denom = 1.
@@ -128,7 +133,8 @@ class StopWatch:
         elif 'hour' in unit:
             self.denom = 3600.
             self.unit = 'hours'
-
+        self.label = label
+        
     def __enter__(self):
         
         self.start = time.time()
@@ -137,7 +143,7 @@ class StopWatch:
     
     def __exit__(self, *args):
         self.elapsed = time.time() - self.start
-        logger.info(f'elapsed time: {self.elapsed / self.denom} {self.unit}.')
+        logger.info(f'elapsed time: {self.elapsed / self.denom} {self.unit}. ({self.label})')
 
 
 class ErrorHandler:
@@ -222,10 +228,12 @@ def create_directories_and_log(dict_path):
         os.makedirs(dict_path)
         logger.info(colored('A new log directory was created: ', 'yellow') + f'{dict_path}')
 
+
 def format_common_folder_structure(conf):
     '''
     '''
     return f"/{conf.comment}_{conf.now}"
+
 
 def extract_params_from_config(requirements, config):
     '''
@@ -342,6 +350,7 @@ def compile_comment(config):
       name += str_pruner
    return name
 
+
 def compile_subproject_name(config):
     '''
     define the subproject name, which is used to create a folder for training logs.
@@ -397,7 +406,7 @@ def sort_config(config):
     return sort_nested_config(config)
 
 
-def parse_args(config):
+def parse_args(config: dict) -> None:
     '''
     Parse the command-line arguments for the training script.
 
@@ -407,7 +416,14 @@ def parse_args(config):
     Return:
     - None: no need to return because this function receives a pointer to config dict.
     '''
-    
+    def fix_dependent_parameters(config: dict) -> None:
+        '''
+        Some config parameters are dependent on other parameters.
+        Fix them based on the updated config file.
+        '''
+        config['NUM_EPOCHS'] = config['NUM_ITER'] * config['BATCH_SIZE'] // config['NUM_TRAIN']
+        config['LIST_AUCLOSS_BURNIN']['HIGH'] = config['NUM_ITER']
+
     # check if necessary parameters are defined in the config file
     requirements = set(['GPU', 'NUM_ITER', 'EXP_PHASE', 'OPTIMIZATION_TARGET',
                         'EXP_PHASE', 'MODEL_BACKBONE', 'SUBPROJECT_NAME_PREFIX',
@@ -436,6 +452,7 @@ def parse_args(config):
     config['OPTIMIZATION_TARGET'] = args.optimize
     config['SUBPROJECT_NAME_PREFIX'] = args.name
     config['SUBPROJECT_NAME'] = compile_subproject_name(config)
+    fix_dependent_parameters(config)
     compile_directory_paths(config)
 
 

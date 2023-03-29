@@ -5,7 +5,7 @@ import torch.nn.functional as F
 from datasets.data_processing import sequential_slice, sequential_concat
 from utils.performance_metrics import calc_llrs, calc_oblivious_llrs, thresh_sanity_check,\
                                         seqconfmx_to_macro_ave_sns, thresh_truncated_MSPRT, threshold_generator, \
-                                        calc_urgency_signal, multiply_diff_mht
+                                        multiply_diff_mht
                                         
 from utils.misc import extract_params_from_config, ErrorHandler
 
@@ -572,7 +572,7 @@ def version_Z(labels_concat, hitidx):
 
 
 def calc_ausat_loss(version, is_mult_sat, num_thresh, sparsity,
-    llrs, labels_concat, beta, time_steps):
+    llrs, labels_concat, beta):
 
     thresh = threshold_generator(llrs, num_thresh, sparsity).detach()
     thresh = thresh_truncated_MSPRT(thresh).detach() # set the last thresh to zero (truncated (M)SPRT)
@@ -582,7 +582,7 @@ def calc_ausat_loss(version, is_mult_sat, num_thresh, sparsity,
         llrs, labels_concat, thresh, beta, version)
     
     # Whether to multiply diff mht by acc_eta
-    ausat = multiply_diff_mht(acc_eta, hittimes, time_steps) if is_mult_sat\
+    ausat = multiply_diff_mht(acc_eta, hittimes) if is_mult_sat\
        else torch.mean(acc_eta) #  (num thresh,) -> scalar
 
     aucsat_loss = 1. - ausat
@@ -792,7 +792,7 @@ def compute_loss_and_metrics(model, x, y, global_step, config):
     # AUC loss
     aucsat_loss, mht, acc_eta_sat, sns_from_confmx, thresholds = calc_ausat_loss(
             conf.aucloss_version, conf.is_mult_sat, conf.num_thresh, conf.sparsity, 
-            llrs, labels_concat, conf.beta, conf.time_steps)
+            llrs, labels_concat, conf.beta)
     
     aucsat_loss = torch.tensor(0.).to(_device) if global_step < conf.aucloss_burnin else aucsat_loss 
 

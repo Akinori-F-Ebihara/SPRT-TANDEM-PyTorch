@@ -73,6 +73,8 @@ def run_optuna(objective, device, config):
     - config(dict): a dictionary containing hyperparameters.
     '''
     def setup_pruner(pruner_name, conf):
+        '''
+        '''
         logger.info(colored(f'Setting up a {pruner_name} pruner...', 'yellow'))
         if 'median' in pruner_name.lower():
             return optuna.pruners.MedianPruner(n_startup_trials=conf.pruner_startup_trials, 
@@ -332,8 +334,6 @@ def suggest_parameters_optuna(trial, config):
     
     return is_losscoef_all_zero
         
-
-
 
 class ConsoleTable:
     
