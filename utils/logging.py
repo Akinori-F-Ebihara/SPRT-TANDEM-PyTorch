@@ -296,7 +296,7 @@ def log_training_results(
             subset_metrics["adaptive_loss_weight"] = {
                 "MCE": _model.adaptive_loss_weights[0],
                 "LLLR": _model.adaptive_loss_weights[1],
-                "weight_decay": _model.adaptive_loss_weights[3],
+                "weight_decay": _model.adaptive_loss_weights[2],
             }
             logger.info(
                 "{} MCE loss:{:7.5f} * {} * {:7.5f}".format(
