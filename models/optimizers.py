@@ -1,40 +1,46 @@
+from typing import Tuple, Dict, Any
+import torch
 import torch.optim as optim
+from loguru import logger
 from utils.misc import extract_params_from_config
 
 
-def initialize_optimizer(model, config):
+def initialize_optimizer(
+    model: torch.nn.Module, config: Dict[str, Any]
+) -> Tuple[torch.nn.Module, optim.Optimizer]:
     """
+    Initializes the optimizer for training the model, based on the configuration parameters.
+
     Args:
-        learning_rates: A list of learning rates.
-        decay_steps: A list of steps at which learnig rate decays.
-        name_optimizer: A str.
-        flag_wd: A boolean.
-        weight_decay: A float.
+    - model: The model to be trained.
+    - config: A dictionary containing model configuration parameters.
+
+    Returns:
+    - Tuple[Module, optim.Optimizer]: A tuple containing the initialized model and optimizer.
     """
     # check if necessary parameters are defined in the config file
-    requirements = set(['LEARNING_RATE', 'LR_DECAY_STEPS', 'OPTIMIZER', 'WEIGHT_DECAY'])
+    requirements = set(
+        [
+            "LEARNING_RATE",
+            "LR_DECAY_STEPS",
+            "OPTIMIZER",
+            "WEIGHT_DECAY",
+        ]
+    )
     conf = extract_params_from_config(requirements, config)
 
-    if conf.optimizer == "adam":
-        optimizer = optim.AdamW(
-                model.parameters(),
-                weight_decay=conf.weight_decay, 
-                lr=conf.learning_rate)
-    elif conf.optimizer == "sgd":
-        optimizer = optim.SGD(
-            model.parameters(), 
-            weight_decay=conf.weight_decay, 
-            lr=conf.learning_rate)
-    elif conf.optimizer == "rmsprop":
-        optimizer = optim.RMSprop(
-            model.parameters(), 
-            lr=conf.learning_rate, 
-            alpha=0.9, 
-            momentum=0.0)
+    if "adam" in conf.optimizer.lower():
+        base_optimizer = optim.AdamW
+    elif conf.optimizer.lower() == "rmsprop":
+        base_optimizer = optim.RMSprop
     else:
         raise ValueError(f'Optimizer "{conf.optimizer}" is not implemented!')
 
-    scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=1000, gamma=0.1)
+    optimizer = base_optimizer(
+        model.parameters(),
+        weight_decay=conf.weight_decay,
+        lr=conf.learning_rate,
+    )
+    logger.info(f"Optimizer:\n{optimizer}")
 
-    return optimizer, scheduler
-
+    return model, optimizer
