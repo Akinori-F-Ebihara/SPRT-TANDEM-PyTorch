@@ -9,7 +9,6 @@ from utils.performance_metrics import (
     calc_llrs,
     calc_oblivious_llrs,
     seqconfmx_to_macro_ave_sns,
-    multiply_diff_mht,
 )
 from utils.misc import extract_params_from_config, ErrorHandler
 
@@ -81,52 +80,11 @@ def compute_loss_for_llr(
     labels_oh = labels_oh.reshape(-1, 1, num_classes, 1)
     # (batch_size, 1, num cls, 1)
 
-    if version == "A":  # LLLR, Ebihara+, ICLR 2021
+    if "LLLR" in version.upper():  # LLLR, Ebihara+, ICLR 2021
         lllr = torch.abs(labels_oh - torch.sigmoid(llrs))
         # (batch, time_steps, num cls, num cls)
         lllr = 0.5 * (num_classes / (num_classes - 1.0)) * torch.mean(lllr)
-
-    elif version == "B":
-        llrs = llrs * labels_oh
-        # (batch, time_steps, num cls, num cls)
-        llrs = torch.sum(llrs, dim=2)
-        # (batch, time_steps, num cls)
-        lllr = torch.abs(1.0 - torch.sigmoid(llrs))
-        lllr = (num_classes / (num_classes - 1)) * torch.mean(lllr)
-
-    elif version == "C":
-        labels_oh = labels_oh.repeat(1, time_steps, 1, num_classes)
-        # (batch, time_steps, num cls, num cls)
-        lllr = F.binary_cross_entropy_with_logits(llrs, labels_oh)
-        # scalar value (averaged)
-        lllr = 0.5 * (num_classes / (num_classes - 1)) * lllr
-
-    elif version == "D":
-        llrs = llrs * labels_oh
-        # (batch, time_steps, num cls, num cls)
-        llrs = torch.sum(llrs, dim=2)
-        # (batch, time_steps, num cls)
-        llrs = llrs.reshape(-1, num_classes)
-        tmp = torch.ones_like(llrs).to(torch.float32)
-        lllr = F.binary_cross_entropy_with_logits(llrs, tmp)
-        # scalar value (averaged))
-        lllr = (num_classes / (num_classes - 1)) * lllr
-
-    elif version == "E":
-        llrs = llrs * labels_oh
-        # (batch, time_steps, num cls, num cls)
-        llrs = torch.sum(llrs, dim=2)
-        # (batch, time_steps, num cls)
-        llrs = llrs.reshape(-1, num_classes)
-        # (batch * time_steps, num cls)
-        minllr = torch.min(llrs, dim=1, keepdims=True)[0]
-        llrs = llrs - minllr
-        # (batch * time_steps, num cls)
-        lllr = torch.sum(torch.exp(-llrs), dim=1)
-        # (batch * time_steps, )
-        lllr = torch.mean(-minllr + torch.log(lllr + 1e-12))
-        # scalar
-    elif version == "Eplus":  # LSEL, Miyagawa and Ebihara, ICML 2021
+    elif "LSEL" in version.upper():  # LSEL, Miyagawa and Ebihara, ICML 2021
         llrs = llrs * labels_oh
         # (batch, time_steps, num cls, num cls)
         llrs = torch.sum(llrs, dim=2)
@@ -141,11 +99,7 @@ def compute_loss_for_llr(
         lllr = torch.mean(-minllr + torch.log(lllr + 1e-12))
         # scalar
     else:
-        raise ValueError(
-            "version={} must be either of 'A', 'B', 'C', 'D', 'E' or 'Eplus'.".format(
-                version
-            )
-        )
+        raise ValueError(f"version={version} must be either of 'LLLR' or 'LSEL.'")
 
     return lllr
 

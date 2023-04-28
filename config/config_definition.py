@@ -43,7 +43,7 @@ MODEL_BACKBONE = "LSTM"
 # non-negative value and must be less than time_steps of the data.
 ORDER_SPRT = 1
 PARAM_MULTIPLET_LOSS = 0.6
-LLLR_VERSION = "Eplus"
+LLLR_VERSION = "LSEL"  # LLLR or LSEL
 PARAM_LLR_LOSS = 0.3
 IS_ADAPTIVE_LOSS = False
 
@@ -217,7 +217,7 @@ config = {
     },
     "LIST_LLLR_VERSION": {
         "PARAM_SPACE": "categorical",
-        "CATEGORY_SET": ["A", "B", "C", "D", "E", "Eplus"],
+        "CATEGORY_SET": ["LLLR", "LSEL"],
     },
     "LIST_ACTIVATION_FC": {
         "PARAM_SPACE": "categorical",

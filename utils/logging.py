@@ -293,7 +293,7 @@ def log_training_results(
             )
         )
         if conf.is_adaptive_loss:
-            subset_metrics["adaptive_loss_weight"] = {
+            adaptive_loss_weights = {
                 "MCE": _model.adaptive_loss_weights[0],
                 "LLLR": _model.adaptive_loss_weights[1],
                 "weight_decay": _model.adaptive_loss_weights[2],
@@ -303,7 +303,7 @@ def log_training_results(
                     phase,
                     performance_metrics["losses"]["multiplet_crossentropy (MCE)"],
                     str(conf.param_multiplet_loss),
-                    subset_metrics["adaptive_loss_weight"]["MCE"],
+                    adaptive_loss_weights["MCE"],
                 )
             )
             logger.info(
@@ -311,7 +311,7 @@ def log_training_results(
                     phase,
                     performance_metrics["losses"]["LLR_estimation (LLRE)"],
                     str(conf.param_llr_loss),
-                    subset_metrics["adaptive_loss_weight"]["LLLR"],
+                    adaptive_loss_weights["LLLR"],
                 )
             )
             logger.info(
@@ -319,7 +319,7 @@ def log_training_results(
                     phase,
                     performance_metrics["losses"]["weight_decay"],
                     str(conf.weight_decay),
-                    subset_metrics["adaptive_loss_weight"]["weight_decay"],
+                    adaptive_loss_weights["weight_decay"],
                 )
             )
         else:
