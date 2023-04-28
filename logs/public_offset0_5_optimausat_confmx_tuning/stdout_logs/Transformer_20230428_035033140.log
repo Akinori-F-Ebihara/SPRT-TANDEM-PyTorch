@@ -399,3 +399,33 @@ Parameter Group 0
 2023-04-28 04:09:23.550 | INFO     | utils.logging:log_training_results:301 - train MCE loss:0.99378 * 0.0 * 1.47066
 2023-04-28 04:09:23.550 | INFO     | utils.logging:log_training_results:309 - train LLLR :0.49997 * 0.8 * 1.50151
 2023-04-28 04:09:23.550 | INFO     | utils.logging:log_training_results:317 - train weight decay:942.28070 * 0.0002 * -0.59336
+2023-04-28 04:10:30.583 | INFO     | utils.logging:investigate_log:155 - num_warning=0/num_error=0 in the .log file.
+2023-04-28 04:10:30.949 | INFO     | optuna.study.study:_log_completed_trial:1020 - Trial 0 finished with value: 0.0495525598526001 and parameters: {'LIST_IS_POSITIONAL_ENCODING': False, 'LIST_MODEL_BACKBONE': 'Transformer', 'LIST_WEIGHT_DECAY': 0.0002, 'LIST_LEARNING_RATE': 4.036975826513645e-06, 'LIST_LLLR_VERSION': 'LSEL', 'LIST_ACTIVATION_FC': 'B2BsqrtV2', 'LIST_PARAM_MULTIPLET_LOSS': 0.0, 'LIST_PARAM_LLR_LOSS': 0.8, 'LIST_IS_ADAPTIVE_LOSS': True, 'LIST_ORDER_SPRT': 2, 'LIST_OPTIMIZER': 'rmsprop', 'LIST_IS_NORMALIZE': True, 'LIST_NUM_THRESH': 1000, 'LIST_SPARSITY': 'logspace', 'LIST_NUM_BLOCKS': 1, 'LIST_NUM_HEADS': 4, 'LIST_DROPOUT': 0.0, 'LIST_FF_DIM': 32, 'LIST_MLP_UNITS': 32}. Best is trial 0 with value: 0.0495525598526001.
+2023-04-28 04:10:30.968 | INFO     | utils.hyperparameter_tuning:suggest_parameters:560 - [33mStarting a tuning phase.[0m
+2023-04-28 04:10:31.392 | INFO     | utils.hyperparameter_tuning:print:394 - 
++------------------------------------------+
+|   Hyperparameteres suggested by Optuna   |
++------------------------+-----------------+
+|     Parameter name     | Suggested value |
++------------------------+-----------------+
+|     ACTIVATION_FC      |       gelu      |
+|    ACTIVATION_INPUT    |     sigmoid     |
+|   ACTIVATION_OUTPUT    |     B2Bcbrt     |
+|    IS_ADAPTIVE_LOSS    |       True      |
+|      IS_NORMALIZE      |      False      |
+| IS_POSITIONAL_ENCODING |       True      |
+| IS_TRAINABLE_ENCODING  |       True      |
+|     LEARNING_RATE      |    3.2923e-05   |
+|      LLLR_VERSION      |       LLLR      |
+|     MODEL_BACKBONE     |       LSTM      |
+|       NUM_THRESH       |       500       |
+|       OPTIMIZER        |       adam      |
+|       ORDER_SPRT       |        1        |
+|     PARAM_LLR_LOSS     |       0.1       |
+|  PARAM_MULTIPLET_LOSS  |       0.4       |
+|        SPARSITY        |    unirandom    |
+|      WEIGHT_DECAY      |       0.0       |
+|       WIDTH_LSTM       |        23       |
++------------------------+-----------------+
+2023-04-28 04:10:31.393 | INFO     | utils.misc:create_directories_and_log:291 - [33mA new log directory was created: [0m/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/logs/public_offset0_5_optimausat_confmx_tuning/checkpoints/LSTM_20230428_041031393/configs
+2023-04-28 04:10:31.394 | INFO     | utils.misc:create_directories_and_log:291 - [33mA new log directory was created: [0m/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/logs/public_offset0_5_optimausat_confmx_tuning/TensorBoard_events/LSTM_20230428_041031393
