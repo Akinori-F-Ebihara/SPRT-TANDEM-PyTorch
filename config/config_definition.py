@@ -2,7 +2,7 @@
 
 from utils.misc import compile_subproject_name, compile_directory_paths
 
-########################## USER MODIFIABLE PARAMS######################################
+########################## USER EDITABLE BLOCK STARTS ######################################
 
 # Base info
 CONFIG_PATH = __file__
@@ -67,7 +67,7 @@ PRUNER_STARTUP_TRIALS = 100
 PRUNER_WARMUP_STEPS = 2000
 PRUNER_INTERVAL_STEPS = 500
 
-############################## USER MODIFIABLE PARAMS END#######################################
+############################## USER EDITABLE BLOCK ENDS #######################################
 
 info_for_subproject_name = {
     "DATA_SEPARATION": DATA_SEPARATION,

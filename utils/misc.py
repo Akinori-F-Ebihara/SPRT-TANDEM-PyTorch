@@ -516,7 +516,11 @@ def parse_args(config: dict) -> None:
     )
     parser.add_argument("-g", "--gpu", type=int, default=conf.gpu, help="#gpu")
     parser.add_argument(
-        "-d", "--data_separation", type=str, default=conf.data_separation, help="#gpu"
+        "-d",
+        "--data_separation",
+        type=str,
+        default=conf.data_separation,
+        help="separation of Gaussian dataset.",
     )
     parser.add_argument(
         "-t", "--num_trials", type=int, default=conf.num_trials, help="#trials"
@@ -536,7 +540,7 @@ def parse_args(config: dict) -> None:
         "--model",
         type=str,
         default=conf.model_backbone,
-        help='model backbone, "LSTM", "Transformer", or "S4."',
+        help='model backbone, "LSTM", or "Transformer"',
     )
     parser.add_argument(
         "-o",
