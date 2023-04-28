@@ -678,7 +678,7 @@ def save_sdre_imgs(
     aesthetic_num_traj = np.max([1, 20 // conf.num_classes])
 
     plt.rcParams["font.size"] = 15
-    fig, ax = plt.subplots(figsize=(20, 11))
+    fig, ax = plt.subplots(figsize=(20, 6))
 
     plt.subplot(1, 3, 1)
     plt.title("Estimated LLR trajectories")

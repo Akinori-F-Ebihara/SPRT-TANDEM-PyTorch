@@ -2,7 +2,10 @@
 This repository contains the official PyTorch implementation of __SPRT-TANDEM__ ([ICASSP2023](https://arxiv.org/abs/2302.09810), [ICML2021](http://proceedings.mlr.press/v139/miyagawa21a.html), and [ICLR2021](https://openreview.net/forum?id=Rhsu5qD36cL)). __SPRT-TANDEM__ is a neuroscience-inspired sequential density ratio estimation (SDRE) algorithm that estimates log-likelihood ratios of two or more hypotheses for fast and accurate sequential data classification. For intuitive understanding, also see [SPRT-TANDEM tutorial](https://github.com/Akinori-F-Ebihara/SPRT-TANDEM_tutorial).
 
 <div align="center">
+<figure>
 <img src ="./images/SDRE_3class.png" width=70%>
+<figcaption>Figure 1: Example sequential density ratio estimation (SDRE) results on a 3-class multivariate Gaussian dataset. </figcaption>
+</figure>
 </div>
 
 ## Quickstart
@@ -131,6 +134,13 @@ inside which the following four folders will be created.
 - TensorBoard_events: TensorBard event files are saved here.
 - checkpoints: trained parameters are saved as .py files, when the best optimation target value is updated.
 - stdout_logs: standard output strings are saved as .log files.
+
+The plot below shows an example image saved in a TensorBoard event file. Note that you can avoid saving figures by setting IS_SAVE_FIGURE=False.
+<div align="center">
+<img src ="./images/example_tb_image.png" width=70%>
+</div>
+
+
 
 ## Citation
 ___Please cite the orignal paper(s) if you use the whole or a part of our codes.___
