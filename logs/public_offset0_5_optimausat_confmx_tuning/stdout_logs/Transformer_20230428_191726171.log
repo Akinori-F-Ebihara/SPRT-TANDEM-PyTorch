@@ -1,0 +1,395 @@
+2023-04-28 19:17:26.193 | INFO     | utils.misc:fix_random_seed:405 - Random seed is not fixed.
+2023-04-28 19:17:26.223 | INFO     | models.temporal_integrators:summarize:568 - 
+:'######::'########::'########::'########::::::::::::::::::::::
+'##... ##: ##.... ##: ##.... ##:... ##..:::::::::::::::::::::::
+ ##:::..:: ##:::: ##: ##:::: ##:::: ##:::::::::::::::::::::::::
+. ######:: ########:: ########::::: ##::::'#######:::::::::::::
+:..... ##: ##.....::: ##.. ##:::::: ##::::........:::::::::::::
+'##::: ##: ##:::::::: ##::. ##::::: ##:::::::::::::::::::::::::
+. ######:: ##:::::::: ##:::. ##:::: ##:::::::::::::::::::::::::
+:......:::..:::::::::..:::::..:::::..::::::::::::::::::::::::::
+'########::::'###::::'##::: ##:'########::'########:'##::::'##:
+... ##..::::'## ##::: ###:: ##: ##.... ##: ##.....:: ###::'###:
+::: ##:::::'##:. ##:: ####: ##: ##:::: ##: ##::::::: ####'####:
+::: ##::::'##:::. ##: ## ## ##: ##:::: ##: ######::: ## ### ##:
+::: ##:::: #########: ##. ####: ##:::: ##: ##...:::: ##. #: ##:
+::: ##:::: ##.... ##: ##:. ###: ##:::: ##: ##::::::: ##:.:: ##:
+::: ##:::: ##:::: ##: ##::. ##: ########:: ########: ##:::: ##:
+:::..:::::..:::::..::..::::..::........:::........::..:::::..::
+
+2023-04-28 19:17:26.224 | INFO     | models.temporal_integrators:summarize:571 - [34mofficial PyTorch implementation.[0m
+2023-04-28 19:17:26.277 | INFO     | models.temporal_integrators:summarize:593 - Network summary:
+===============================================================================================
+Layer (type:depth-idx)                        Output Shape              Param #
+===============================================================================================
+TANDEMformer                                  [150, 50, 3, 3]           131
+├─TransformerEncoder: 1-1                     [7500, 1, 128]            --
+│    └─ModuleList: 2-1                        --                        --
+│    │    └─TransformerEncoderLayer: 3-1      [7500, 1, 128]            74,912
+├─Linear: 1-2                                 [7500, 32]                4,128
+├─Dropout: 1-3                                [7500, 32]                --
+├─GELU: 1-4                                   [7500, 32]                --
+├─Linear: 1-5                                 [7500, 3]                 99
+===============================================================================================
+Total params: 79,270
+Trainable params: 79,270
+Non-trainable params: 0
+Total mult-adds (M): 31.70
+===============================================================================================
+Input size (MB): 3.84
+Forward/backward pass size (MB): 2.10
+Params size (MB): 0.02
+Estimated Total Size (MB): 5.96
+===============================================================================================
+2023-04-28 19:17:26.278 | INFO     | models.temporal_integrators:summarize:594 - Example input shape: torch.Size([150, 50, 128])
+2023-04-28 19:17:26.279 | INFO     | models.temporal_integrators:summarize:595 - Example output shape: torch.Size([150, 50, 3, 3])
+2023-04-28 19:17:26.281 | INFO     | models.temporal_integrators:import_model:58 - model moved onto: [33mcuda.[0m
+2023-04-28 19:17:26.282 | INFO     | models.optimizers:initialize_optimizer:44 - Optimizer:
+RMSprop (
+Parameter Group 0
+    alpha: 0.99
+    centered: False
+    differentiable: False
+    eps: 1e-08
+    foreach: None
+    lr: 0.0004515806670021966
+    maximize: False
+    momentum: 0
+    weight_decay: 0.00030000000000000003
+)
+2023-04-28 19:17:26.282 | INFO     | datasets.data_processing:lmdb_dataloaders:293 - loading data... 
+2023-04-28 19:17:26.283 | INFO     | datasets.data_processing:lmdb_dataloaders:295 - If this process takes long, consider setting is_load_onto_memory=False or use LMDBIterableDataset.
+2023-04-28 19:17:28.647 | INFO     | __main__:objective:356 - Starting epoch #0.
+2023-04-28 19:17:30.789 | INFO     | utils.logging:log_training_results:280 - 
+2023-04-28 19:17:30.789 | INFO     | utils.logging:log_training_results:281 - Global Step =      0
+2023-04-28 19:17:30.790 | INFO     | utils.logging:log_training_results:282 - val mean(MacRec)_t: 0.340383380651474
+2023-04-28 19:17:30.790 | INFO     | utils.logging:log_training_results:287 - val mean ABSerr: 3.8147244453430176
+2023-04-28 19:17:30.790 | INFO     | utils.logging:log_training_results:290 - val ausat from confmx: 0.33319273591041565
+2023-04-28 19:17:30.791 | INFO     | utils.logging:log_training_results:301 - val MCE loss:1.09925 * 0.5 * 0.58863
+2023-04-28 19:17:30.791 | INFO     | utils.logging:log_training_results:309 - val LLLR :2.88073 * 0.8 * -1.04319
+2023-04-28 19:17:30.792 | INFO     | utils.logging:log_training_results:317 - val weight decay:688.14429 * 0.00030000000000000003 * -0.76556
+2023-04-28 19:17:31.655 | INFO     | utils.logging:save_sdre_imgs:710 - Figures saved.
+2023-04-28 19:17:31.929 | INFO     | utils.logging:log_training_results:280 - 
+2023-04-28 19:17:31.930 | INFO     | utils.logging:log_training_results:281 - Global Step =      0
+2023-04-28 19:17:31.930 | INFO     | utils.logging:log_training_results:282 - train mean(MacRec)_t: 0.33948856592178345
+2023-04-28 19:17:31.930 | INFO     | utils.logging:log_training_results:287 - train mean ABSerr: 4.066146373748779
+2023-04-28 19:17:31.931 | INFO     | utils.logging:log_training_results:290 - train ausat from confmx: 0.33319756388664246
+2023-04-28 19:17:31.931 | INFO     | utils.logging:log_training_results:301 - train MCE loss:1.11400 * 0.5 * 0.58411
+2023-04-28 19:17:31.931 | INFO     | utils.logging:log_training_results:309 - train LLLR :3.11651 * 0.8 * -1.04771
+2023-04-28 19:17:31.932 | INFO     | utils.logging:log_training_results:317 - train weight decay:688.14429 * 0.00030000000000000003 * -0.76104
+2023-04-28 19:17:48.076 | INFO     | utils.logging:log_training_results:280 - 
+2023-04-28 19:17:48.077 | INFO     | utils.logging:log_training_results:281 - Global Step =    250
+2023-04-28 19:17:48.077 | INFO     | utils.logging:log_training_results:282 - val mean(MacRec)_t: 0.8419533371925354
+2023-04-28 19:17:48.077 | INFO     | utils.logging:log_training_results:287 - val mean ABSerr: 1.2956629991531372
+2023-04-28 19:17:48.078 | INFO     | utils.logging:log_training_results:290 - val ausat from confmx: 0.9566685557365417
+2023-04-28 19:17:48.078 | INFO     | utils.logging:log_training_results:301 - val MCE loss:1.03254 * 0.5 * 0.50928
+2023-04-28 19:17:48.079 | INFO     | utils.logging:log_training_results:309 - val LLLR :0.37641 * 0.8 * -0.95013
+2023-04-28 19:17:48.079 | INFO     | utils.logging:log_training_results:317 - val weight decay:540.51801 * 0.00030000000000000003 * -0.59426
+2023-04-28 19:17:48.204 | INFO     | utils.checkpoint:update_and_save_result:168 - [36mBest value updated![0m
+2023-04-28 19:17:48.214 | INFO     | utils.checkpoint:save_checkpoint:83 - [36mSaved checkpoint[0m at step 250.
+2023-04-28 19:17:48.975 | INFO     | utils.logging:save_sdre_imgs:710 - Figures saved.
+2023-04-28 19:17:49.266 | INFO     | utils.logging:log_training_results:280 - 
+2023-04-28 19:17:49.266 | INFO     | utils.logging:log_training_results:281 - Global Step =    250
+2023-04-28 19:17:49.267 | INFO     | utils.logging:log_training_results:282 - train mean(MacRec)_t: 0.8144343495368958
+2023-04-28 19:17:49.267 | INFO     | utils.logging:log_training_results:287 - train mean ABSerr: 1.3667222261428833
+2023-04-28 19:17:49.267 | INFO     | utils.logging:log_training_results:290 - train ausat from confmx: 0.9600011110305786
+2023-04-28 19:17:49.268 | INFO     | utils.logging:log_training_results:301 - train MCE loss:1.03449 * 0.5 * 0.50924
+2023-04-28 19:17:49.268 | INFO     | utils.logging:log_training_results:309 - train LLLR :0.45707 * 0.8 * -0.94965
+2023-04-28 19:17:49.268 | INFO     | utils.logging:log_training_results:317 - train weight decay:540.51794 * 0.00030000000000000003 * -0.59377
+2023-04-28 19:17:57.746 | INFO     | __main__:objective:356 - Starting epoch #1.
+2023-04-28 19:18:05.484 | INFO     | utils.logging:log_training_results:280 - 
+2023-04-28 19:18:05.484 | INFO     | utils.logging:log_training_results:281 - Global Step =    500
+2023-04-28 19:18:05.485 | INFO     | utils.logging:log_training_results:282 - val mean(MacRec)_t: 0.8669166564941406
+2023-04-28 19:18:05.485 | INFO     | utils.logging:log_training_results:287 - val mean ABSerr: 0.7977283596992493
+2023-04-28 19:18:05.486 | INFO     | utils.logging:log_training_results:290 - val ausat from confmx: 0.9766883254051208
+2023-04-28 19:18:05.486 | INFO     | utils.logging:log_training_results:301 - val MCE loss:1.02458 * 0.5 * 0.50686
+2023-04-28 19:18:05.486 | INFO     | utils.logging:log_training_results:309 - val LLLR :0.31667 * 0.8 * -0.83426
+2023-04-28 19:18:05.487 | INFO     | utils.logging:log_training_results:317 - val weight decay:502.41592 * 0.00030000000000000003 * -0.47590
+2023-04-28 19:18:05.614 | INFO     | utils.checkpoint:update_and_save_result:168 - [36mBest value updated![0m
+2023-04-28 19:18:05.623 | INFO     | utils.checkpoint:save_checkpoint:83 - [36mSaved checkpoint[0m at step 500.
+2023-04-28 19:18:05.626 | INFO     | utils.checkpoint:keep_max_num_saved_models:101 - Removed the oldest model for max_to_keep=1
+2023-04-28 19:18:06.349 | INFO     | utils.logging:save_sdre_imgs:710 - Figures saved.
+2023-04-28 19:18:06.663 | INFO     | utils.logging:log_training_results:280 - 
+2023-04-28 19:18:06.664 | INFO     | utils.logging:log_training_results:281 - Global Step =    500
+2023-04-28 19:18:06.664 | INFO     | utils.logging:log_training_results:282 - train mean(MacRec)_t: 0.8630905747413635
+2023-04-28 19:18:06.665 | INFO     | utils.logging:log_training_results:287 - train mean ABSerr: 0.9295325875282288
+2023-04-28 19:18:06.665 | INFO     | utils.logging:log_training_results:290 - train ausat from confmx: 0.9771238565444946
+2023-04-28 19:18:06.665 | INFO     | utils.logging:log_training_results:301 - train MCE loss:1.02942 * 0.5 * 0.50693
+2023-04-28 19:18:06.666 | INFO     | utils.logging:log_training_results:309 - train LLLR :0.34004 * 0.8 * -0.83378
+2023-04-28 19:18:06.666 | INFO     | utils.logging:log_training_results:317 - train weight decay:502.41592 * 0.00030000000000000003 * -0.47544
+2023-04-28 19:18:22.872 | INFO     | utils.logging:log_training_results:280 - 
+2023-04-28 19:18:22.873 | INFO     | utils.logging:log_training_results:281 - Global Step =    750
+2023-04-28 19:18:22.873 | INFO     | utils.logging:log_training_results:282 - val mean(MacRec)_t: 0.8631200194358826
+2023-04-28 19:18:22.874 | INFO     | utils.logging:log_training_results:287 - val mean ABSerr: 0.845579981803894
+2023-04-28 19:18:22.874 | INFO     | utils.logging:log_training_results:290 - val ausat from confmx: 0.969452440738678
+2023-04-28 19:18:22.874 | INFO     | utils.logging:log_training_results:301 - val MCE loss:1.02286 * 0.5 * 0.50704
+2023-04-28 19:18:22.875 | INFO     | utils.logging:log_training_results:309 - val LLLR :0.32496 * 0.8 * -0.71943
+2023-04-28 19:18:22.875 | INFO     | utils.logging:log_training_results:317 - val weight decay:446.73520 * 0.00030000000000000003 * -0.36214
+2023-04-28 19:18:23.914 | INFO     | utils.logging:save_sdre_imgs:710 - Figures saved.
+2023-04-28 19:18:24.209 | INFO     | utils.logging:log_training_results:280 - 
+2023-04-28 19:18:24.210 | INFO     | utils.logging:log_training_results:281 - Global Step =    750
+2023-04-28 19:18:24.210 | INFO     | utils.logging:log_training_results:282 - train mean(MacRec)_t: 0.8681575059890747
+2023-04-28 19:18:24.210 | INFO     | utils.logging:log_training_results:287 - train mean ABSerr: 0.9529950618743896
+2023-04-28 19:18:24.211 | INFO     | utils.logging:log_training_results:290 - train ausat from confmx: 0.9710725545883179
+2023-04-28 19:18:24.211 | INFO     | utils.logging:log_training_results:301 - train MCE loss:1.02955 * 0.5 * 0.50711
+2023-04-28 19:18:24.212 | INFO     | utils.logging:log_training_results:309 - train LLLR :0.32472 * 0.8 * -0.71895
+2023-04-28 19:18:24.212 | INFO     | utils.logging:log_training_results:317 - train weight decay:446.73520 * 0.00030000000000000003 * -0.36170
+2023-04-28 19:18:27.063 | INFO     | __main__:objective:356 - Starting epoch #2.
+2023-04-28 19:18:40.429 | INFO     | utils.logging:log_training_results:280 - 
+2023-04-28 19:18:40.430 | INFO     | utils.logging:log_training_results:281 - Global Step =   1000
+2023-04-28 19:18:40.430 | INFO     | utils.logging:log_training_results:282 - val mean(MacRec)_t: 0.8435966372489929
+2023-04-28 19:18:40.431 | INFO     | utils.logging:log_training_results:287 - val mean ABSerr: 1.0729795694351196
+2023-04-28 19:18:40.431 | INFO     | utils.logging:log_training_results:290 - val ausat from confmx: 0.9519029855728149
+2023-04-28 19:18:40.431 | INFO     | utils.logging:log_training_results:301 - val MCE loss:1.02170 * 0.5 * 0.50581
+2023-04-28 19:18:40.432 | INFO     | utils.logging:log_training_results:309 - val LLLR :0.37457 * 0.8 * -0.60472
+2023-04-28 19:18:40.432 | INFO     | utils.logging:log_training_results:317 - val weight decay:376.21323 * 0.00030000000000000003 * -0.26381
+2023-04-28 19:18:41.287 | INFO     | utils.logging:save_sdre_imgs:710 - Figures saved.
+2023-04-28 19:18:41.586 | INFO     | utils.logging:log_training_results:280 - 
+2023-04-28 19:18:41.587 | INFO     | utils.logging:log_training_results:281 - Global Step =   1000
+2023-04-28 19:18:41.587 | INFO     | utils.logging:log_training_results:282 - train mean(MacRec)_t: 0.8521246910095215
+2023-04-28 19:18:41.587 | INFO     | utils.logging:log_training_results:287 - train mean ABSerr: 1.0135611295700073
+2023-04-28 19:18:41.588 | INFO     | utils.logging:log_training_results:290 - train ausat from confmx: 0.9607837796211243
+2023-04-28 19:18:41.588 | INFO     | utils.logging:log_training_results:301 - train MCE loss:1.01621 * 0.5 * 0.50511
+2023-04-28 19:18:41.588 | INFO     | utils.logging:log_training_results:309 - train LLLR :0.34524 * 0.8 * -0.60428
+2023-04-28 19:18:41.589 | INFO     | utils.logging:log_training_results:317 - train weight decay:376.21323 * 0.00030000000000000003 * -0.26350
+2023-04-28 19:18:52.678 | INFO     | __main__:objective:356 - Starting epoch #3.
+2023-04-28 19:18:57.528 | INFO     | utils.logging:log_training_results:280 - 
+2023-04-28 19:18:57.529 | INFO     | utils.logging:log_training_results:281 - Global Step =   1250
+2023-04-28 19:18:57.529 | INFO     | utils.logging:log_training_results:282 - val mean(MacRec)_t: 0.867669939994812
+2023-04-28 19:18:57.530 | INFO     | utils.logging:log_training_results:287 - val mean ABSerr: 0.6760574579238892
+2023-04-28 19:18:57.530 | INFO     | utils.logging:log_training_results:290 - val ausat from confmx: 0.9731948971748352
+2023-04-28 19:18:57.530 | INFO     | utils.logging:log_training_results:301 - val MCE loss:1.02058 * 0.5 * 0.50467
+2023-04-28 19:18:57.531 | INFO     | utils.logging:log_training_results:309 - val LLLR :0.31491 * 0.8 * -0.49400
+2023-04-28 19:18:57.531 | INFO     | utils.logging:log_training_results:317 - val weight decay:303.63376 * 0.00030000000000000003 * -0.21556
+2023-04-28 19:18:58.381 | INFO     | utils.logging:save_sdre_imgs:710 - Figures saved.
+2023-04-28 19:18:58.680 | INFO     | utils.logging:log_training_results:280 - 
+2023-04-28 19:18:58.680 | INFO     | utils.logging:log_training_results:281 - Global Step =   1250
+2023-04-28 19:18:58.681 | INFO     | utils.logging:log_training_results:282 - train mean(MacRec)_t: 0.8666417002677917
+2023-04-28 19:18:58.681 | INFO     | utils.logging:log_training_results:287 - train mean ABSerr: 0.7416684627532959
+2023-04-28 19:18:58.681 | INFO     | utils.logging:log_training_results:290 - train ausat from confmx: 0.9626131057739258
+2023-04-28 19:18:58.682 | INFO     | utils.logging:log_training_results:301 - train MCE loss:1.01867 * 0.5 * 0.50459
+2023-04-28 19:18:58.682 | INFO     | utils.logging:log_training_results:309 - train LLLR :0.30232 * 0.8 * -0.49355
+2023-04-28 19:18:58.683 | INFO     | utils.logging:log_training_results:317 - train weight decay:303.63373 * 0.00030000000000000003 * -0.21545
+2023-04-28 19:19:14.592 | INFO     | utils.logging:log_training_results:280 - 
+2023-04-28 19:19:14.593 | INFO     | utils.logging:log_training_results:281 - Global Step =   1500
+2023-04-28 19:19:14.594 | INFO     | utils.logging:log_training_results:282 - val mean(MacRec)_t: 0.8718366622924805
+2023-04-28 19:19:14.594 | INFO     | utils.logging:log_training_results:287 - val mean ABSerr: 0.42653554677963257
+2023-04-28 19:19:14.594 | INFO     | utils.logging:log_training_results:290 - val ausat from confmx: 0.9784521460533142
+2023-04-28 19:19:14.595 | INFO     | utils.logging:log_training_results:301 - val MCE loss:1.02035 * 0.5 * 0.50614
+2023-04-28 19:19:14.595 | INFO     | utils.logging:log_training_results:309 - val LLLR :0.30171 * 0.8 * -0.39907
+2023-04-28 19:19:14.595 | INFO     | utils.logging:log_training_results:317 - val weight decay:245.52136 * 0.00030000000000000003 * -0.19229
+2023-04-28 19:19:14.715 | INFO     | utils.checkpoint:update_and_save_result:168 - [36mBest value updated![0m
+2023-04-28 19:19:14.725 | INFO     | utils.checkpoint:save_checkpoint:83 - [36mSaved checkpoint[0m at step 1500.
+2023-04-28 19:19:14.728 | INFO     | utils.checkpoint:keep_max_num_saved_models:101 - Removed the oldest model for max_to_keep=1
+2023-04-28 19:19:15.514 | INFO     | utils.logging:save_sdre_imgs:710 - Figures saved.
+2023-04-28 19:19:15.810 | INFO     | utils.logging:log_training_results:280 - 
+2023-04-28 19:19:15.811 | INFO     | utils.logging:log_training_results:281 - Global Step =   1500
+2023-04-28 19:19:15.811 | INFO     | utils.logging:log_training_results:282 - train mean(MacRec)_t: 0.8855337500572205
+2023-04-28 19:19:15.811 | INFO     | utils.logging:log_training_results:287 - train mean ABSerr: 0.515605092048645
+2023-04-28 19:19:15.812 | INFO     | utils.logging:log_training_results:290 - train ausat from confmx: 0.9844269156455994
+2023-04-28 19:19:15.812 | INFO     | utils.logging:log_training_results:301 - train MCE loss:1.02513 * 0.5 * 0.50608
+2023-04-28 19:19:15.813 | INFO     | utils.logging:log_training_results:309 - train LLLR :0.27273 * 0.8 * -0.39861
+2023-04-28 19:19:15.813 | INFO     | utils.logging:log_training_results:317 - train weight decay:245.52136 * 0.00030000000000000003 * -0.19220
+2023-04-28 19:19:21.366 | INFO     | __main__:objective:356 - Starting epoch #4.
+2023-04-28 19:19:31.933 | INFO     | utils.logging:log_training_results:280 - 
+2023-04-28 19:19:31.934 | INFO     | utils.logging:log_training_results:281 - Global Step =   1750
+2023-04-28 19:19:31.934 | INFO     | utils.logging:log_training_results:282 - val mean(MacRec)_t: 0.8724867105484009
+2023-04-28 19:19:31.935 | INFO     | utils.logging:log_training_results:287 - val mean ABSerr: 0.3770461976528168
+2023-04-28 19:19:31.935 | INFO     | utils.logging:log_training_results:290 - val ausat from confmx: 0.9807178974151611
+2023-04-28 19:19:31.936 | INFO     | utils.logging:log_training_results:301 - val MCE loss:1.02019 * 0.5 * 0.50494
+2023-04-28 19:19:31.936 | INFO     | utils.logging:log_training_results:309 - val LLLR :0.30067 * 0.8 * -0.34928
+2023-04-28 19:19:31.937 | INFO     | utils.logging:log_training_results:317 - val weight decay:197.94403 * 0.00030000000000000003 * -0.17238
+2023-04-28 19:19:32.062 | INFO     | utils.checkpoint:update_and_save_result:168 - [36mBest value updated![0m
+2023-04-28 19:19:32.073 | INFO     | utils.checkpoint:save_checkpoint:83 - [36mSaved checkpoint[0m at step 1750.
+2023-04-28 19:19:32.075 | INFO     | utils.checkpoint:keep_max_num_saved_models:101 - Removed the oldest model for max_to_keep=1
+2023-04-28 19:19:32.824 | INFO     | utils.logging:save_sdre_imgs:710 - Figures saved.
+2023-04-28 19:19:33.121 | INFO     | utils.logging:log_training_results:280 - 
+2023-04-28 19:19:33.122 | INFO     | utils.logging:log_training_results:281 - Global Step =   1750
+2023-04-28 19:19:33.122 | INFO     | utils.logging:log_training_results:282 - train mean(MacRec)_t: 0.8737673759460449
+2023-04-28 19:19:33.122 | INFO     | utils.logging:log_training_results:287 - train mean ABSerr: 0.43972331285476685
+2023-04-28 19:19:33.123 | INFO     | utils.logging:log_training_results:290 - train ausat from confmx: 0.9825960993766785
+2023-04-28 19:19:33.123 | INFO     | utils.logging:log_training_results:301 - train MCE loss:1.02355 * 0.5 * 0.50516
+2023-04-28 19:19:33.124 | INFO     | utils.logging:log_training_results:309 - train LLLR :0.28639 * 0.8 * -0.34908
+2023-04-28 19:19:33.124 | INFO     | utils.logging:log_training_results:317 - train weight decay:197.94403 * 0.00030000000000000003 * -0.17231
+2023-04-28 19:19:47.159 | INFO     | __main__:objective:356 - Starting epoch #5.
+2023-04-28 19:19:49.271 | INFO     | utils.logging:log_training_results:280 - 
+2023-04-28 19:19:49.272 | INFO     | utils.logging:log_training_results:281 - Global Step =   2000
+2023-04-28 19:19:49.272 | INFO     | utils.logging:log_training_results:282 - val mean(MacRec)_t: 0.8720833659172058
+2023-04-28 19:19:49.272 | INFO     | utils.logging:log_training_results:287 - val mean ABSerr: 0.4058576822280884
+2023-04-28 19:19:49.273 | INFO     | utils.logging:log_training_results:290 - val ausat from confmx: 0.9780822396278381
+2023-04-28 19:19:49.273 | INFO     | utils.logging:log_training_results:301 - val MCE loss:1.02026 * 0.5 * 0.50452
+2023-04-28 19:19:49.274 | INFO     | utils.logging:log_training_results:309 - val LLLR :0.30193 * 0.8 * -0.34771
+2023-04-28 19:19:49.274 | INFO     | utils.logging:log_training_results:317 - val weight decay:156.79564 * 0.00030000000000000003 * -0.15339
+2023-04-28 19:19:50.147 | INFO     | utils.logging:save_sdre_imgs:710 - Figures saved.
+2023-04-28 19:19:50.455 | INFO     | utils.logging:log_training_results:280 - 
+2023-04-28 19:19:50.456 | INFO     | utils.logging:log_training_results:281 - Global Step =   2000
+2023-04-28 19:19:50.456 | INFO     | utils.logging:log_training_results:282 - train mean(MacRec)_t: 0.8949304819107056
+2023-04-28 19:19:50.457 | INFO     | utils.logging:log_training_results:287 - train mean ABSerr: 0.46954578161239624
+2023-04-28 19:19:50.457 | INFO     | utils.logging:log_training_results:290 - train ausat from confmx: 0.982961118221283
+2023-04-28 19:19:50.457 | INFO     | utils.logging:log_training_results:301 - train MCE loss:1.01522 * 0.5 * 0.50410
+2023-04-28 19:19:50.458 | INFO     | utils.logging:log_training_results:309 - train LLLR :0.26394 * 0.8 * -0.34724
+2023-04-28 19:19:50.458 | INFO     | utils.logging:log_training_results:317 - train weight decay:156.79562 * 0.00030000000000000003 * -0.15330
+2023-04-28 19:20:06.797 | INFO     | utils.logging:log_training_results:280 - 
+2023-04-28 19:20:06.797 | INFO     | utils.logging:log_training_results:281 - Global Step =   2250
+2023-04-28 19:20:06.798 | INFO     | utils.logging:log_training_results:282 - val mean(MacRec)_t: 0.8743133544921875
+2023-04-28 19:20:06.798 | INFO     | utils.logging:log_training_results:287 - val mean ABSerr: 0.2914586663246155
+2023-04-28 19:20:06.799 | INFO     | utils.logging:log_training_results:290 - val ausat from confmx: 0.9821882247924805
+2023-04-28 19:20:06.799 | INFO     | utils.logging:log_training_results:301 - val MCE loss:1.02024 * 0.5 * 0.50410
+2023-04-28 19:20:06.800 | INFO     | utils.logging:log_training_results:309 - val LLLR :0.29731 * 0.8 * -0.34681
+2023-04-28 19:20:06.800 | INFO     | utils.logging:log_training_results:317 - val weight decay:120.76946 * 0.00030000000000000003 * -0.13486
+2023-04-28 19:20:06.922 | INFO     | utils.checkpoint:update_and_save_result:168 - [36mBest value updated![0m
+2023-04-28 19:20:06.933 | INFO     | utils.checkpoint:save_checkpoint:83 - [36mSaved checkpoint[0m at step 2250.
+2023-04-28 19:20:06.935 | INFO     | utils.checkpoint:keep_max_num_saved_models:101 - Removed the oldest model for max_to_keep=1
+2023-04-28 19:20:07.682 | INFO     | utils.logging:save_sdre_imgs:710 - Figures saved.
+2023-04-28 19:20:07.990 | INFO     | utils.logging:log_training_results:280 - 
+2023-04-28 19:20:07.991 | INFO     | utils.logging:log_training_results:281 - Global Step =   2250
+2023-04-28 19:20:07.991 | INFO     | utils.logging:log_training_results:282 - train mean(MacRec)_t: 0.881363034248352
+2023-04-28 19:20:07.991 | INFO     | utils.logging:log_training_results:287 - train mean ABSerr: 0.3789321780204773
+2023-04-28 19:20:07.992 | INFO     | utils.logging:log_training_results:290 - train ausat from confmx: 0.9782888293266296
+2023-04-28 19:20:07.992 | INFO     | utils.logging:log_training_results:301 - train MCE loss:1.02493 * 0.5 * 0.50468
+2023-04-28 19:20:07.993 | INFO     | utils.logging:log_training_results:309 - train LLLR :0.29441 * 0.8 * -0.34672
+2023-04-28 19:20:07.993 | INFO     | utils.logging:log_training_results:317 - train weight decay:120.76946 * 0.00030000000000000003 * -0.13427
+2023-04-28 19:20:16.412 | INFO     | __main__:objective:356 - Starting epoch #6.
+2023-04-28 19:20:24.096 | INFO     | utils.logging:log_training_results:280 - 
+2023-04-28 19:20:24.097 | INFO     | utils.logging:log_training_results:281 - Global Step =   2500
+2023-04-28 19:20:24.097 | INFO     | utils.logging:log_training_results:282 - val mean(MacRec)_t: 0.8723833560943604
+2023-04-28 19:20:24.097 | INFO     | utils.logging:log_training_results:287 - val mean ABSerr: 0.35237884521484375
+2023-04-28 19:20:24.098 | INFO     | utils.logging:log_training_results:290 - val ausat from confmx: 0.9810093641281128
+2023-04-28 19:20:24.098 | INFO     | utils.logging:log_training_results:301 - val MCE loss:1.02044 * 0.5 * 0.50449
+2023-04-28 19:20:24.099 | INFO     | utils.logging:log_training_results:309 - val LLLR :0.30165 * 0.8 * -0.34230
+2023-04-28 19:20:24.099 | INFO     | utils.logging:log_training_results:317 - val weight decay:90.56010 * 0.00030000000000000003 * -0.11692
+2023-04-28 19:20:25.183 | INFO     | utils.logging:save_sdre_imgs:710 - Figures saved.
+2023-04-28 19:20:25.485 | INFO     | utils.logging:log_training_results:280 - 
+2023-04-28 19:20:25.486 | INFO     | utils.logging:log_training_results:281 - Global Step =   2500
+2023-04-28 19:20:25.486 | INFO     | utils.logging:log_training_results:282 - train mean(MacRec)_t: 0.8779819011688232
+2023-04-28 19:20:25.486 | INFO     | utils.logging:log_training_results:287 - train mean ABSerr: 0.41742539405822754
+2023-04-28 19:20:25.487 | INFO     | utils.logging:log_training_results:290 - train ausat from confmx: 0.9834861755371094
+2023-04-28 19:20:25.487 | INFO     | utils.logging:log_training_results:301 - train MCE loss:1.01855 * 0.5 * 0.50427
+2023-04-28 19:20:25.488 | INFO     | utils.logging:log_training_results:309 - train LLLR :0.28316 * 0.8 * -0.34214
+2023-04-28 19:20:25.488 | INFO     | utils.logging:log_training_results:317 - train weight decay:90.56010 * 0.00030000000000000003 * -0.11613
+2023-04-28 19:20:42.022 | INFO     | utils.logging:log_training_results:280 - 
+2023-04-28 19:20:42.022 | INFO     | utils.logging:log_training_results:281 - Global Step =   2750
+2023-04-28 19:20:42.023 | INFO     | utils.logging:log_training_results:282 - val mean(MacRec)_t: 0.8738899827003479
+2023-04-28 19:20:42.023 | INFO     | utils.logging:log_training_results:287 - val mean ABSerr: 0.32706454396247864
+2023-04-28 19:20:42.024 | INFO     | utils.logging:log_training_results:290 - val ausat from confmx: 0.9814631342887878
+2023-04-28 19:20:42.024 | INFO     | utils.logging:log_training_results:301 - val MCE loss:1.02052 * 0.5 * 0.50453
+2023-04-28 19:20:42.025 | INFO     | utils.logging:log_training_results:309 - val LLLR :0.29796 * 0.8 * -0.34412
+2023-04-28 19:20:42.025 | INFO     | utils.logging:log_training_results:317 - val weight decay:67.21059 * 0.00030000000000000003 * -0.10093
+2023-04-28 19:20:42.895 | INFO     | utils.logging:save_sdre_imgs:710 - Figures saved.
+2023-04-28 19:20:43.192 | INFO     | utils.logging:log_training_results:280 - 
+2023-04-28 19:20:43.193 | INFO     | utils.logging:log_training_results:281 - Global Step =   2750
+2023-04-28 19:20:43.193 | INFO     | utils.logging:log_training_results:282 - train mean(MacRec)_t: 0.8663437366485596
+2023-04-28 19:20:43.193 | INFO     | utils.logging:log_training_results:287 - train mean ABSerr: 0.3776230216026306
+2023-04-28 19:20:43.194 | INFO     | utils.logging:log_training_results:290 - train ausat from confmx: 0.990781307220459
+2023-04-28 19:20:43.194 | INFO     | utils.logging:log_training_results:301 - train MCE loss:1.02895 * 0.5 * 0.50516
+2023-04-28 19:20:43.194 | INFO     | utils.logging:log_training_results:309 - train LLLR :0.30893 * 0.8 * -0.34432
+2023-04-28 19:20:43.195 | INFO     | utils.logging:log_training_results:317 - train weight decay:67.21059 * 0.00030000000000000003 * -0.09994
+2023-04-28 19:20:46.035 | INFO     | __main__:objective:356 - Starting epoch #7.
+2023-04-28 19:20:59.353 | INFO     | utils.logging:log_training_results:280 - 
+2023-04-28 19:20:59.354 | INFO     | utils.logging:log_training_results:281 - Global Step =   3000
+2023-04-28 19:20:59.354 | INFO     | utils.logging:log_training_results:282 - val mean(MacRec)_t: 0.87336665391922
+2023-04-28 19:20:59.355 | INFO     | utils.logging:log_training_results:287 - val mean ABSerr: 0.34608134627342224
+2023-04-28 19:20:59.355 | INFO     | utils.logging:log_training_results:290 - val ausat from confmx: 0.9822102785110474
+2023-04-28 19:20:59.356 | INFO     | utils.logging:log_training_results:301 - val MCE loss:1.02069 * 0.5 * 0.50360
+2023-04-28 19:20:59.356 | INFO     | utils.logging:log_training_results:309 - val LLLR :0.29951 * 0.8 * -0.34132
+2023-04-28 19:20:59.356 | INFO     | utils.logging:log_training_results:317 - val weight decay:50.01077 * 0.00030000000000000003 * -0.08699
+2023-04-28 19:20:59.484 | INFO     | utils.checkpoint:update_and_save_result:168 - [36mBest value updated![0m
+2023-04-28 19:20:59.493 | INFO     | utils.checkpoint:save_checkpoint:83 - [36mSaved checkpoint[0m at step 3000.
+2023-04-28 19:20:59.497 | INFO     | utils.checkpoint:keep_max_num_saved_models:101 - Removed the oldest model for max_to_keep=1
+2023-04-28 19:21:00.243 | INFO     | utils.logging:save_sdre_imgs:710 - Figures saved.
+2023-04-28 19:21:00.561 | INFO     | utils.logging:log_training_results:280 - 
+2023-04-28 19:21:00.561 | INFO     | utils.logging:log_training_results:281 - Global Step =   3000
+2023-04-28 19:21:00.562 | INFO     | utils.logging:log_training_results:282 - train mean(MacRec)_t: 0.9086268544197083
+2023-04-28 19:21:00.562 | INFO     | utils.logging:log_training_results:287 - train mean ABSerr: 0.39301759004592896
+2023-04-28 19:21:00.562 | INFO     | utils.logging:log_training_results:290 - train ausat from confmx: 0.9977572560310364
+2023-04-28 19:21:00.563 | INFO     | utils.logging:log_training_results:301 - train MCE loss:1.01865 * 0.5 * 0.50351
+2023-04-28 19:21:00.563 | INFO     | utils.logging:log_training_results:309 - train LLLR :0.22336 * 0.8 * -0.34037
+2023-04-28 19:21:00.564 | INFO     | utils.logging:log_training_results:317 - train weight decay:50.01077 * 0.00030000000000000003 * -0.08624
+2023-04-28 19:21:11.818 | INFO     | __main__:objective:356 - Starting epoch #8.
+2023-04-28 19:21:16.750 | INFO     | utils.logging:log_training_results:280 - 
+2023-04-28 19:21:16.750 | INFO     | utils.logging:log_training_results:281 - Global Step =   3250
+2023-04-28 19:21:16.751 | INFO     | utils.logging:log_training_results:282 - val mean(MacRec)_t: 0.8735600113868713
+2023-04-28 19:21:16.751 | INFO     | utils.logging:log_training_results:287 - val mean ABSerr: 0.3641929626464844
+2023-04-28 19:21:16.752 | INFO     | utils.logging:log_training_results:290 - val ausat from confmx: 0.982471764087677
+2023-04-28 19:21:16.752 | INFO     | utils.logging:log_training_results:301 - val MCE loss:1.02074 * 0.5 * 0.50264
+2023-04-28 19:21:16.752 | INFO     | utils.logging:log_training_results:309 - val LLLR :0.29934 * 0.8 * -0.34730
+2023-04-28 19:21:16.753 | INFO     | utils.logging:log_training_results:317 - val weight decay:37.38474 * 0.00030000000000000003 * -0.07442
+2023-04-28 19:21:16.876 | INFO     | utils.checkpoint:update_and_save_result:168 - [36mBest value updated![0m
+2023-04-28 19:21:16.886 | INFO     | utils.checkpoint:save_checkpoint:83 - [36mSaved checkpoint[0m at step 3250.
+2023-04-28 19:21:16.889 | INFO     | utils.checkpoint:keep_max_num_saved_models:101 - Removed the oldest model for max_to_keep=1
+2023-04-28 19:21:17.632 | INFO     | utils.logging:save_sdre_imgs:710 - Figures saved.
+2023-04-28 19:21:17.930 | INFO     | utils.logging:log_training_results:280 - 
+2023-04-28 19:21:17.930 | INFO     | utils.logging:log_training_results:281 - Global Step =   3250
+2023-04-28 19:21:17.931 | INFO     | utils.logging:log_training_results:282 - train mean(MacRec)_t: 0.8732667565345764
+2023-04-28 19:21:17.931 | INFO     | utils.logging:log_training_results:287 - train mean ABSerr: 0.4502525329589844
+2023-04-28 19:21:17.931 | INFO     | utils.logging:log_training_results:290 - train ausat from confmx: 0.9850437641143799
+2023-04-28 19:21:17.932 | INFO     | utils.logging:log_training_results:301 - train MCE loss:1.02034 * 0.5 * 0.50295
+2023-04-28 19:21:17.932 | INFO     | utils.logging:log_training_results:309 - train LLLR :0.30621 * 0.8 * -0.34736
+2023-04-28 19:21:17.933 | INFO     | utils.logging:log_training_results:317 - train weight decay:37.38474 * 0.00030000000000000003 * -0.07541
+2023-04-28 19:21:34.061 | INFO     | utils.logging:log_training_results:280 - 
+2023-04-28 19:21:34.062 | INFO     | utils.logging:log_training_results:281 - Global Step =   3500
+2023-04-28 19:21:34.062 | INFO     | utils.logging:log_training_results:282 - val mean(MacRec)_t: 0.8743600249290466
+2023-04-28 19:21:34.063 | INFO     | utils.logging:log_training_results:287 - val mean ABSerr: 0.287540465593338
+2023-04-28 19:21:34.063 | INFO     | utils.logging:log_training_results:290 - val ausat from confmx: 0.9816627502441406
+2023-04-28 19:21:34.064 | INFO     | utils.logging:log_training_results:301 - val MCE loss:1.02052 * 0.5 * 0.50314
+2023-04-28 19:21:34.064 | INFO     | utils.logging:log_training_results:309 - val LLLR :0.29703 * 0.8 * -0.34154
+2023-04-28 19:21:34.065 | INFO     | utils.logging:log_training_results:317 - val weight decay:28.26412 * 0.00030000000000000003 * -0.06480
+2023-04-28 19:21:34.959 | INFO     | utils.logging:save_sdre_imgs:710 - Figures saved.
+2023-04-28 19:21:35.277 | INFO     | utils.logging:log_training_results:280 - 
+2023-04-28 19:21:35.278 | INFO     | utils.logging:log_training_results:281 - Global Step =   3500
+2023-04-28 19:21:35.278 | INFO     | utils.logging:log_training_results:282 - train mean(MacRec)_t: 0.8664280772209167
+2023-04-28 19:21:35.278 | INFO     | utils.logging:log_training_results:287 - train mean ABSerr: 0.37084177136421204
+2023-04-28 19:21:35.279 | INFO     | utils.logging:log_training_results:290 - train ausat from confmx: 0.9903127551078796
+2023-04-28 19:21:35.279 | INFO     | utils.logging:log_training_results:301 - train MCE loss:1.02020 * 0.5 * 0.50299
+2023-04-28 19:21:35.280 | INFO     | utils.logging:log_training_results:309 - train LLLR :0.31556 * 0.8 * -0.34188
+2023-04-28 19:21:35.280 | INFO     | utils.logging:log_training_results:317 - train weight decay:28.26413 * 0.00030000000000000003 * -0.06547
+2023-04-28 19:21:41.059 | INFO     | __main__:objective:356 - Starting epoch #9.
+2023-04-28 19:21:51.562 | INFO     | utils.logging:log_training_results:280 - 
+2023-04-28 19:21:51.562 | INFO     | utils.logging:log_training_results:281 - Global Step =   3750
+2023-04-28 19:21:51.563 | INFO     | utils.logging:log_training_results:282 - val mean(MacRec)_t: 0.8738466501235962
+2023-04-28 19:21:51.563 | INFO     | utils.logging:log_training_results:287 - val mean ABSerr: 0.3226752281188965
+2023-04-28 19:21:51.564 | INFO     | utils.logging:log_training_results:290 - val ausat from confmx: 0.9810729622840881
+2023-04-28 19:21:51.564 | INFO     | utils.logging:log_training_results:301 - val MCE loss:1.02049 * 0.5 * 0.50275
+2023-04-28 19:21:51.565 | INFO     | utils.logging:log_training_results:309 - val LLLR :0.29719 * 0.8 * -0.34427
+2023-04-28 19:21:51.565 | INFO     | utils.logging:log_training_results:317 - val weight decay:21.44416 * 0.00030000000000000003 * -0.05687
+2023-04-28 19:21:52.434 | INFO     | utils.logging:save_sdre_imgs:710 - Figures saved.
+2023-04-28 19:21:52.735 | INFO     | utils.logging:log_training_results:280 - 
+2023-04-28 19:21:52.735 | INFO     | utils.logging:log_training_results:281 - Global Step =   3750
+2023-04-28 19:21:52.736 | INFO     | utils.logging:log_training_results:282 - train mean(MacRec)_t: 0.8522936105728149
+2023-04-28 19:21:52.736 | INFO     | utils.logging:log_training_results:287 - train mean ABSerr: 0.39817342162132263
+2023-04-28 19:21:52.736 | INFO     | utils.logging:log_training_results:290 - train ausat from confmx: 0.9888759851455688
+2023-04-28 19:21:52.737 | INFO     | utils.logging:log_training_results:301 - train MCE loss:1.02256 * 0.5 * 0.50272
+2023-04-28 19:21:52.737 | INFO     | utils.logging:log_training_results:309 - train LLLR :0.33652 * 0.8 * -0.34483
+2023-04-28 19:21:52.738 | INFO     | utils.logging:log_training_results:317 - train weight decay:21.44416 * 0.00030000000000000003 * -0.05654
+2023-04-28 19:22:06.691 | INFO     | utils.logging:investigate_log:155 - num_warning=0/num_error=0 in the .log file.
+2023-04-28 19:22:06.879 | INFO     | optuna.study.study:_log_completed_trial:1020 - Trial 76 finished with value: 0.017528235912322998 and parameters: {'LIST_IS_POSITIONAL_ENCODING': True, 'LIST_IS_TRAINABLE_ENCODING': True, 'LIST_MODEL_BACKBONE': 'Transformer', 'LIST_WEIGHT_DECAY': 0.00030000000000000003, 'LIST_LEARNING_RATE': 0.0004515806670021966, 'LIST_LLLR_VERSION': 'LSEL', 'LIST_ACTIVATION_FC': 'gelu', 'LIST_PARAM_MULTIPLET_LOSS': 0.5, 'LIST_PARAM_LLR_LOSS': 0.8, 'LIST_IS_ADAPTIVE_LOSS': True, 'LIST_ORDER_SPRT': 0, 'LIST_OPTIMIZER': 'rmsprop', 'LIST_IS_NORMALIZE': False, 'LIST_NUM_THRESH': 1500, 'LIST_SPARSITY': 'unirandom', 'LIST_NUM_BLOCKS': 1, 'LIST_NUM_HEADS': 4, 'LIST_DROPOUT': 0.1, 'LIST_FF_DIM': 32, 'LIST_MLP_UNITS': 32}. Best is trial 58 with value: 0.015880465507507324.
+2023-04-28 19:22:06.899 | INFO     | utils.hyperparameter_tuning:suggest_parameters:560 - [33mStarting a tuning phase.[0m
+2023-04-28 19:22:07.625 | INFO     | utils.hyperparameter_tuning:print:394 - 
++------------------------------------------+
+|   Hyperparameteres suggested by Optuna   |
++------------------------+-----------------+
+|     Parameter name     | Suggested value |
++------------------------+-----------------+
+|     ACTIVATION_FC      |       gelu      |
+|        DROPOUT         |       0.0       |
+|         FF_DIM         |        64       |
+|    IS_ADAPTIVE_LOSS    |       True      |
+|      IS_NORMALIZE      |      False      |
+| IS_POSITIONAL_ENCODING |       True      |
+| IS_TRAINABLE_ENCODING  |       True      |
+|     LEARNING_RATE      |    0.00020798   |
+|      LLLR_VERSION      |       LSEL      |
+|       MLP_UNITS        |        32       |
+|     MODEL_BACKBONE     |   Transformer   |
+|       NUM_BLOCKS       |        1        |
+|       NUM_HEADS        |        4        |
+|       NUM_THRESH       |       1500      |
+|       OPTIMIZER        |     rmsprop     |
+|       ORDER_SPRT       |        1        |
+|     PARAM_LLR_LOSS     |       0.9       |
+|  PARAM_MULTIPLET_LOSS  |       0.7       |
+|        SPARSITY        |    unirandom    |
+|      WEIGHT_DECAY      |      0.0001     |
++------------------------+-----------------+
+2023-04-28 19:22:07.626 | INFO     | utils.misc:create_directories_and_log:291 - [33mA new log directory was created: [0m/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/logs/public_offset0_5_optimausat_confmx_tuning/checkpoints/Transformer_20230428_192207626/configs
+2023-04-28 19:22:07.627 | INFO     | utils.misc:create_directories_and_log:291 - [33mA new log directory was created: [0m/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/logs/public_offset0_5_optimausat_confmx_tuning/TensorBoard_events/Transformer_20230428_192207626

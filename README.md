@@ -22,9 +22,13 @@ notebook    6.5.3
 optuna      3.1.0
 ```
 
+## Requirements for Reading This Article
+
+This article is best read with the Chrome browser with [MathJax Plugin for GitHub](https://chrome.google.com/webstore/detail/mathjax-plugin-for-github/ioemnmodlmafdkllaclgeombjnmnbima?hl=en).
+
 ## Supported Network Architectures  
 LSTM and Transformer, the two major architectures to process time series data are supported. In order to avoid the likelihood ratio saturation problem and to approach the asymptotic optimality (for details, see [Ebihara+, ICASSP2023](https://arxiv.org/abs/2302.09810)), we invented a novel B2Bssqrt-TANDEM and TANDEMformer, based on LSTM and Transformer architectures, respectively.
-### LSTM (B2Bsqrt-TANDEM, ICASSP2023)  
+### LSTM (B2Bsqrt-TANDEM, [ICASSP2023](https://arxiv.org/abs/2302.09810))  
 Long short-term memory (LSTM, 1) with the back-to-back square root (B2Bsqrt) activation function can be used to set the following variables:
 
 - MODEL_BACKBONE: "LSTM"
@@ -32,53 +36,83 @@ Long short-term memory (LSTM, 1) with the back-to-back square root (B2Bsqrt) act
 
 Note that setting ACTIVATION_OUTPUT as "tanh" makes it a vanilla LSTM. The B2Bsqrt function is introduced in the ICASSP2023 paper for precise SDRE avoiding the likelihood ratio saturation problem:
 
-$f_{\mathrm{B2Bsqrt}}(x) := \mathrm{sign}(x)(\sqrt{\alpha+|x|}-\sqrt{\alpha})$
-### Transformer (TANDEMformer, ICASSP2023)  
+$f_{\mathrm{B2Bsqrt}}(x) := \mathrm{sign}(x)(\sqrt{\alpha+|x|}-\sqrt{\alpha})$　　
+
+<div align="center">
+<figure>
+<img src ="./images/Conceptual_figure_B2Bsqrt.png" width=60%>  
+</figure>
+</div>
+<p align="center">Figure 2: Conceptual figure showing the LSTM cell equipped with the B2Bsqrt activation function. B2Bsqrt can be used as an alternative to tanh function. With an unbounded range with a finite gradient at the origin, B2Bsqrt can prevents the saturation problem while enabling stable training.</p>
+
+
+### Transformer (TANDEMformer, [ICASSP2023](https://arxiv.org/abs/2302.09810))  
 Transformer is equipped with the Normalized Summation Pooling (NSP) layer. To use it, set the following variable:
 
 - MODEL_BACKBONE: "Transformer"
 
 
+<div align="center">
+<figure>
+<img src ="./images/Conceptual_figure_TANDEMformer.png" width=50%>  
+</figure>
+</div>
+<p align="center">Figure 3: Conceptual figure showing the Transformer block equipped with the NSP layer. Tokens are first extracted using a sliding window and then mixed with self-attention. The normalized summation pooling layer then takes the sum of the tokens and divides them by a constant, which is the maximum size of the sliding window.</p>  
+
 ## Supported Loss Functions for SDRE
-SPRT-TANDEM uses both the loss for sequential likelihood ratio estimation (i.e., SDRE) and (multiplet-) cross-entropy loss ([ICLR2021](https://openreview.net/forum?id=Rhsu5qD36cL)). The two functions below are two supported loss function for SDRE:
-### LSEL (ICML2021)  
+SPRT-TANDEM uses both the loss for sequential likelihood ratio estimation (i.e., SDRE) and (multiplet-) cross-entropy loss ([ICLR2021](https://openreview.net/forum?id=Rhsu5qD36cL)). The two functions, LSEL and LLLR, are supported loss function for SDRE. To choose the loss function, set the following variables:
+
+- LLLR_VERSION: "LSEL" or "LLLR"
+
+Also modify PARAM_LLR_LOSS and PARAM_MULTIPLET_LOSS for the right balance between likelihood estimation and cross-entropy loss. 
+### Log-sum exponential loss (LSEL, [ICML2021](http://proceedings.mlr.press/v139/miyagawa21a.html))  
 $\hat{L}_{\rm \text{LSEL}} (\bm{\theta}; S) 
     := \mathbb{E} \left[ \log \left( 
         1 + \sum_{ l ( \neq k ) } e^{ - \hat{\lambda}_{k l} ( X_i^{(1,t)}; \bm{\theta} ) }
     \right) \right] $
-### LLLR (ICLR2021)  
+### Loss for log-likelihood ratio estimation (LLLR, [ICLR2021](https://openreview.net/forum?id=Rhsu5qD36cL))  
 
-To choose the loss function, set the following variables:
-
-- LLLR_VERSION: "LSEL" or "LLLR"
-
-Also modify PARAM_LLR_LOSS and PARAM_MULTIPLET_LOSS for the right balance between likelihood estimation and cross-entropy loss. z
+$\hat{L}_{\rm \text{LLLR}} (\bm{\theta}; S) := \mathbb{E} \left[ \left| y - \sigma\left(\log\hat{r_i}\right) \right| \right]$
 
 ## Order N of Markov assumption
+The Markov order $N$ is used to determine the length of the sliding window that is used to extract a subset from the entire feature vectors of time series. $N$ is a convenient hyperparameter to incorporate a prior knowledge of the time series. In brief, an optimal $N$ can be found either based on the \textit{specific time scale} or hyperparameter tuning. The specific time scale characterizes the data class, e.g., long temporal action such as UCF101 has a long specific time scale, while a spoofing attack such as SiW has a short specific time scale (because one frame can have sufficient information of the attack). Setting $N$ equal to the specific time scale works most of the time. Alternatively, $N$ can be objectively chosen with a hyperparameter tuning algorithm such as Optuna, just as we choose other hyperparameters. Because $N$ is only related to the temporal integrator after feature extraction, the optimization of $N$ is not computationally expensive.
+
+<div align="center">
+<figure>
+<img src ="./images/Conceptual_figure_streamline.png" width=70%>  
+</figure>
+</div>
+<p align="center">Figure 4: Conceptual figure showing the streamline of online SDRE. A subset of the feature vectors of time series is extracted based on order of Markov assumption, N. </p>
+
+Log-likelihood ratio is estimated from the subset of the feature vectors that is extracted with the sliding window of size $N$. The estimation is classification-based. Namely, the temporal integrator is trained to output class logits, from which the log-likelihood ratio is updated based on the TANDEM formula at each time step.
 ### TANDEM formula ([ICLR2021](https://openreview.net/forum?id=Rhsu5qD36cL))
-$\hat{\lambda}_{kl}(X^{(1,t)}_i) =\log \left(
-        \frac{p(x_i^{(1)}, ..., x_i^{(t)}| y=k)}{p(x_i^{(1)}, ..., x_i^{(t)}| y=l)}
-    \right)\\
-    =\sum_{s=N+1}^{t} \log \left( 
-        \frac{
-            p(y=k| x_i^{(s-N)}, ...,x_i^{(s)})
-        }{
-            p(y=l| x_i^{(s-N)}, ...,x_i^{(s)})
-        }
-    \right) \nonumber 
-    - \sum_{s=N+2}^{t} \log \left(
-        \frac{
-            p(y=k| x_i^{(s-N)}, ...,x_i^{(s-1)})
-        }{
-            p(y=l| x_i^{(s-N)}, ...,x_i^{(s-1)})
-        }
-    \right) $
+\begin{align}
+&\ \log \left(
+\frac{p(x^{(1)},x^{(2)}, ..., x^{(t)}| y=1)}{p(x^{(1)},x^{(2)}, ..., x^{(t)}| y=0)}
+\right)\nonumber \newline
+= &\sum_{s=N+1}^{t} \log \left(
+\frac{
+p(y=1| x^{(s-N)}, ...,x^{(s)})
+}{
+p(y=0| x^{(s-N)}, ...,x^{(s)})
+}
+\right) - \sum_{s=N+2}^{t} \log \left(
+\frac{
+p(y=1| x^{(s-N)}, ...,x^{(s-1)})
+}{
+p(y=0| x^{(s-N)}, ...,x^{(s-1)})
+}
+\right) \nonumber \newline
+& - \log\left( \frac{p(y=1)}{p(y=0)} \right)
+\end{align}
+
 ## Experiment Phases
 EXP_PHASE must be set as one of the followings:
 - try: All the hyperparameters are fixed as defined in [config_definition.py](https://github.com/Akinori-F-Ebihara/SPRT-TANDEM-PyTorch/blob/main/config/config_definition.py). Use it for debugging purposes.
 - tuning: Enter into the hyperparameter tuning mode. Hyperparameters which have corresponding serch spaces defined will be overwritten with suggested parameters. Also see Hyperparameter Tuning for details.
 - stat: All the hyperparameters are fixed as defined in [config_definition.py](https://github.com/Akinori-F-Ebihara/SPRT-TANDEM-PyTorch/blob/main/config/config_definition.py). Repeat trainings for the number specified with NUM_TRIALS. Use it for testing reproducibility (e.g., plot error bars, run a statistical test). 
-Your subproject name will be suffixed with the EXP_PHASE, so that results from different phases do not contaminate each other.
+Your subproject name will be suffixed with the EXP_PHASE, so that results from different phases do not contaminate each other.  
+
 ## Hyperparameter Tuning
 Optuna [1] - based hyperparameter tuning is supported. Firstly, edit the following variables in the [config_definition.py](https://github.com/Akinori-F-Ebihara/SPRT-TANDEM-PyTorch/blob/main/config/config_definition.py):
 - EXP_PHASE: set as "tuning" to enter into hyperparameter tuning mode.
@@ -137,11 +171,15 @@ inside which the following four folders will be created.
 - stdout_logs: standard output strings are saved as .log files.
 
 The plot below shows an example image saved in a TensorBoard event file. Note that you can avoid saving figures by setting IS_SAVE_FIGURE=False.
+
 <div align="center">
-<img src ="./images/example_tb_image.png" width=70%>
+<figure>
+<img src ="./images/example_tensorboard.png" width=100%>  
+</figure>
 </div>
+<p align="center">Figure 5: Example image saved in a TensorBoard event file. (left and center) Estimated LLR trajectories and Ground-truth LLR trajectories of 3-class multidimensional Gaussian dataset. (right) Speed-accuracy tradeoff (SAT) curve calculated by running the SPRT algorithm.</p>
 
-
+Note that "Class $a$ vs. $b$ at $y=a$" indicates that the plotted LLR shows $\log{p(X|y=a) / p(X|y=b)}$, when the ground truth label is $y=a$. 
 
 ## Citation
 ___Please cite the orignal paper(s) if you use the whole or a part of our codes.___
@@ -179,7 +217,7 @@ ___Please cite the orignal paper(s) if you use the whole or a part of our codes.
 1. T. Akiba, S. Sano, T. Yanase, T. Ohta, and M. Koyama, “Optuna: A next-generation hyperparameter optimization framework,” in KDD, 2019, p. 2623–2631.
 
 ## Contacts
-SPRT-TANDEM marks the 4th anniversory - now it become a huge project that we never imagined before. It is thus difficult for me to explain all the details of the project in this README section. Please feed free to reach me anytime for questions specific to SPRT-TANDEM.
+SPRT-TANDEM marks the 4th anniversory - now it become a huge project that we never imagined before. It is thus difficult for me to explain all the details of the project in this README section. Please feel free to reach me anytime for questions.
 - email: aebihara[at]nec.com
 - twitter: [@non_iid](http/twitter.com/non_iid)
 - GitHub issues: see the link above or click [here](https://github.com/Akinori-F-Ebihara/SPRT-TANDEM-PyTorch/issues)
