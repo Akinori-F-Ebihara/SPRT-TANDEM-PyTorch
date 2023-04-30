@@ -1,0 +1,437 @@
+2023-04-30 06:15:40.220 | INFO     | utils.misc:fix_random_seed:405 - Random seed is not fixed.
+2023-04-30 06:15:40.264 | INFO     | models.temporal_integrators:summarize:568 - 
+:'######::'########::'########::'########::::::::::::::::::::::
+'##... ##: ##.... ##: ##.... ##:... ##..:::::::::::::::::::::::
+ ##:::..:: ##:::: ##: ##:::: ##:::: ##:::::::::::::::::::::::::
+. ######:: ########:: ########::::: ##::::'#######:::::::::::::
+:..... ##: ##.....::: ##.. ##:::::: ##::::........:::::::::::::
+'##::: ##: ##:::::::: ##::. ##::::: ##:::::::::::::::::::::::::
+. ######:: ##:::::::: ##:::. ##:::: ##:::::::::::::::::::::::::
+:......:::..:::::::::..:::::..:::::..::::::::::::::::::::::::::
+'########::::'###::::'##::: ##:'########::'########:'##::::'##:
+... ##..::::'## ##::: ###:: ##: ##.... ##: ##.....:: ###::'###:
+::: ##:::::'##:. ##:: ####: ##: ##:::: ##: ##::::::: ####'####:
+::: ##::::'##:::. ##: ## ## ##: ##:::: ##: ######::: ## ### ##:
+::: ##:::: #########: ##. ####: ##:::: ##: ##...:::: ##. #: ##:
+::: ##:::: ##.... ##: ##:. ###: ##:::: ##: ##::::::: ##:.:: ##:
+::: ##:::: ##:::: ##: ##::. ##: ########:: ########: ##:::: ##:
+:::..:::::..:::::..::..::::..::........:::........::..:::::..::
+
+2023-04-30 06:15:40.264 | INFO     | models.temporal_integrators:summarize:571 - [34mofficial PyTorch implementation.[0m
+2023-04-30 06:15:42.784 | INFO     | models.temporal_integrators:summarize:593 - Network summary:
+==========================================================================================
+Layer (type:depth-idx)                   Output Shape              Param #
+==========================================================================================
+B2BsqrtTANDEM                            [150, 50, 3, 3]           512
+├─LSTM: 1-1                              [7050, 4, 99]             90,288
+│    └─Tanh: 2-1                         [7050, 99]                --
+│    └─Tanh: 2-2                         [7050, 99]                --
+│    └─Tanh: 2-3                         [7050, 99]                --
+│    └─Tanh: 2-4                         [7050, 99]                --
+│    └─Tanh: 2-5                         [7050, 99]                --
+│    └─Tanh: 2-6                         [7050, 99]                --
+│    └─Tanh: 2-7                         [7050, 99]                --
+│    └─Tanh: 2-8                         [7050, 99]                --
+│    └─Tanh: 2-9                         [7050, 99]                --
+│    └─Tanh: 2-10                        [7050, 99]                --
+│    └─Tanh: 2-11                        [7050, 99]                --
+│    └─Tanh: 2-12                        [7050, 99]                --
+├─ReLU: 1-2                              [7050, 99]                --
+├─Linear: 1-3                            [7050, 3]                 300
+├─ReLU: 1-4                              [7050, 99]                --
+├─Linear: 1-5                            [7050, 3]                 (recursive)
+├─ReLU: 1-6                              [7050, 99]                --
+├─Linear: 1-7                            [7050, 3]                 (recursive)
+├─ReLU: 1-8                              [7050, 99]                --
+├─Linear: 1-9                            [7050, 3]                 (recursive)
+==========================================================================================
+Total params: 91,100
+Trainable params: 91,100
+Non-trainable params: 0
+Total mult-adds (M): 8.46
+==========================================================================================
+Input size (MB): 3.84
+Forward/backward pass size (MB): 0.68
+Params size (MB): 0.00
+Estimated Total Size (MB): 4.52
+==========================================================================================
+2023-04-30 06:15:42.785 | INFO     | models.temporal_integrators:summarize:594 - Example input shape: torch.Size([150, 50, 128])
+2023-04-30 06:15:42.786 | INFO     | models.temporal_integrators:summarize:595 - Example output shape: torch.Size([150, 50, 3, 3])
+2023-04-30 06:15:42.787 | INFO     | models.temporal_integrators:import_model:58 - model moved onto: [33mcuda.[0m
+2023-04-30 06:15:42.788 | INFO     | models.optimizers:initialize_optimizer:44 - Optimizer:
+AdamW (
+Parameter Group 0
+    amsgrad: False
+    betas: (0.9, 0.999)
+    capturable: False
+    differentiable: False
+    eps: 1e-08
+    foreach: None
+    fused: None
+    lr: 1.204438978065357e-05
+    maximize: False
+    weight_decay: 0.0004
+)
+2023-04-30 06:15:42.788 | INFO     | datasets.data_processing:lmdb_dataloaders:293 - loading data... 
+2023-04-30 06:15:42.789 | INFO     | datasets.data_processing:lmdb_dataloaders:295 - If this process takes long, consider setting is_load_onto_memory=False or use LMDBIterableDataset.
+2023-04-30 06:15:46.440 | INFO     | __main__:objective:356 - Starting epoch #0.
+2023-04-30 06:15:58.684 | INFO     | utils.logging:log_training_results:280 - 
+2023-04-30 06:15:58.685 | INFO     | utils.logging:log_training_results:281 - Global Step =      0
+2023-04-30 06:15:58.686 | INFO     | utils.logging:log_training_results:282 - val mean(MacRec)_t: 0.33376333117485046
+2023-04-30 06:15:58.687 | INFO     | utils.logging:log_training_results:287 - val mean ABSerr: 3.493577003479004
+2023-04-30 06:15:58.688 | INFO     | utils.logging:log_training_results:290 - val ausat from confmx: 0.3270314931869507
+2023-04-30 06:15:58.689 | INFO     | utils.logging:log_training_results:326 - val MCE loss:1.10086 * 0.7000000000000001
+2023-04-30 06:15:58.690 | INFO     | utils.logging:log_training_results:333 - val LLLR :1.10230 * 0.30000000000000004
+2023-04-30 06:15:58.690 | INFO     | utils.logging:log_training_results:340 - val weight decay:1353.77136 * 0.0004
+2023-04-30 06:15:58.858 | ERROR    | __main__:run_one_epoch:296 - An error has been caught in function 'run_one_epoch', process 'MainProcess' (2261184), thread 'MainThread' (140357762617344):
+Traceback (most recent call last):
+
+  File "/usr/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+           │         │     └ {'__name__': '__main__', '__doc__': None, '__package__': '', '__loader__': <_frozen_importlib_external.SourceFileLoader objec...
+           │         └ <code object <module> at 0x7fa79673ab80, file "/home/afe/.vscode-server/extensions/ms-python.python-2023.6.1/pythonFiles/lib/...
+           └ <function _run_code at 0x7fa796783ac0>
+  File "/usr/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+         │     └ {'__name__': '__main__', '__doc__': None, '__package__': '', '__loader__': <_frozen_importlib_external.SourceFileLoader objec...
+         └ <code object <module> at 0x7fa79673ab80, file "/home/afe/.vscode-server/extensions/ms-python.python-2023.6.1/pythonFiles/lib/...
+
+  File "/home/afe/.vscode-server/extensions/ms-python.python-2023.6.1/pythonFiles/lib/python/debugpy/adapter/../../debugpy/launcher/../../debugpy/__main__.py", line 39, in <module>
+    cli.main()
+    │   └ <function main at 0x7fa795366b90>
+    └ <module 'debugpy.server.cli' from '/home/afe/.vscode-server/extensions/ms-python.python-2023.6.1/pythonFiles/lib/python/debug...
+
+  File "/home/afe/.vscode-server/extensions/ms-python.python-2023.6.1/pythonFiles/lib/python/debugpy/adapter/../../debugpy/launcher/../../debugpy/../debugpy/server/cli.py", line 430, in main
+    run()
+    └ <function run_file at 0x7fa795366950>
+
+  File "/home/afe/.vscode-server/extensions/ms-python.python-2023.6.1/pythonFiles/lib/python/debugpy/adapter/../../debugpy/launcher/../../debugpy/../debugpy/server/cli.py", line 284, in run_file
+    runpy.run_path(target, run_name="__main__")
+    │     │        └ '/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/sprt_tandem_main.py'
+    │     └ <function run_path at 0x7fa79573d1b0>
+    └ <module '_pydevd_bundle.pydevd_runpy' from '/home/afe/.vscode-server/extensions/ms-python.python-2023.6.1/pythonFiles/lib/pyt...
+
+  File "/home/afe/.vscode-server/extensions/ms-python.python-2023.6.1/pythonFiles/lib/python/debugpy/_vendored/pydevd/_pydevd_bundle/pydevd_runpy.py", line 321, in run_path
+    return _run_module_code(code, init_globals, run_name,
+           │                │     │             └ '__main__'
+           │                │     └ None
+           │                └ <code object <module> at 0x7fa79538f730, file "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/sprt_tandem_main.py", line 1>
+           └ <function _run_module_code at 0x7fa79573ce50>
+
+  File "/home/afe/.vscode-server/extensions/ms-python.python-2023.6.1/pythonFiles/lib/python/debugpy/_vendored/pydevd/_pydevd_bundle/pydevd_runpy.py", line 135, in _run_module_code
+    _run_code(code, mod_globals, init_globals,
+    │         │     │            └ None
+    │         │     └ {'__name__': '__main__', '__doc__': None, '__package__': '', '__loader__': None, '__spec__': None, '__file__': '/home/afe/Dro...
+    │         └ <code object <module> at 0x7fa79538f730, file "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/sprt_tandem_main.py", line 1>
+    └ <function _run_code at 0x7fa79573ca60>
+
+  File "/home/afe/.vscode-server/extensions/ms-python.python-2023.6.1/pythonFiles/lib/python/debugpy/_vendored/pydevd/_pydevd_bundle/pydevd_runpy.py", line 124, in _run_code
+    exec(code, run_globals)
+         │     └ {'__name__': '__main__', '__doc__': None, '__package__': '', '__loader__': None, '__spec__': None, '__file__': '/home/afe/Dro...
+         └ <code object <module> at 0x7fa79538f730, file "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/sprt_tandem_main.py", line 1>
+
+  File "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/sprt_tandem_main.py", line 390, in <module>
+    main()
+    └ <function main at 0x7fa5c7d47ac0>
+
+  File "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/sprt_tandem_main.py", line 384, in main
+    run_optuna(objective, device, config_orig)
+    │          │          │       └ {'VERBOSE': True, 'CONFIG_PATH': '/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/config/config_definition.py', 'IS_SEED': False...
+    │          │          └ device(type='cuda')
+    │          └ <function objective at 0x7fa5c7d47a30>
+    └ <function run_optuna at 0x7fa5c81d4b80>
+
+  File "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/utils/hyperparameter_tuning.py", line 334, in run_optuna
+    else start_optimization(objective, conf)
+         │                  │          └ <utils.misc.ConfigSubset object at 0x7fa5c7d37dc0>
+         │                  └ <function objective at 0x7fa5c7d47a30>
+         └ <function run_optuna.<locals>.start_optimization at 0x7fa5c7d47c70>
+
+  File "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/utils/hyperparameter_tuning.py", line 208, in start_optimization
+    study.optimize(
+    │     └ <function Study.optimize at 0x7fa5cc97cb80>
+    └ <optuna.study.study.Study object at 0x7fa5c087dcc0>
+
+  File "/usr/local/lib/python3.10/dist-packages/optuna/study/study.py", line 425, in optimize
+    _optimize(
+    └ <function _optimize at 0x7fa5cc956f80>
+  File "/usr/local/lib/python3.10/dist-packages/optuna/study/_optimize.py", line 66, in _optimize
+    _optimize_sequential(
+    └ <function _optimize_sequential at 0x7fa5cc97c310>
+  File "/usr/local/lib/python3.10/dist-packages/optuna/study/_optimize.py", line 163, in _optimize_sequential
+    frozen_trial = _run_trial(study, func, catch)
+                   │          │      │     └ ()
+                   │          │      └ <function run_optuna.<locals>.start_optimization.<locals>.<lambda> at 0x7fa5c110f250>
+                   │          └ <optuna.study.study.Study object at 0x7fa5c087dcc0>
+                   └ <function _run_trial at 0x7fa5cc97c3a0>
+  File "/usr/local/lib/python3.10/dist-packages/optuna/study/_optimize.py", line 200, in _run_trial
+    value_or_values = func(trial)
+                      │    └ <optuna.trial._trial.Trial object at 0x7fa5c090e560>
+                      └ <function run_optuna.<locals>.start_optimization.<locals>.<lambda> at 0x7fa5c110f250>
+
+  File "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/utils/hyperparameter_tuning.py", line 209, in <lambda>
+    lambda trial: objective(trial, device, config),
+           │      │         │      │       └ {'VERBOSE': True, 'CONFIG_PATH': '/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/config/config_definition.py', 'IS_SEED': False...
+           │      │         │      └ device(type='cuda')
+           │      │         └ <optuna.trial._trial.Trial object at 0x7fa5c090e560>
+           │      └ <function objective at 0x7fa5c7d47a30>
+           └ <optuna.trial._trial.Trial object at 0x7fa5c090e560>
+
+  File "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/sprt_tandem_main.py", line 357, in objective
+    best, global_step = run_one_epoch(
+    │                   └ <function run_one_epoch at 0x7fa5c7d479a0>
+    └ (inf,)
+
+  File "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/sprt_tandem_main.py", line 281, in run_one_epoch
+    ) = iterating_over_dataset(
+        └ <function iterating_over_dataset at 0x7fa5c7d47370>
+
+  File "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/sprt_tandem_main.py", line 139, in iterating_over_dataset
+    best, global_step = run_one_epoch(
+    │                   └ <function run_one_epoch at 0x7fa5c7d479a0>
+    └ (inf,)
+
+> File "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/sprt_tandem_main.py", line 296, in run_one_epoch
+    best = eval_postprocess(
+           └ <function eval_postprocess at 0x7fa5c7d476d0>
+
+  File "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/sprt_tandem_main.py", line 233, in eval_postprocess
+    best = update_and_save_result(
+           └ <function update_and_save_result at 0x7fa5c81d5ab0>
+
+  File "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/utils/checkpoint.py", line 158, in update_and_save_result
+    raise ValueError("Unknown optimization target!")
+
+ValueError: Unknown optimization target!
+2023-04-30 06:15:58.895 | ERROR    | __main__:run_one_epoch:281 - An error has been caught in function 'run_one_epoch', process 'MainProcess' (2261184), thread 'MainThread' (140357762617344):
+Traceback (most recent call last):
+
+  File "/usr/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+           │         │     └ {'__name__': '__main__', '__doc__': None, '__package__': '', '__loader__': <_frozen_importlib_external.SourceFileLoader objec...
+           │         └ <code object <module> at 0x7fa79673ab80, file "/home/afe/.vscode-server/extensions/ms-python.python-2023.6.1/pythonFiles/lib/...
+           └ <function _run_code at 0x7fa796783ac0>
+  File "/usr/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+         │     └ {'__name__': '__main__', '__doc__': None, '__package__': '', '__loader__': <_frozen_importlib_external.SourceFileLoader objec...
+         └ <code object <module> at 0x7fa79673ab80, file "/home/afe/.vscode-server/extensions/ms-python.python-2023.6.1/pythonFiles/lib/...
+
+  File "/home/afe/.vscode-server/extensions/ms-python.python-2023.6.1/pythonFiles/lib/python/debugpy/adapter/../../debugpy/launcher/../../debugpy/__main__.py", line 39, in <module>
+    cli.main()
+    │   └ <function main at 0x7fa795366b90>
+    └ <module 'debugpy.server.cli' from '/home/afe/.vscode-server/extensions/ms-python.python-2023.6.1/pythonFiles/lib/python/debug...
+
+  File "/home/afe/.vscode-server/extensions/ms-python.python-2023.6.1/pythonFiles/lib/python/debugpy/adapter/../../debugpy/launcher/../../debugpy/../debugpy/server/cli.py", line 430, in main
+    run()
+    └ <function run_file at 0x7fa795366950>
+
+  File "/home/afe/.vscode-server/extensions/ms-python.python-2023.6.1/pythonFiles/lib/python/debugpy/adapter/../../debugpy/launcher/../../debugpy/../debugpy/server/cli.py", line 284, in run_file
+    runpy.run_path(target, run_name="__main__")
+    │     │        └ '/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/sprt_tandem_main.py'
+    │     └ <function run_path at 0x7fa79573d1b0>
+    └ <module '_pydevd_bundle.pydevd_runpy' from '/home/afe/.vscode-server/extensions/ms-python.python-2023.6.1/pythonFiles/lib/pyt...
+
+  File "/home/afe/.vscode-server/extensions/ms-python.python-2023.6.1/pythonFiles/lib/python/debugpy/_vendored/pydevd/_pydevd_bundle/pydevd_runpy.py", line 321, in run_path
+    return _run_module_code(code, init_globals, run_name,
+           │                │     │             └ '__main__'
+           │                │     └ None
+           │                └ <code object <module> at 0x7fa79538f730, file "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/sprt_tandem_main.py", line 1>
+           └ <function _run_module_code at 0x7fa79573ce50>
+
+  File "/home/afe/.vscode-server/extensions/ms-python.python-2023.6.1/pythonFiles/lib/python/debugpy/_vendored/pydevd/_pydevd_bundle/pydevd_runpy.py", line 135, in _run_module_code
+    _run_code(code, mod_globals, init_globals,
+    │         │     │            └ None
+    │         │     └ {'__name__': '__main__', '__doc__': None, '__package__': '', '__loader__': None, '__spec__': None, '__file__': '/home/afe/Dro...
+    │         └ <code object <module> at 0x7fa79538f730, file "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/sprt_tandem_main.py", line 1>
+    └ <function _run_code at 0x7fa79573ca60>
+
+  File "/home/afe/.vscode-server/extensions/ms-python.python-2023.6.1/pythonFiles/lib/python/debugpy/_vendored/pydevd/_pydevd_bundle/pydevd_runpy.py", line 124, in _run_code
+    exec(code, run_globals)
+         │     └ {'__name__': '__main__', '__doc__': None, '__package__': '', '__loader__': None, '__spec__': None, '__file__': '/home/afe/Dro...
+         └ <code object <module> at 0x7fa79538f730, file "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/sprt_tandem_main.py", line 1>
+
+  File "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/sprt_tandem_main.py", line 390, in <module>
+    main()
+    └ <function main at 0x7fa5c7d47ac0>
+
+  File "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/sprt_tandem_main.py", line 384, in main
+    run_optuna(objective, device, config_orig)
+    │          │          │       └ {'VERBOSE': True, 'CONFIG_PATH': '/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/config/config_definition.py', 'IS_SEED': False...
+    │          │          └ device(type='cuda')
+    │          └ <function objective at 0x7fa5c7d47a30>
+    └ <function run_optuna at 0x7fa5c81d4b80>
+
+  File "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/utils/hyperparameter_tuning.py", line 334, in run_optuna
+    else start_optimization(objective, conf)
+         │                  │          └ <utils.misc.ConfigSubset object at 0x7fa5c7d37dc0>
+         │                  └ <function objective at 0x7fa5c7d47a30>
+         └ <function run_optuna.<locals>.start_optimization at 0x7fa5c7d47c70>
+
+  File "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/utils/hyperparameter_tuning.py", line 208, in start_optimization
+    study.optimize(
+    │     └ <function Study.optimize at 0x7fa5cc97cb80>
+    └ <optuna.study.study.Study object at 0x7fa5c087dcc0>
+
+  File "/usr/local/lib/python3.10/dist-packages/optuna/study/study.py", line 425, in optimize
+    _optimize(
+    └ <function _optimize at 0x7fa5cc956f80>
+  File "/usr/local/lib/python3.10/dist-packages/optuna/study/_optimize.py", line 66, in _optimize
+    _optimize_sequential(
+    └ <function _optimize_sequential at 0x7fa5cc97c310>
+  File "/usr/local/lib/python3.10/dist-packages/optuna/study/_optimize.py", line 163, in _optimize_sequential
+    frozen_trial = _run_trial(study, func, catch)
+                   │          │      │     └ ()
+                   │          │      └ <function run_optuna.<locals>.start_optimization.<locals>.<lambda> at 0x7fa5c110f250>
+                   │          └ <optuna.study.study.Study object at 0x7fa5c087dcc0>
+                   └ <function _run_trial at 0x7fa5cc97c3a0>
+  File "/usr/local/lib/python3.10/dist-packages/optuna/study/_optimize.py", line 200, in _run_trial
+    value_or_values = func(trial)
+                      │    └ <optuna.trial._trial.Trial object at 0x7fa5c090e560>
+                      └ <function run_optuna.<locals>.start_optimization.<locals>.<lambda> at 0x7fa5c110f250>
+
+  File "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/utils/hyperparameter_tuning.py", line 209, in <lambda>
+    lambda trial: objective(trial, device, config),
+           │      │         │      │       └ {'VERBOSE': True, 'CONFIG_PATH': '/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/config/config_definition.py', 'IS_SEED': False...
+           │      │         │      └ device(type='cuda')
+           │      │         └ <optuna.trial._trial.Trial object at 0x7fa5c090e560>
+           │      └ <function objective at 0x7fa5c7d47a30>
+           └ <optuna.trial._trial.Trial object at 0x7fa5c090e560>
+
+  File "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/sprt_tandem_main.py", line 357, in objective
+    best, global_step = run_one_epoch(
+    │                   └ <function run_one_epoch at 0x7fa5c7d479a0>
+    └ (inf,)
+
+> File "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/sprt_tandem_main.py", line 281, in run_one_epoch
+    ) = iterating_over_dataset(
+        └ <function iterating_over_dataset at 0x7fa5c7d47370>
+
+  File "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/sprt_tandem_main.py", line 139, in iterating_over_dataset
+    best, global_step = run_one_epoch(
+    │                   └ <function run_one_epoch at 0x7fa5c7d479a0>
+    └ (inf,)
+
+  File "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/sprt_tandem_main.py", line 308, in run_one_epoch
+    report_to_pruner(trial, best, global_step, config)
+    │                │      │     │            └ {'VERBOSE': True, 'CONFIG_PATH': '/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/config/config_definition.py', 'IS_SEED': False...
+    │                │      │     └ 0
+    │                │      └ None
+    │                └ <optuna.trial._trial.Trial object at 0x7fa5c090e560>
+    └ <function report_to_pruner at 0x7fa5c81d5480>
+
+  File "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/utils/hyperparameter_tuning.py", line 604, in report_to_pruner
+    trial.report(*best, iter)
+    │     │       │     └ 0
+    │     │       └ None
+    │     └ <function Trial.report at 0x7fa5cd7ab2e0>
+    └ <optuna.trial._trial.Trial object at 0x7fa5c090e560>
+
+TypeError: Value after * must be an iterable, not NoneType
+2023-04-30 06:15:58.940 | INFO     | utils.logging:investigate_log:155 - num_warning=0/num_error=2 in the .log file.
+2023-04-30 06:15:58.941 | WARNING  | utils.logging:investigate_log:161 - Found ERROR! check the .log file for debug!
+2023-04-30 06:15:58.997 | WARNING  | optuna.study._optimize:_log_failed_trial:261 - Trial 0 failed with parameters: {'LIST_IS_POSITIONAL_ENCODING': False, 'LIST_MODEL_BACKBONE': 'LSTM', 'LIST_WEIGHT_DECAY': 0.0004, 'LIST_LEARNING_RATE': 1.204438978065357e-05, 'LIST_LLLR_VERSION': 'LSEL', 'LIST_ACTIVATION_FC': 'relu', 'LIST_PARAM_MULTIPLET_LOSS': 0.7000000000000001, 'LIST_PARAM_LLR_LOSS': 0.30000000000000004, 'LIST_IS_ADAPTIVE_LOSS': False, 'LIST_ORDER_SPRT': 3, 'LIST_OPTIMIZER': 'adam', 'LIST_IS_NORMALIZE': False, 'LIST_NUM_THRESH': 1500, 'LIST_SPARSITY': 'logspace', 'LIST_ACTIVATION_OUTPUT': 'B2BsqrtV2', 'LIST_ACTIVATION_INPUT': 'tanh', 'LIST_WIDTH_LSTM': 99} because of the following error: TypeError('cannot unpack non-iterable NoneType object').
+Traceback (most recent call last):
+
+  File "/usr/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+           │         │     └ {'__name__': '__main__', '__doc__': None, '__package__': '', '__loader__': <_frozen_importlib_external.SourceFileLoader objec...
+           │         └ <code object <module> at 0x7fa79673ab80, file "/home/afe/.vscode-server/extensions/ms-python.python-2023.6.1/pythonFiles/lib/...
+           └ <function _run_code at 0x7fa796783ac0>
+  File "/usr/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+         │     └ {'__name__': '__main__', '__doc__': None, '__package__': '', '__loader__': <_frozen_importlib_external.SourceFileLoader objec...
+         └ <code object <module> at 0x7fa79673ab80, file "/home/afe/.vscode-server/extensions/ms-python.python-2023.6.1/pythonFiles/lib/...
+
+  File "/home/afe/.vscode-server/extensions/ms-python.python-2023.6.1/pythonFiles/lib/python/debugpy/adapter/../../debugpy/launcher/../../debugpy/__main__.py", line 39, in <module>
+    cli.main()
+    │   └ <function main at 0x7fa795366b90>
+    └ <module 'debugpy.server.cli' from '/home/afe/.vscode-server/extensions/ms-python.python-2023.6.1/pythonFiles/lib/python/debug...
+
+  File "/home/afe/.vscode-server/extensions/ms-python.python-2023.6.1/pythonFiles/lib/python/debugpy/adapter/../../debugpy/launcher/../../debugpy/../debugpy/server/cli.py", line 430, in main
+    run()
+    └ <function run_file at 0x7fa795366950>
+
+  File "/home/afe/.vscode-server/extensions/ms-python.python-2023.6.1/pythonFiles/lib/python/debugpy/adapter/../../debugpy/launcher/../../debugpy/../debugpy/server/cli.py", line 284, in run_file
+    runpy.run_path(target, run_name="__main__")
+    │     │        └ '/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/sprt_tandem_main.py'
+    │     └ <function run_path at 0x7fa79573d1b0>
+    └ <module '_pydevd_bundle.pydevd_runpy' from '/home/afe/.vscode-server/extensions/ms-python.python-2023.6.1/pythonFiles/lib/pyt...
+
+  File "/home/afe/.vscode-server/extensions/ms-python.python-2023.6.1/pythonFiles/lib/python/debugpy/_vendored/pydevd/_pydevd_bundle/pydevd_runpy.py", line 321, in run_path
+    return _run_module_code(code, init_globals, run_name,
+           │                │     │             └ '__main__'
+           │                │     └ None
+           │                └ <code object <module> at 0x7fa79538f730, file "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/sprt_tandem_main.py", line 1>
+           └ <function _run_module_code at 0x7fa79573ce50>
+
+  File "/home/afe/.vscode-server/extensions/ms-python.python-2023.6.1/pythonFiles/lib/python/debugpy/_vendored/pydevd/_pydevd_bundle/pydevd_runpy.py", line 135, in _run_module_code
+    _run_code(code, mod_globals, init_globals,
+    │         │     │            └ None
+    │         │     └ {'__name__': '__main__', '__doc__': None, '__package__': '', '__loader__': None, '__spec__': None, '__file__': '/home/afe/Dro...
+    │         └ <code object <module> at 0x7fa79538f730, file "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/sprt_tandem_main.py", line 1>
+    └ <function _run_code at 0x7fa79573ca60>
+
+  File "/home/afe/.vscode-server/extensions/ms-python.python-2023.6.1/pythonFiles/lib/python/debugpy/_vendored/pydevd/_pydevd_bundle/pydevd_runpy.py", line 124, in _run_code
+    exec(code, run_globals)
+         │     └ {'__name__': '__main__', '__doc__': None, '__package__': '', '__loader__': None, '__spec__': None, '__file__': '/home/afe/Dro...
+         └ <code object <module> at 0x7fa79538f730, file "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/sprt_tandem_main.py", line 1>
+
+  File "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/sprt_tandem_main.py", line 390, in <module>
+    main()
+    └ <function main at 0x7fa5c7d47ac0>
+
+  File "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/sprt_tandem_main.py", line 384, in main
+    run_optuna(objective, device, config_orig)
+    │          │          │       └ {'VERBOSE': True, 'CONFIG_PATH': '/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/config/config_definition.py', 'IS_SEED': False...
+    │          │          └ device(type='cuda')
+    │          └ <function objective at 0x7fa5c7d47a30>
+    └ <function run_optuna at 0x7fa5c81d4b80>
+
+  File "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/utils/hyperparameter_tuning.py", line 334, in run_optuna
+    else start_optimization(objective, conf)
+         │                  │          └ <utils.misc.ConfigSubset object at 0x7fa5c7d37dc0>
+         │                  └ <function objective at 0x7fa5c7d47a30>
+         └ <function run_optuna.<locals>.start_optimization at 0x7fa5c7d47c70>
+
+  File "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/utils/hyperparameter_tuning.py", line 208, in start_optimization
+    study.optimize(
+    │     └ <function Study.optimize at 0x7fa5cc97cb80>
+    └ <optuna.study.study.Study object at 0x7fa5c087dcc0>
+
+  File "/usr/local/lib/python3.10/dist-packages/optuna/study/study.py", line 425, in optimize
+    _optimize(
+    └ <function _optimize at 0x7fa5cc956f80>
+  File "/usr/local/lib/python3.10/dist-packages/optuna/study/_optimize.py", line 66, in _optimize
+    _optimize_sequential(
+    └ <function _optimize_sequential at 0x7fa5cc97c310>
+  File "/usr/local/lib/python3.10/dist-packages/optuna/study/_optimize.py", line 163, in _optimize_sequential
+    frozen_trial = _run_trial(study, func, catch)
+                   │          │      │     └ ()
+                   │          │      └ <function run_optuna.<locals>.start_optimization.<locals>.<lambda> at 0x7fa5c110f250>
+                   │          └ <optuna.study.study.Study object at 0x7fa5c087dcc0>
+                   └ <function _run_trial at 0x7fa5cc97c3a0>
+> File "/usr/local/lib/python3.10/dist-packages/optuna/study/_optimize.py", line 200, in _run_trial
+    value_or_values = func(trial)
+                      │    └ <optuna.trial._trial.Trial object at 0x7fa5c090e560>
+                      └ <function run_optuna.<locals>.start_optimization.<locals>.<lambda> at 0x7fa5c110f250>
+
+  File "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/utils/hyperparameter_tuning.py", line 209, in <lambda>
+    lambda trial: objective(trial, device, config),
+           │      │         │      │       └ {'VERBOSE': True, 'CONFIG_PATH': '/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/config/config_definition.py', 'IS_SEED': False...
+           │      │         │      └ device(type='cuda')
+           │      │         └ <optuna.trial._trial.Trial object at 0x7fa5c090e560>
+           │      └ <function objective at 0x7fa5c7d47a30>
+           └ <optuna.trial._trial.Trial object at 0x7fa5c090e560>
+
+  File "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/sprt_tandem_main.py", line 357, in objective
+    best, global_step = run_one_epoch(
+    │                   └ <function run_one_epoch at 0x7fa5c7d479a0>
+    └ (inf,)
+
+  File "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/sprt_tandem_main.py", line 276, in run_one_epoch
+    (
+
+TypeError: cannot unpack non-iterable NoneType object
+2023-04-30 06:15:59.011 | WARNING  | optuna.study._optimize:_log_failed_trial:268 - Trial 0 failed with value None.
+2023-04-30 06:15:59.185 | INFO     | utils.misc:__exit__:207 - elapsed time:  0.006136 hours. ()
+2023-04-30 06:15:59.209 | INFO     | utils.misc:__exit__:208 - Memory usage: 1907.12 megabytes
