@@ -151,7 +151,7 @@ config = {
     # for performance
     "IS_COMPILE": False,  # torch.compile (pytorch > 2.0)
     "MODE": "reduce-overhead",  # 'reduce-overhead', 'default', or 'max-autotune'
-    "NUM_WORKERS": 0,  # num_workers argument for pytorch dataloader
+    "NUM_WORKERS": 2,  # num_workers argument for pytorch dataloader
     # whether to load dataset onto memory at initialization.
     "IS_LOAD_ONTO_MEMORY": True,
     # SAT curve

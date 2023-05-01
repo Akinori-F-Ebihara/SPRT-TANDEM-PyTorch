@@ -12,7 +12,7 @@ from torch.utils.tensorboard import SummaryWriter
 import optuna
 from optuna.trial import Trial
 from config.config_definition import config as config_orig
-from utils.misc import grab_gpu, fix_random_seed, parse_args
+from utils.misc import grab_gpu, fix_random_seed, parse_args, set_cpu_workers
 from utils.logging import (
     create_log_folders,
     save_config_info,
@@ -27,8 +27,6 @@ from utils.checkpoint import (
     initialize_objectives,
     finalize_objectives,
 )
-
-# ,get_the_last_batch_for_plot
 from datasets.data_processing import lmdb_dataloaders, move_data_to_device
 from models.temporal_integrators import import_model, load_pretrained_states
 from models.optimizers import initialize_optimizer
@@ -60,6 +58,9 @@ def prepare_for_training(
 
     # optimize cuda computation if network structure is static, sacrificing reproducibility
     torch.backends.cudnn.benchmark = True
+
+    # set number of CPU threads (workers)
+    set_cpu_workers(config)
 
     # set random seeds (optional)
     fix_random_seed(config)

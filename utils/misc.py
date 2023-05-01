@@ -405,6 +405,17 @@ def fix_random_seed(config):
         logger.info("Random seed is not fixed.")
 
 
+def set_cpu_workers(config):
+    """
+    Set the number of CPU threads (workers).
+    This number is set equal to the number of num_workers in PyTorch DataLoader.
+    """
+    # check if necessary parameters are defined in the config file
+    requirements = set(["NUM_WORKERS"])
+    conf = extract_params_from_config(requirements, config)
+    torch.set_num_threads(np.max([1, conf.num_workers]))
+
+
 def compile_comment(config):
     """
     Name log file(s) based on selected parameters.
