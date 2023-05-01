@@ -1,0 +1,135 @@
+2023-05-01 05:10:37.362 | INFO     | utils.misc:fix_random_seed:405 - Random seed is not fixed.
+2023-05-01 05:10:37.385 | INFO     | models.temporal_integrators:summarize:568 - 
+:'######::'########::'########::'########::::::::::::::::::::::
+'##... ##: ##.... ##: ##.... ##:... ##..:::::::::::::::::::::::
+ ##:::..:: ##:::: ##: ##:::: ##:::: ##:::::::::::::::::::::::::
+. ######:: ########:: ########::::: ##::::'#######:::::::::::::
+:..... ##: ##.....::: ##.. ##:::::: ##::::........:::::::::::::
+'##::: ##: ##:::::::: ##::. ##::::: ##:::::::::::::::::::::::::
+. ######:: ##:::::::: ##:::. ##:::: ##:::::::::::::::::::::::::
+:......:::..:::::::::..:::::..:::::..::::::::::::::::::::::::::
+'########::::'###::::'##::: ##:'########::'########:'##::::'##:
+... ##..::::'## ##::: ###:: ##: ##.... ##: ##.....:: ###::'###:
+::: ##:::::'##:. ##:: ####: ##: ##:::: ##: ##::::::: ####'####:
+::: ##::::'##:::. ##: ## ## ##: ##:::: ##: ######::: ## ### ##:
+::: ##:::: #########: ##. ####: ##:::: ##: ##...:::: ##. #: ##:
+::: ##:::: ##.... ##: ##:. ###: ##:::: ##: ##::::::: ##:.:: ##:
+::: ##:::: ##:::: ##: ##::. ##: ########:: ########: ##:::: ##:
+:::..:::::..:::::..::..::::..::........:::........::..:::::..::
+
+2023-05-01 05:10:37.387 | INFO     | models.temporal_integrators:summarize:571 - [34mofficial PyTorch implementation.[0m
+2023-05-01 05:10:37.719 | INFO     | models.temporal_integrators:summarize:593 - Network summary:
+===============================================================================================
+Layer (type:depth-idx)                        Output Shape              Param #
+===============================================================================================
+TANDEMformer                                  [150, 50, 3, 3]           771
+├─TransformerEncoder: 1-1                     [6750, 1, 128]            --
+│    └─ModuleList: 2-6                        --                        (recursive)
+│    │    └─TransformerEncoderLayer: 3-1      [6750, 1, 128]            83,136
+│    │    └─TransformerEncoderLayer: 3-2      [6750, 1, 128]            83,136
+├─Linear: 1-2                                 [6750, 64]                8,256
+├─Dropout: 1-3                                [6750, 64]                --
+├─TransformerEncoder: 1-4                     [6750, 2, 128]            (recursive)
+│    └─ModuleList: 2-6                        --                        (recursive)
+│    │    └─TransformerEncoderLayer: 3-3      [6750, 2, 128]            (recursive)
+│    │    └─TransformerEncoderLayer: 3-4      [6750, 2, 128]            (recursive)
+├─Linear: 1-5                                 [6750, 64]                (recursive)
+├─Dropout: 1-6                                [6750, 64]                --
+├─TransformerEncoder: 1-7                     [6750, 3, 128]            (recursive)
+│    └─ModuleList: 2-6                        --                        (recursive)
+│    │    └─TransformerEncoderLayer: 3-5      [6750, 3, 128]            (recursive)
+│    │    └─TransformerEncoderLayer: 3-6      [6750, 3, 128]            (recursive)
+├─Linear: 1-8                                 [6750, 64]                (recursive)
+├─Dropout: 1-9                                [6750, 64]                --
+├─TransformerEncoder: 1-10                    [6750, 4, 128]            (recursive)
+│    └─ModuleList: 2-6                        --                        (recursive)
+│    │    └─TransformerEncoderLayer: 3-7      [6750, 4, 128]            (recursive)
+│    │    └─TransformerEncoderLayer: 3-8      [6750, 4, 128]            (recursive)
+├─Linear: 1-11                                [6750, 64]                (recursive)
+├─Dropout: 1-12                               [6750, 64]                --
+├─TransformerEncoder: 1-13                    [6750, 5, 128]            (recursive)
+│    └─ModuleList: 2-6                        --                        (recursive)
+│    │    └─TransformerEncoderLayer: 3-9      [6750, 5, 128]            (recursive)
+│    │    └─TransformerEncoderLayer: 3-10     [6750, 5, 128]            (recursive)
+├─Linear: 1-14                                [6750, 64]                (recursive)
+├─Dropout: 1-15                               [6750, 64]                --
+├─TransformerEncoder: 1-16                    [6750, 6, 128]            (recursive)
+│    └─ModuleList: 2-6                        --                        (recursive)
+│    │    └─TransformerEncoderLayer: 3-11     [6750, 6, 128]            (recursive)
+│    │    └─TransformerEncoderLayer: 3-12     [6750, 6, 128]            (recursive)
+├─Linear: 1-17                                [6750, 64]                (recursive)
+├─Dropout: 1-18                               [6750, 64]                --
+├─Linear: 1-19                                [6750, 3]                 195
+├─Linear: 1-20                                [6750, 3]                 (recursive)
+├─Linear: 1-21                                [6750, 3]                 (recursive)
+├─Linear: 1-22                                [6750, 3]                 (recursive)
+├─Linear: 1-23                                [6750, 3]                 (recursive)
+├─Linear: 1-24                                [6750, 3]                 (recursive)
+===============================================================================================
+Total params: 175,494
+Trainable params: 175,494
+Non-trainable params: 0
+Total mult-adds (G): 1.73
+===============================================================================================
+Input size (MB): 3.84
+Forward/backward pass size (MB): 1037.77
+Params size (MB): 0.17
+Estimated Total Size (MB): 1041.78
+===============================================================================================
+2023-05-01 05:10:37.719 | INFO     | models.temporal_integrators:summarize:594 - Example input shape: torch.Size([150, 50, 128])
+2023-05-01 05:10:37.720 | INFO     | models.temporal_integrators:summarize:595 - Example output shape: torch.Size([150, 50, 3, 3])
+2023-05-01 05:10:37.723 | INFO     | models.temporal_integrators:import_model:58 - model moved onto: [33mcuda.[0m
+2023-05-01 05:10:37.724 | INFO     | models.optimizers:initialize_optimizer:44 - Optimizer:
+AdamW (
+Parameter Group 0
+    amsgrad: False
+    betas: (0.9, 0.999)
+    capturable: False
+    differentiable: False
+    eps: 1e-08
+    foreach: None
+    fused: None
+    lr: 4.6409779590054176e-05
+    maximize: False
+    weight_decay: 0.0002
+)
+2023-05-01 05:10:37.724 | INFO     | datasets.data_processing:lmdb_dataloaders:293 - loading data... 
+2023-05-01 05:10:37.725 | INFO     | datasets.data_processing:lmdb_dataloaders:295 - If this process takes long, consider setting is_load_onto_memory=False or use LMDBIterableDataset.
+2023-05-01 05:10:40.638 | INFO     | __main__:objective:357 - Starting epoch #0.
+2023-05-01 05:10:51.035 | INFO     | utils.logging:log_training_results:280 - 
+2023-05-01 05:10:51.035 | INFO     | utils.logging:log_training_results:281 - Global Step =      0
+2023-05-01 05:10:51.036 | INFO     | utils.logging:log_training_results:282 - val mean(MacRec)_t: 0.36792004108428955
+2023-05-01 05:10:51.036 | INFO     | utils.logging:log_training_results:287 - val mean ABSerr: 3.484382152557373
+2023-05-01 05:10:51.037 | INFO     | utils.logging:log_training_results:290 - val ausat from confmx: 0.37496790289878845
+2023-05-01 05:10:51.037 | INFO     | utils.logging:log_training_results:301 - val MCE loss:1.10016 * 0.9 * -0.16310
+2023-05-01 05:10:51.038 | INFO     | utils.logging:log_training_results:309 - val LLLR :1.14011 * 0.0 * -0.46968
+2023-05-01 05:10:51.038 | INFO     | utils.logging:log_training_results:317 - val weight decay:1928.98828 * 0.0002 * 1.59794
+2023-05-01 05:10:52.977 | INFO     | utils.logging:save_sdre_imgs:710 - Figures saved.
+2023-05-01 05:10:53.604 | INFO     | utils.logging:log_training_results:280 - 
+2023-05-01 05:10:53.605 | INFO     | utils.logging:log_training_results:281 - Global Step =      0
+2023-05-01 05:10:53.606 | INFO     | utils.logging:log_training_results:282 - train mean(MacRec)_t: 0.33095768094062805
+2023-05-01 05:10:53.606 | INFO     | utils.logging:log_training_results:287 - train mean ABSerr: 3.4703152179718018
+2023-05-01 05:10:53.607 | INFO     | utils.logging:log_training_results:290 - train ausat from confmx: 0.3293038308620453
+2023-05-01 05:10:53.607 | INFO     | utils.logging:log_training_results:301 - train MCE loss:1.10171 * 0.9 * -0.16314
+2023-05-01 05:10:53.608 | INFO     | utils.logging:log_training_results:309 - train LLLR :1.31976 * 0.0 * -0.46964
+2023-05-01 05:10:53.608 | INFO     | utils.logging:log_training_results:317 - train weight decay:1928.98828 * 0.0002 * 1.59790
+2023-05-01 05:12:19.579 | INFO     | utils.logging:log_training_results:280 - 
+2023-05-01 05:12:19.580 | INFO     | utils.logging:log_training_results:281 - Global Step =    250
+2023-05-01 05:12:19.580 | INFO     | utils.logging:log_training_results:282 - val mean(MacRec)_t: 0.8558399677276611
+2023-05-01 05:12:19.581 | INFO     | utils.logging:log_training_results:287 - val mean ABSerr: 1.0886669158935547
+2023-05-01 05:12:19.581 | INFO     | utils.logging:log_training_results:290 - val ausat from confmx: 0.970708966255188
+2023-05-01 05:12:19.581 | INFO     | utils.logging:log_training_results:301 - val MCE loss:0.89601 * 0.9 * -0.17379
+2023-05-01 05:12:19.582 | INFO     | utils.logging:log_training_results:309 - val LLLR :0.34065 * 0.0 * -0.45802
+2023-05-01 05:12:19.582 | INFO     | utils.logging:log_training_results:317 - val weight decay:1907.86060 * 0.0002 * 1.58633
+2023-05-01 05:12:20.343 | INFO     | utils.checkpoint:update_and_save_result:168 - [36mBest value updated![0m
+2023-05-01 05:12:20.365 | INFO     | utils.checkpoint:save_checkpoint:83 - [36mSaved checkpoint[0m at step 250.
+2023-05-01 05:12:21.272 | INFO     | utils.logging:save_sdre_imgs:710 - Figures saved.
+2023-05-01 05:12:21.844 | INFO     | utils.logging:log_training_results:280 - 
+2023-05-01 05:12:21.845 | INFO     | utils.logging:log_training_results:281 - Global Step =    250
+2023-05-01 05:12:21.845 | INFO     | utils.logging:log_training_results:282 - train mean(MacRec)_t: 0.7690402865409851
+2023-05-01 05:12:21.846 | INFO     | utils.logging:log_training_results:287 - train mean ABSerr: 1.9865789413452148
+2023-05-01 05:12:21.846 | INFO     | utils.logging:log_training_results:290 - train ausat from confmx: 0.8767759799957275
+2023-05-01 05:12:21.846 | INFO     | utils.logging:log_training_results:301 - train MCE loss:0.92851 * 0.9 * -0.17383
+2023-05-01 05:12:21.847 | INFO     | utils.logging:log_training_results:309 - train LLLR :0.66313 * 0.0 * -0.45797
+2023-05-01 05:12:21.848 | INFO     | utils.logging:log_training_results:317 - train weight decay:1907.86060 * 0.0002 * 1.58628
+2023-05-01 05:13:06.721 | INFO     | __main__:objective:357 - Starting epoch #1.
