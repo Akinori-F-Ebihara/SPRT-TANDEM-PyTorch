@@ -405,7 +405,7 @@ def fix_random_seed(config):
         logger.info("Random seed is not fixed.")
 
 
-def set_cpu_workers(config):
+def set_cpu_workers(config: dict) -> None:
     """
     Set the number of CPU threads (workers).
     This number is set equal to the number of num_workers in PyTorch DataLoader.
