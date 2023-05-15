@@ -1,5 +1,5 @@
 # SPRT-TANDEM-PyTorch
-This repository contains the official PyTorch implementation of __SPRT-TANDEM__ ([ICASSP2023](https://arxiv.org/abs/2302.09810), [ICML2021](http://proceedings.mlr.press/v139/miyagawa21a.html), and [ICLR2021](https://openreview.net/forum?id=Rhsu5qD36cL)). __SPRT-TANDEM__ is a neuroscience-inspired sequential density ratio estimation (SDRE) algorithm that estimates log-likelihood ratios of two or more hypotheses for fast and accurate sequential data classification. For intuitive understanding, also see [SPRT-TANDEM tutorial](https://github.com/Akinori-F-Ebihara/SPRT-TANDEM_tutorial).
+This repository contains the official PyTorch implementation of __SPRT-TANDEM__ ([ICASSP2023](https://arxiv.org/abs/2302.09810), [ICML2021](http://proceedings.mlr.press/v139/miyagawa21a.html), and [ICLR2021](https://openreview.net/forum?id=Rhsu5qD36cL)). __SPRT-TANDEM__ is a neuroscience-inspired sequential density ratio estimation (SDRE) algorithm that estimates log-likelihood ratios of two or more hypotheses for fast and accurate sequential data classification. For an intuitive understanding, please refer to the [SPRT-TANDEM tutorial](https://github.com/Akinori-F-Ebihara/SPRT-TANDEM_tutorial).
 
 <div align="center">
 <figure>
@@ -10,8 +10,8 @@ This repository contains the official PyTorch implementation of __SPRT-TANDEM__ 
 
 
 ## Quickstart
-1. Create a new SDRE dataset by running [Generate_sequential_Gaussian_as_LMDB.ipynb](https://github.com/Akinori-F-Ebihara/SPRT-TANDEM-PyTorch/blob/main/notebooks/Generate_sequential_Gaussian_as_LMDB.ipynb).
-2. Edit the user editable block of [config_definition.py](https://github.com/Akinori-F-Ebihara/SPRT-TANDEM-PyTorch/blob/main/config/config_definition.py). Specify path to the dataset file created in step 1. Other frequently used entries includes SUBPROJECT_NAME_PREFIX (tag your experiment) and EXP_PHASE (try, tuning or stat. See Hyperparameter Tuning for details).
+1. To create a new SDRE dataset, run the [Generate_sequential_Gaussian_as_LMDB.ipynb](https://github.com/Akinori-F-Ebihara/SPRT-TANDEM-PyTorch/blob/main/notebooks/Generate_sequential_Gaussian_as_LMDB.ipynb) notebook.
+2. Edit the user editable block of [config_definition.py](https://github.com/Akinori-F-Ebihara/SPRT-TANDEM-PyTorch/blob/main/config/config_definition.py). Specify path to the dataset file created in step 1. Other frequently used entries include SUBPROJECT_NAME_PREFIX (to tag your experiment) and EXP_PHASE (to specify whether you are trying, tuning, or running statistics. See Hyperparameter Tuning for details).
 3. Execute [sprt_tandem_main.py](https://github.com/Akinori-F-Ebihara/SPRT-TANDEM-PyTorch/blob/main/sprt_tandem_main.py).
 
 ## Tested Environment
@@ -24,17 +24,17 @@ optuna      3.1.0
 
 ## Requirements for Reading This Article
 
-This article is best read with the Chrome browser with [MathJax Plugin for GitHub](https://chrome.google.com/webstore/detail/mathjax-plugin-for-github/ioemnmodlmafdkllaclgeombjnmnbima?hl=en).
+This article is best read using the Chrome browser with the [MathJax Plugin for GitHub](https://chrome.google.com/webstore/detail/mathjax-plugin-for-github/ioemnmodlmafdkllaclgeombjnmnbima?hl=en) installed.
 
 ## Supported Network Architectures  
-LSTM and Transformer, the two major architectures to process time series data are supported. In order to avoid the likelihood ratio saturation problem and to approach the asymptotic optimality (for details, see [Ebihara+, ICASSP2023](https://arxiv.org/abs/2302.09810)), we invented a novel B2Bssqrt-TANDEM and TANDEMformer, based on LSTM and Transformer architectures, respectively.
+We support the two major architectures for processing time series data: LSTM and Transformer. To avoid the likelihood ratio saturation problem and approach asymptotic optimality (for details, see [Ebihara+, ICASSP2023](https://arxiv.org/abs/2302.09810)), we developed two novel models based on these architectures: B2Bssqrt-TANDEM (based on LSTM) and TANDEMformer (based on Transformer).
 ### LSTM (B2Bsqrt-TANDEM, [ICASSP2023](https://arxiv.org/abs/2302.09810))  
-Long short-term memory (LSTM, 1) with the back-to-back square root (B2Bsqrt) activation function can be used to set the following variables:
+The long short-term memory (LSTM, 1) with the back-to-back square root (B2Bsqrt) activation function can be used by setting the following variables: 
 
 - MODEL_BACKBONE: "LSTM"
 - ACTIVATION_OUTPUT: "B2Bsqrt"  
 
-Note that setting ACTIVATION_OUTPUT as "tanh" makes it a vanilla LSTM. The B2Bsqrt function is introduced in the ICASSP2023 paper for precise SDRE avoiding the likelihood ratio saturation problem:
+It's important to note that setting ACTIVATION_OUTPUT to "tanh" will result in a vanilla LSTM. The B2Bsqrt function was introduced in the ICASSP2023 paper as a way to precisely avoid the likelihood ratio saturation problem in SDRE.  
 
 $f_{\mathrm{B2Bsqrt}}(x) := \mathrm{sign}(x)(\sqrt{\alpha+|x|}-\sqrt{\alpha})$　　
 
@@ -43,11 +43,11 @@ $f_{\mathrm{B2Bsqrt}}(x) := \mathrm{sign}(x)(\sqrt{\alpha+|x|}-\sqrt{\alpha})$�
 <img src ="./images/Conceptual_figure_B2Bsqrt.png" width=60%>  
 </figure>
 </div>
-<p align="center">Figure 2: Conceptual figure showing the LSTM cell equipped with the B2Bsqrt activation function. B2Bsqrt can be used as an alternative to tanh function. With an unbounded range with a finite gradient at the origin, B2Bsqrt can prevents the saturation problem while enabling stable training.</p>
+<p align="center">Figure 2: Conceptual figure showing the LSTM cell equipped with the B2Bsqrt activation function. B2Bsqrt can be used as an alternative to the tanh function. With an unbounded range and a finite gradient at the origin, B2Bsqrt prevents the saturation problem while enabling stable training.</p>
 
 
 ### Transformer (TANDEMformer, [ICASSP2023](https://arxiv.org/abs/2302.09810))  
-Transformer is equipped with the Normalized Summation Pooling (NSP) layer. To use it, set the following variable:
+The Transformer is equipped with the Normalized Summation Pooling (NSP) layer, which is incorporated by default. To use it, set the following variable:
 
 - MODEL_BACKBONE: "Transformer"
 
@@ -57,14 +57,14 @@ Transformer is equipped with the Normalized Summation Pooling (NSP) layer. To us
 <img src ="./images/Conceptual_figure_TANDEMformer.png" width=50%>  
 </figure>
 </div>
-<p align="center">Figure 3: Conceptual figure showing the Transformer block equipped with the NSP layer. Tokens are first extracted using a sliding window and then mixed with self-attention. The normalized summation pooling layer then takes the sum of the tokens and divides them by a constant, which is the maximum size of the sliding window.</p>  
+<p align="center">Figure 3: Conceptual figure illustrates the Transformer block equipped with the NSP layer. First, tokens are extracted using a sliding window and then mixed with self-attention. The normalized summation pooling layer then takes the sum of the tokens and divides them by a constant, which is the maximum size of the sliding window.</p>  
 
 ## Supported Loss Functions for SDRE
-SPRT-TANDEM uses both the loss for sequential likelihood ratio estimation (i.e., SDRE) and (multiplet-) cross-entropy loss ([ICLR2021](https://openreview.net/forum?id=Rhsu5qD36cL)). The two functions, LSEL and LLLR, are supported loss function for SDRE. To choose the loss function, set the following variables:
+SPRT-TANDEM uses both the loss for sequential likelihood ratio estimation (SDRE) and (multiplet-) cross-entropy loss ([ICLR2021](https://openreview.net/forum?id=Rhsu5qD36cL)). The two functions, LSEL and LLLR, are supported loss function for SDRE. To choose the loss function, set the following variables:
 
 - LLLR_VERSION: "LSEL" or "LLLR"
 
-Also modify PARAM_LLR_LOSS and PARAM_MULTIPLET_LOSS for the right balance between likelihood estimation and cross-entropy loss. 
+Additionally, modify the values of PARAM_LLR_LOSS and PARAM_MULTIPLET_LOSS to achieve the desired balance between likelihood estimation and cross-entropy loss.
 ### Log-sum exponential loss (LSEL, [ICML2021](http://proceedings.mlr.press/v139/miyagawa21a.html))  
 $\hat{L}_{\rm \text{LSEL}} (\bm{\theta}; S) 
     := \mathbb{E} \left[ \log \left( 
@@ -75,16 +75,16 @@ $\hat{L}_{\rm \text{LSEL}} (\bm{\theta}; S)
 $\hat{L}_{\rm \text{LLLR}} (\bm{\theta}; S) := \mathbb{E} \left[ \left| y - \sigma\left(\log\hat{r_i}\right) \right| \right]$
 
 ## Order N of Markov assumption
-The Markov order $N$ is used to determine the length of the sliding window that is used to extract a subset from the entire feature vectors of time series. $N$ is a convenient hyperparameter to incorporate a prior knowledge of the time series. In brief, an optimal $N$ can be found either based on the \textit{specific time scale} or hyperparameter tuning. The specific time scale characterizes the data class, e.g., long temporal action such as UCF101 has a long specific time scale, while a spoofing attack such as SiW has a short specific time scale (because one frame can have sufficient information of the attack). Setting $N$ equal to the specific time scale works most of the time. Alternatively, $N$ can be objectively chosen with a hyperparameter tuning algorithm such as Optuna, just as we choose other hyperparameters. Because $N$ is only related to the temporal integrator after feature extraction, the optimization of $N$ is not computationally expensive.
+The Markov order $N$ is used to determine the length of the sliding window that extracts a subset from the entire feature vector of a time series. $N$ is a convenient hyperparameter that incorporates prior knowledge of the time series. An optimal $N$ can be found either based on the \textit{specific time scale} or through hyperparameter tuning. The specific time scale characterizes the data class, e.g., long temporal action such as UCF101 has a long specific time scale, while a spoofing attack such as SiW has a short specific time scale (because one frame can have sufficient information of the attack). Setting $N$ equal to the specific time scale usually works best. Alternatively, $N$ can be objectively chosen using a hyperparameter tuning algorithm such as Optuna, just like other hyperparameters. Because $N$ is only related to the temporal integrator after feature extraction, optimizing it is not computationally expensive.
 
 <div align="center">
 <figure>
 <img src ="./images/Conceptual_figure_streamline.png" width=70%>  
 </figure>
 </div>
-<p align="center">Figure 4: Conceptual figure showing the streamline of online SDRE. A subset of the feature vectors of time series is extracted based on order of Markov assumption, N. </p>
+<p align="center">Figure 4: Conceptual figure showing the streamline of online SDRE. A subset of the time series' feature vectors is extracted based on the order of Markov assumption, N. </p>
 
-Log-likelihood ratio is estimated from the subset of the feature vectors that is extracted with the sliding window of size $N$. The estimation is classification-based. Namely, the temporal integrator is trained to output class logits, from which the log-likelihood ratio is updated based on the TANDEM formula at each time step.
+The log-likelihood ratio is estimated from a subset of the feature vectors extracted using a sliding window of size $N$. This estimation is classification-based. Specifically, the temporal integrator is trained to output class logits, which are then used to update the log-likelihood ratio at each time step based on the TANDEM formula.
 ### TANDEM formula ([ICLR2021](https://openreview.net/forum?id=Rhsu5qD36cL))
 \begin{align}
 &\ \log \left(
@@ -109,16 +109,16 @@ p(y=0| x^{(s-N)}, ...,x^{(s-1)})
 ## Experiment Phases
 EXP_PHASE must be set as one of the followings:
 - try: All the hyperparameters are fixed as defined in [config_definition.py](https://github.com/Akinori-F-Ebihara/SPRT-TANDEM-PyTorch/blob/main/config/config_definition.py). Use it for debugging purposes.
-- tuning: Enter into the hyperparameter tuning mode. Hyperparameters which have corresponding serch spaces defined will be overwritten with suggested parameters. Also see Hyperparameter Tuning for details.
-- stat: All the hyperparameters are fixed as defined in [config_definition.py](https://github.com/Akinori-F-Ebihara/SPRT-TANDEM-PyTorch/blob/main/config/config_definition.py). Repeat trainings for the number specified with NUM_TRIALS. Use it for testing reproducibility (e.g., plot error bars, run a statistical test). 
-Your subproject name will be suffixed with the EXP_PHASE, so that results from different phases do not contaminate each other.  
+- tuning: Enter hyperparameter tuning mode. Hyperparameters with corresponding search spaces will be overwritten with suggested parameters. See the Hyperparameter Tuning section for more details.
+- stat: All the hyperparameters are fixed as defined in [config_definition.py](https://github.com/Akinori-F-Ebihara/SPRT-TANDEM-PyTorch/blob/main/config/config_definition.py). Repeat training for the specified number of times with NUM_TRIALS to test reproducibility (e.g., plot error bars, run a statistical test). 
+The subproject name will be suffixed with the EXP_PHASE to prevent contamination of results from different phases.
 
 ## Hyperparameter Tuning
-Optuna [1] - based hyperparameter tuning is supported. Firstly, edit the following variables in the [config_definition.py](https://github.com/Akinori-F-Ebihara/SPRT-TANDEM-PyTorch/blob/main/config/config_definition.py):
-- EXP_PHASE: set as "tuning" to enter into hyperparameter tuning mode.
-- NUM_TRIALS: set an integer specifying the number of hyperparameter sets to experiment.
-- PRUNER_NAME (optional): select a pruner supported by Optuna, or set "None."    
-also set PRUNER_STARTUP_TRIALS, PRUNER_WARMUP_STEPS, and PRUNER_INTERVAL STEPS. For details, see the [official Optuna docs](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.pruners.MedianPruner.html#optuna.pruners.MedianPruner).  
+Optuna [1] is supported for hyperparameter tuning. To begin, edit the following variables in the [config_definition.py](https://github.com/Akinori-F-Ebihara/SPRT-TANDEM-PyTorch/blob/main/config/config_definition.py):
+- EXP_PHASE: set as "tuning" to enter hyperparameter tuning mode.
+- NUM_TRIALS: set an integer that specifies the number of hyperparameter sets to experiment with.
+- PRUNER_NAME (optional): select a pruner supported by Optuna, or set it to "None."    
+Also, set PRUNER_STARTUP_TRIALS, PRUNER_WARMUP_STEPS, and PRUNER_INTERVAL STEPS. For details, see the [official Optuna docs](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.pruners.MedianPruner.html#optuna.pruners.MedianPruner).  
 
 Next, customize the hyperparameter space defined with variables that have prefix "LIST_". For example, [config_definition.py](https://github.com/Akinori-F-Ebihara/SPRT-TANDEM-PyTorch/blob/main/config/config_definition.py) contains an entry like this:
 
@@ -132,14 +132,16 @@ Next, customize the hyperparameter space defined with variables that have prefix
     }
 ```
 The above entry specifies the search space of a hyperparameter "ORDER_SPRT." The key "PARAM_SPACE" must be one of the followings:  
- - float: use suggest_float to suggest a float of range [LOW, HIGH], separated by STEP. If LOG=True, a float is sampled from logspace but you shall set STEP=None.
- - int: use suggest_int to suggest an int of range [LOW, HIGH], separated by STEP. STEP should be divisor of the range, otherwise HIGH will be automatically modified. If LOG=True, an int is sampled from logspace but you shall set STEP=None.
- - categorical: use suggest_categorical to select one category from CATEGORY_SET. Note that if the parameter is continuous (e.g., 1, 2, 3, ..., or 1.0, 0.1, 0.001, ...), it is adviseable to use float or int space because suggest_categorical treats each category independently.
+ - float: use suggest_float to suggest a float of range [LOW, HIGH], separated by STEP. If LOG=True, a float is sampled from logspace. However, if LOG=True, set STEP=None.
+ - int: use suggest_int to suggest an integer of range [LOW, HIGH], separated by STEP. STEP should be divisor of the range; otherwise, HIGH will be automatically modified. If LOG=True, an int is sampled from logspace. However, if LOG=True, set STEP=None.
+ - categorical: use suggest_categorical to select one category from CATEGORY_SET. Note that if the parameter is continuous (e.g., 1, 2, 3, ..., or 1.0, 0.1, 0.001, ...), it is advisable to use float or int space because suggest_categorical treats each category independently.
 
- Also see the [official Optuna docs](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.trial.Trial.html). All the entries starting with "LIST_" will be used to select values, which will be set to the hyperparameter whose name is defined after "LIST_" (e.g., in the above example, "ORDER_SPRT).
+For more informatin, please refer to the [official Optuna docs](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.trial.Trial.html).   
+
+To select specific values for a hyperparameter, use entries that start with "LIST_". These values will be assigned to the hyperparameter whose name is defined after "LIST_" (for example, in the above example, "ORDER_SPRT").
 
 ## Command-line Arguments  
-Frequently-used variables can be overwritten by specifying the command-line arguments. 
+Frequently-used variables can be overwritten by specifying command-line arguments. 
 ```
 options:
   -h, --help            show this help message and exit
@@ -164,10 +166,10 @@ Under the [logs](https://github.com/Akinori-F-Ebihara/SPRT-TANDEM-PyTorch/blob/m
 ```
 {SUBPROJECT_SUFFIX}_offset{DATA_SEPARATION}_optim{OPTIMIZATION_TARGET}_{EXP_PHASE}
 ```
-inside which the following four folders will be created.
+inside of which the following four folders will be created.
 - Optuna_databases: Optuna .db file is stored here.
 - TensorBoard_events: TensorBard event files are saved here.
-- checkpoints: trained parameters are saved as .py files, when the best optimation target value is updated.
+- checkpoints: trained parameters are saved as .py files when the best optimation target value is updated.
 - stdout_logs: standard output strings are saved as .log files.
 
 The plot below shows an example image saved in a TensorBoard event file. Note that you can avoid saving figures by setting IS_SAVE_FIGURE=False.
@@ -217,7 +219,7 @@ ___Please cite the orignal paper(s) if you use the whole or a part of our codes.
 1. T. Akiba, S. Sano, T. Yanase, T. Ohta, and M. Koyama, “Optuna: A next-generation hyperparameter optimization framework,” in KDD, 2019, p. 2623–2631.
 
 ## Contacts
-SPRT-TANDEM marks the 4th anniversory - now it become a huge project that we never imagined before. It is thus difficult for me to explain all the details of the project in this README section. Please feel free to reach me anytime for questions.
+SPRT-TANDEM marks its 4th anniversary. What started as a small project has now become a huge undertaking that we never imagined. Due to its complexity, it is difficult for me to explain all the details in this README section. Please feel free to reach out to me anytime if you have any questions.
 - email: aebihara[at]nec.com
 - twitter: [@non_iid](http/twitter.com/non_iid)
 - GitHub issues: see the link above or click [here](https://github.com/Akinori-F-Ebihara/SPRT-TANDEM-PyTorch/issues)
