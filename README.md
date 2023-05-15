@@ -36,7 +36,9 @@ The long short-term memory (LSTM, 1) with the back-to-back square root (B2Bsqrt)
 
 It's important to note that setting ACTIVATION_OUTPUT to "tanh" will result in a vanilla LSTM. The B2Bsqrt function was introduced in the ICASSP2023 paper as a way to precisely avoid the likelihood ratio saturation problem in SDRE.  
 
-$f_{\mathrm{B2Bsqrt}}(x) := \mathrm{sign}(x)(\sqrt{\alpha+|x|}-\sqrt{\alpha})$　　
+\begin{align}
+f_{\mathrm{B2Bsqrt}}(x) := \mathrm{sign}(x)(\sqrt{\alpha+|x|}-\sqrt{\alpha})
+\end{align}
 
 <div align="center">
 <figure>
@@ -66,13 +68,19 @@ SPRT-TANDEM uses both the loss for sequential likelihood ratio estimation (SDRE)
 
 Additionally, modify the values of PARAM_LLR_LOSS and PARAM_MULTIPLET_LOSS to achieve the desired balance between likelihood estimation and cross-entropy loss.
 ### Log-sum exponential loss (LSEL, [ICML2021](http://proceedings.mlr.press/v139/miyagawa21a.html))  
-$\hat{L}_{\rm \text{LSEL}} (\bm{\theta}; S) 
+
+\begin{align}
+\hat{L}_{\rm \text{LSEL}} (\bm{\theta}; S) 
     := \mathbb{E} \left[ \log \left( 
         1 + \sum_{ l ( \neq k ) } e^{ - \hat{\lambda}_{k l} ( X_i^{(1,t)}; \bm{\theta} ) }
-    \right) \right] $
+    \right) \right] 
+\end{align}
+
 ### Loss for log-likelihood ratio estimation (LLLR, [ICLR2021](https://openreview.net/forum?id=Rhsu5qD36cL))  
 
-$\hat{L}_{\rm \text{LLLR}} (\bm{\theta}; S) := \mathbb{E} \left[ \left| y - \sigma\left(\log\hat{r_i}\right) \right| \right]$
+\begin{align}
+\hat{L}_{\rm \text{LLLR}} (\bm{\theta}; S) := \mathbb{E} \left[ \left| y - \sigma\left(\log\hat{r_i}\right) \right| \right]
+\end{align}
 
 ## Order N of Markov assumption
 The Markov order $N$ is used to determine the length of the sliding window that extracts a subset from the entire feature vector of a time series. $N$ is a convenient hyperparameter that incorporates prior knowledge of the time series. An optimal $N$ can be found either based on the \textit{specific time scale} or through hyperparameter tuning. The specific time scale characterizes the data class, e.g., long temporal action such as UCF101 has a long specific time scale, while a spoofing attack such as SiW has a short specific time scale (because one frame can have sufficient information of the attack). Setting $N$ equal to the specific time scale usually works best. Alternatively, $N$ can be objectively chosen using a hyperparameter tuning algorithm such as Optuna, just like other hyperparameters. Because $N$ is only related to the temporal integrator after feature extraction, optimizing it is not computationally expensive.
