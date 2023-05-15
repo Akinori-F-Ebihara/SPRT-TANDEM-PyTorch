@@ -14,9 +14,9 @@
                 "-e",
                 "tuning",
                 "-t",
-                "100",
+                "1000",
                 "-o",
-                "macrec"
+                "all"
             ],
             "justMyCode": true
         }
