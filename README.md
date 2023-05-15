@@ -70,16 +70,16 @@ Additionally, modify the values of PARAM_LLR_LOSS and PARAM_MULTIPLET_LOSS to ac
 ### Log-sum exponential loss (LSEL, [ICML2021](http://proceedings.mlr.press/v139/miyagawa21a.html))  
 
 \begin{align}
-\hat{L}_{\rm \text{LSEL}} (\bm{\theta}; S) 
+\hat{L}_{\mathrm{\text{LSEL}}} (\mathbb{\theta}; S) 
     := \mathbb{E} \left[ \log \left( 
-        1 + \sum_{ l ( \neq k ) } e^{ - \hat{\lambda}_{k l} ( X_i^{(1,t)}; \bm{\theta} ) }
+        1 + \sum_{ l ( \neq k ) } e^{ - \hat{\lambda}_{k l} ( X_i^{(1,t)}; \mathbb{{\theta}} ) }
     \right) \right] 
 \end{align}
 
 ### Loss for log-likelihood ratio estimation (LLLR, [ICLR2021](https://openreview.net/forum?id=Rhsu5qD36cL))  
 
 \begin{align}
-\hat{L}_{\rm \text{LLLR}} (\bm{\theta}; S) := \mathbb{E} \left[ \left| y - \sigma\left(\log\hat{r_i}\right) \right| \right]
+\hat{L}_{\mathrm{\text{LLLR}}} (\mathbb{\theta}; S) := \mathbb{E} \left[ \left| y - \sigma\left(\log\hat{r_i}\right) \right| \right]
 \end{align}
 
 ## Order N of Markov assumption
