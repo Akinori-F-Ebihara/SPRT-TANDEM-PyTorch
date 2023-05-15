@@ -75,12 +75,12 @@ Additionally, modify the values of PARAM_LLR_LOSS and PARAM_MULTIPLET_LOSS to ac
         1 + \sum_{ l ( \neq k ) } e^{ - \hat{\lambda}_{k l} ( X_i^{(1,t)}; \mathbb{\theta} ) }
     \right) \right] 
 \end{align} -->
-\begin{align}
-\hat{L}_{\mathrm{LSEL}} (\theta; S) 
+<!-- \begin{align} -->
+$\hat{L}_{\mathrm{LSEL}} (\theta; S) 
     := \mathbb{E} \left[ \log \left( 
         1 + \sum_{l (\neq k)} e^{-\hat{\lambda}_{kl} (X_i^{(1,t)}; \theta)}
-    \right) \right] 
-\end{align}
+    \right) \right] $
+<!-- \end{align} -->
 
 ### Loss for log-likelihood ratio estimation (LLLR, [ICLR2021](https://openreview.net/forum?id=Rhsu5qD36cL))  
 
