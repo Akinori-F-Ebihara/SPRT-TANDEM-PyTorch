@@ -54,7 +54,8 @@ def multiply_diff_mht(acc_eta, hittimes):
     # from (num thresh, batch)
     # to (num thresh,)
     _mht = torch.cat(
-        [mht[1:], torch.tensor([time_steps], dtype=torch.float32).to(_device)], dim=0
+        [mht[1:], torch.tensor([time_steps], dtype=torch.float32, device=_device)],
+        dim=0,
     )
     diff_mht = _mht - mht
 
@@ -663,7 +664,7 @@ def calc_urgency_signal(u_sgnl_concat):
     order_sprt = sgnl_shape[2] - 1
     time = sgnl_shape[1] + order_sprt
 
-    u_sgnl = torch.zeros((bs, time, 1)).to(_device)
+    u_sgnl = torch.zeros((bs, time, 1), device=_device)
     for i in range(sgnl_shape[1]):
         u_sgnl[:, i : i + order_sprt + 1, :] += u_sgnl_concat[:, i, :, :]
 
@@ -797,7 +798,7 @@ def threshold_generator(llrs, num_thresh, sparsity):
     llrs_abs = torch.abs(llrs)
     llrs_max = torch.max(llrs_abs)
     # max |LLRs|
-    tmp = torch.eye(num_classes).to(_device) * llrs_max
+    tmp = torch.eye(num_classes, device=_device) * llrs_max
     tmp = tmp.reshape([1, 1, num_classes, num_classes])
     llrs_min = torch.min(llrs_abs + tmp)
     # strictly positive (non-zero) minimum of LLRs
@@ -806,25 +807,30 @@ def threshold_generator(llrs, num_thresh, sparsity):
 
     # Single-valued threshold matrix
     if sparsity == "linspace":
-        thresh = torch.linspace(llrs_min.item(), llrs_max.item(), num_thresh)
+        thresh = torch.linspace(
+            llrs_min.item(), llrs_max.item(), num_thresh, device=_device
+        )
         # (num thresh,)
 
     elif sparsity == "logspace":
         thresh = torch.exp(
             torch.linspace(
-                torch.log(llrs_min).item(), torch.log(llrs_max).item(), num_thresh
+                torch.log(llrs_min).item(),
+                torch.log(llrs_max).item(),
+                num_thresh,
+                device=_device,
             )
         )
         # (num thresh,)
 
     elif sparsity == "unirandom":
-        thresh = torch.rand(num_thresh).to(_device)
+        thresh = torch.rand(num_thresh, device=_device)
         thresh = torch.sort(thresh)[0]
         thresh = ((llrs_max - llrs_min) * thresh) + llrs_min
         # (num thresh,), ascending order
 
     elif sparsity == "lograndom":
-        thresh = torch.rand(num_thresh).to(_device)
+        thresh = torch.rand(num_thresh, device=_device)
         thresh = torch.sort(thresh)[0]
         thresh = torch.exp(
             ((torch.log(llrs_max) - torch.log(llrs_min)) * thresh) + torch.log(llrs_min)
@@ -850,7 +856,7 @@ def tile_constant_threshold(
     )
 
     # diagonal all-zero, else one
-    mask = 1 - torch.eye(num_classes).to(_device)
+    mask = 1 - torch.eye(num_classes, device=_device)
 
     thresh = mask * (thresh + 1e-11)
     # Avoids 0 threholds, which may occur
@@ -883,10 +889,10 @@ def thresh_truncated_MSPRT(thresh: torch.Tensor) -> torch.Tensor:
     num_classes = thresh.shape[-1]
 
     # diagonal all-zero, else one
-    mask = 1 - torch.eye(num_classes).to(_device)
+    mask = 1 - torch.eye(num_classes, device=_device)
 
     last_thresh_shape = list(thresh.shape[:-3]) + [1, num_classes, num_classes]
-    last_thresh = torch.zeros(last_thresh_shape).to(_device)
+    last_thresh = torch.zeros(last_thresh_shape, device=_device)
     last_thresh += mask * 1e-11
 
     return torch.cat([thresh[..., :-1, :, :], last_thresh], dim=-3)
@@ -936,7 +942,7 @@ def hyperspherical_threshold(
     _device = thresh.device
 
     # time steps
-    t = torch.linspace(0, time_steps - 1, time_steps).to(_device)
+    t = torch.linspace(0, time_steps - 1, time_steps, device=_device)
     # expand to 5-dim
     t = t.view(1, 1, -1, 1, 1)
 
@@ -947,7 +953,7 @@ def hyperspherical_threshold(
     tapering_thresh = thresh * (1 - t / (time_steps - 1)) ** (torch.exp(kappa))
 
     # set diagonal to zero
-    mask = 1 - torch.eye(num_classes).to(_device)
+    mask = 1 - torch.eye(num_classes, device=_device)
     tapering_thresh = mask * (tapering_thresh + 1e-11)
 
     return tapering_thresh
@@ -982,7 +988,7 @@ def check_diag_zeros_positive_offdiag(thresh_mtx: torch.Tensor) -> None:
                 + f"\nNow thresh_mtx = {thresh_mtx}"
             )
 
-    tmp = torch.eye(num_classes).to(_device)
+    tmp = torch.eye(num_classes, device=_device)
     tmp = tmp.reshape(1, 1, *([1] * (ndim - 4)), num_classes, num_classes)
     tmp_th = thresh_mtx + tmp.expand_as(thresh_mtx)
     if not (tmp_th > 0).all():

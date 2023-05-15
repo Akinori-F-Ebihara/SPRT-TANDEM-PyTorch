@@ -5,6 +5,7 @@ import tracemalloc
 import numpy as np
 from termcolor import colored
 from typing import Callable, Tuple, Set, Dict
+from types import SimpleNamespace
 import argparse
 from loguru import logger
 import torch
@@ -313,7 +314,7 @@ class ConfigSubset:
 
 def extract_params_from_config(
     requirements: Set[str], config: Dict[str, any]
-) -> ConfigSubset:
+) -> SimpleNamespace:
     """
     Extract necessary (hyper)parameters for each function. The extracted
     parameters are stored as a class instance variables for easy access.
@@ -336,7 +337,7 @@ def extract_params_from_config(
     missing_keys = requirements.difference(config.keys())
     assert not missing_keys, f"Missing necessary parameters: {', '.join(missing_keys)}"
 
-    sub_conf = ConfigSubset(**{key: config[key] for key in requirements})
+    sub_conf = SimpleNamespace(**{key.lower(): config[key] for key in requirements})
     return sub_conf
 
 

@@ -176,10 +176,10 @@ def calc_hittimes(llrs, scores_full, num_thresh, time_steps, batch_size, num_cla
 
         return preds_all_trunc
 
-    def _calc_mask(time_steps, num_thresh, batch_size, num_classes):
+    def _calc_mask(time_steps, num_thresh, batch_size, num_classes, device):
         # For hittimes
         mask = torch.tensor(
-            [i + 1 for i in range(time_steps)][::-1], dtype=torch.float32
+            [i + 1 for i in range(time_steps)][::-1], dtype=torch.float32, device=device
         )
         mask = mask.repeat(num_thresh * batch_size * num_classes)
         mask = mask.reshape(num_thresh, batch_size, num_classes, time_steps)
@@ -218,7 +218,7 @@ def calc_hittimes(llrs, scores_full, num_thresh, time_steps, batch_size, num_cla
     # filled with 0 or a one-hot vector for t != time_steps - 1.
 
     # Calc mean hitting times
-    mask = _calc_mask(time_steps, num_thresh, batch_size, num_classes).to(_device)
+    mask = _calc_mask(time_steps, num_thresh, batch_size, num_classes, device=_device)
     # (num thresh, batch, time_steps , num cls)
     hitidx, hittimes = _calc_hittimes(preds_all_trunc, mask)
     # (num thresh, batch)

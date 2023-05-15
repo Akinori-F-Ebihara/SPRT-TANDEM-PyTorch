@@ -506,8 +506,6 @@ class BaseTANDEM(nn.Module):
 
     def create_threshold(self, llrs: torch.Tensor) -> torch.Tensor:
         """ """
-        _device = llrs.device
-
         thresh = threshold_generator(
             llrs, self.num_thresh, self.sparsity
         )  # (num_thresh,)
@@ -520,7 +518,7 @@ class BaseTANDEM(nn.Module):
 
         check_diag_zeros_positive_offdiag(thresh)
 
-        return thresh.to(_device)
+        return thresh
 
     def distance_between_llrs_and_thresholds(
         self, llrs: torch.Tensor, thresh: torch.Tensor

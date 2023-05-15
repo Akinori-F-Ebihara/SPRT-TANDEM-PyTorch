@@ -1,0 +1,306 @@
+2023-05-15 04:11:41.537 | INFO     | utils.misc:fix_random_seed:405 - Random seed is not fixed.
+2023-05-15 04:11:41.554 | INFO     | models.temporal_integrators:summarize:566 - 
+:'######::'########::'########::'########::::::::::::::::::::::
+'##... ##: ##.... ##: ##.... ##:... ##..:::::::::::::::::::::::
+ ##:::..:: ##:::: ##: ##:::: ##:::: ##:::::::::::::::::::::::::
+. ######:: ########:: ########::::: ##::::'#######:::::::::::::
+:..... ##: ##.....::: ##.. ##:::::: ##::::........:::::::::::::
+'##::: ##: ##:::::::: ##::. ##::::: ##:::::::::::::::::::::::::
+. ######:: ##:::::::: ##:::. ##:::: ##:::::::::::::::::::::::::
+:......:::..:::::::::..:::::..:::::..::::::::::::::::::::::::::
+'########::::'###::::'##::: ##:'########::'########:'##::::'##:
+... ##..::::'## ##::: ###:: ##: ##.... ##: ##.....:: ###::'###:
+::: ##:::::'##:. ##:: ####: ##: ##:::: ##: ##::::::: ####'####:
+::: ##::::'##:::. ##: ## ## ##: ##:::: ##: ######::: ## ### ##:
+::: ##:::: #########: ##. ####: ##:::: ##: ##...:::: ##. #: ##:
+::: ##:::: ##.... ##: ##:. ###: ##:::: ##: ##::::::: ##:.:: ##:
+::: ##:::: ##:::: ##: ##::. ##: ########:: ########: ##:::: ##:
+:::..:::::..:::::..::..::::..::........:::........::..:::::..::
+
+2023-05-15 04:11:41.555 | INFO     | models.temporal_integrators:summarize:569 - [34mofficial PyTorch implementation.[0m
+2023-05-15 04:11:43.002 | INFO     | models.temporal_integrators:summarize:591 - Network summary:
+===============================================================================================
+Layer (type:depth-idx)                        Output Shape              Param #
+===============================================================================================
+TANDEMformer                                  [150, 50, 3, 3]           259
+├─TransformerEncoder: 1-1                     [7350, 1, 128]            --
+│    └─ModuleList: 2-2                        --                        (recursive)
+│    │    └─TransformerEncoderLayer: 3-1      [7350, 1, 128]            74,912
+├─Linear: 1-2                                 [7350, 64]                8,256
+├─Dropout: 1-3                                [7350, 64]                --
+├─TransformerEncoder: 1-4                     [7350, 2, 128]            (recursive)
+│    └─ModuleList: 2-2                        --                        (recursive)
+│    │    └─TransformerEncoderLayer: 3-2      [7350, 2, 128]            (recursive)
+├─Linear: 1-5                                 [7350, 64]                (recursive)
+├─Dropout: 1-6                                [7350, 64]                --
+├─GELU: 1-7                                   [7350, 64]                --
+├─Linear: 1-8                                 [7350, 3]                 195
+├─GELU: 1-9                                   [7350, 64]                --
+├─Linear: 1-10                                [7350, 3]                 (recursive)
+===============================================================================================
+Total params: 83,622
+Trainable params: 83,622
+Non-trainable params: 0
+Total mult-adds (M): 124.23
+===============================================================================================
+Input size (MB): 3.84
+Forward/backward pass size (MB): 7.88
+Params size (MB): 0.03
+Estimated Total Size (MB): 11.75
+===============================================================================================
+2023-05-15 04:11:43.002 | INFO     | models.temporal_integrators:summarize:592 - Example input shape: torch.Size([150, 50, 128])
+2023-05-15 04:11:43.003 | INFO     | models.temporal_integrators:summarize:593 - Example output shape: torch.Size([150, 50, 3, 3])
+2023-05-15 04:11:43.004 | INFO     | models.temporal_integrators:import_model:58 - model moved onto: [33mcuda.[0m
+2023-05-15 04:11:43.005 | INFO     | models.optimizers:initialize_optimizer:44 - Optimizer:
+AdamW (
+Parameter Group 0
+    amsgrad: False
+    betas: (0.9, 0.999)
+    capturable: False
+    differentiable: False
+    eps: 1e-08
+    foreach: None
+    fused: None
+    lr: 8.780849263289179e-05
+    maximize: False
+    weight_decay: 0.0
+)
+2023-05-15 04:11:43.005 | INFO     | datasets.data_processing:lmdb_dataloaders:293 - loading data... 
+2023-05-15 04:11:43.005 | INFO     | datasets.data_processing:lmdb_dataloaders:295 - If this process takes long, consider setting is_load_onto_memory=False or use LMDBIterableDataset.
+2023-05-15 04:11:45.469 | INFO     | __main__:objective:58 - Starting epoch #0.
+2023-05-15 04:11:45.824 | ERROR    | utils.training:run_one_epoch:273 - An error has been caught in function 'run_one_epoch', process 'MainProcess' (102293), thread 'MainThread' (140380589936640):
+Traceback (most recent call last):
+
+  File "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/sprt_tandem_main.py", line 92, in <module>
+    main()
+    └ <function main at 0x7fab30ab81f0>
+
+  File "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/sprt_tandem_main.py", line 86, in main
+    run_optuna(objective, device, config_orig)
+    │          │          │       └ {'VERBOSE': True, 'CONFIG_PATH': '/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/config/config_definition.py', 'IS_SEED': False...
+    │          │          └ device(type='cuda')
+    │          └ <function objective at 0x7face7233d90>
+    └ <function run_optuna at 0x7fab30a2d750>
+
+  File "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/utils/hyperparameter_tuning.py", line 334, in run_optuna
+    else start_optimization(objective, conf)
+         │                  │          └ <utils.misc.ConfigSubset object at 0x7fab30ab4a60>
+         │                  └ <function objective at 0x7face7233d90>
+         └ <function run_optuna.<locals>.start_optimization at 0x7fab30ab83a0>
+
+  File "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/utils/hyperparameter_tuning.py", line 208, in start_optimization
+    study.optimize(
+    │     └ <function Study.optimize at 0x7fac19391a20>
+    └ <optuna.study.study.Study object at 0x7fab294681f0>
+
+  File "/usr/local/lib/python3.10/dist-packages/optuna/study/study.py", line 425, in optimize
+    _optimize(
+    └ <function _optimize at 0x7fac1956fa30>
+  File "/usr/local/lib/python3.10/dist-packages/optuna/study/_optimize.py", line 66, in _optimize
+    _optimize_sequential(
+    └ <function _optimize_sequential at 0x7fac193911b0>
+  File "/usr/local/lib/python3.10/dist-packages/optuna/study/_optimize.py", line 163, in _optimize_sequential
+    frozen_trial = _run_trial(study, func, catch)
+                   │          │      │     └ ()
+                   │          │      └ <function run_optuna.<locals>.start_optimization.<locals>.<lambda> at 0x7fab294aec20>
+                   │          └ <optuna.study.study.Study object at 0x7fab294681f0>
+                   └ <function _run_trial at 0x7fac19391240>
+  File "/usr/local/lib/python3.10/dist-packages/optuna/study/_optimize.py", line 200, in _run_trial
+    value_or_values = func(trial)
+                      │    └ <optuna.trial._trial.Trial object at 0x7fab2936bd90>
+                      └ <function run_optuna.<locals>.start_optimization.<locals>.<lambda> at 0x7fab294aec20>
+
+  File "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/utils/hyperparameter_tuning.py", line 209, in <lambda>
+    lambda trial: objective(trial, device, config),
+           │      │         │      │       └ {'VERBOSE': True, 'CONFIG_PATH': '/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/config/config_definition.py', 'IS_SEED': False...
+           │      │         │      └ device(type='cuda')
+           │      │         └ <optuna.trial._trial.Trial object at 0x7fab2936bd90>
+           │      └ <function objective at 0x7face7233d90>
+           └ <optuna.trial._trial.Trial object at 0x7fab2936bd90>
+
+  File "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/sprt_tandem_main.py", line 59, in objective
+    best, global_step = run_one_epoch(
+    │                   └ <function run_one_epoch at 0x7fab30ab8160>
+    └ (inf, inf, inf)
+
+  File "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/utils/training.py", line 273, in run_one_epoch
+    ) = iterating_over_dataset(
+        └ <function iterating_over_dataset at 0x7fab30aa3ac0>
+
+  File "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/utils/training.py", line 131, in iterating_over_dataset
+    best, global_step = run_one_epoch(
+    │                   └ <function run_one_epoch at 0x7fab30ab8160>
+    └ (inf, inf, inf)
+
+> File "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/utils/training.py", line 273, in run_one_epoch
+    ) = iterating_over_dataset(
+        └ <function iterating_over_dataset at 0x7fab30aa3ac0>
+
+  File "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/utils/training.py", line 154, in iterating_over_dataset
+    monitored_values = p.call_loss()
+                       │ └ <function PyTorchPhaseManager.call_loss at 0x7fab72911ab0>
+                       └ <utils.misc.PyTorchPhaseManager object at 0x7fac4ba38550>
+
+  File "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/utils/misc.py", line 158, in call_loss
+    monitored_values = self.loss_func(
+                       │    └ <function compute_loss_and_metrics at 0x7fab30aa2440>
+                       └ <utils.misc.PyTorchPhaseManager object at 0x7fac4ba38550>
+
+  File "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/models/losses.py", line 373, in compute_loss_and_metrics
+    mht, sns_from_confmx = calc_ausat(llrs, scores_full, labels)
+                           │          │     │            └ tensor([0, 1, 2, 0, 2, 0, 0, 1, 1, 2, 2, 1, 1, 0, 1, 0, 1, 1, 0, 0, 2, 1, 2, 1,
+                           │          │     │                      2, 2, 0, 1, 1, 2, 2, 0, 1, 2, 2, 2, 0...
+                           │          │     └ tensor([[[[[ 0.0000e+00, -1.2634e-01, -1.0449e-02],
+                           │          │                  [ 1.2632e-01,  0.0000e+00,  1.1588e-01],
+                           │          │                  [ 1.0428e-...
+                           │          └ tensor([[[[ 0.0000e+00, -1.2633e-01, -1.0438e-02],
+                           │                      [ 1.2633e-01,  0.0000e+00,  1.1589e-01],
+                           │                      [ 1.0438e-02,...
+                           └ <function calc_ausat at 0x7fab30aa2200>
+
+  File "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/models/losses.py", line 234, in calc_ausat
+    hitidx, hittimes = calc_hittimes(
+                       └ <function calc_hittimes at 0x7fab30aa2170>
+
+  File "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/models/losses.py", line 221, in calc_hittimes
+    mask = _calc_mask(time_steps, num_thresh, batch_size, num_classes, device=_device)
+           │          │           │           │           │                   └ device(type='cuda', index=0)
+           │          │           │           │           └ 3
+           │          │           │           └ 150
+           │          │           └ 1500
+           │          └ 50
+           └ <function calc_hittimes.<locals>._calc_mask at 0x7fab291ae950>
+
+TypeError: calc_hittimes.<locals>._calc_mask() got an unexpected keyword argument 'device'
+2023-05-15 04:11:46.021 | ERROR    | utils.training:run_one_epoch:273 - An error has been caught in function 'run_one_epoch', process 'MainProcess' (102293), thread 'MainThread' (140380589936640):
+Traceback (most recent call last):
+
+  File "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/sprt_tandem_main.py", line 92, in <module>
+    main()
+    └ <function main at 0x7fab30ab81f0>
+
+  File "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/sprt_tandem_main.py", line 86, in main
+    run_optuna(objective, device, config_orig)
+    │          │          │       └ {'VERBOSE': True, 'CONFIG_PATH': '/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/config/config_definition.py', 'IS_SEED': False...
+    │          │          └ device(type='cuda')
+    │          └ <function objective at 0x7face7233d90>
+    └ <function run_optuna at 0x7fab30a2d750>
+
+  File "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/utils/hyperparameter_tuning.py", line 334, in run_optuna
+    else start_optimization(objective, conf)
+         │                  │          └ <utils.misc.ConfigSubset object at 0x7fab30ab4a60>
+         │                  └ <function objective at 0x7face7233d90>
+         └ <function run_optuna.<locals>.start_optimization at 0x7fab30ab83a0>
+
+  File "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/utils/hyperparameter_tuning.py", line 208, in start_optimization
+    study.optimize(
+    │     └ <function Study.optimize at 0x7fac19391a20>
+    └ <optuna.study.study.Study object at 0x7fab294681f0>
+
+  File "/usr/local/lib/python3.10/dist-packages/optuna/study/study.py", line 425, in optimize
+    _optimize(
+    └ <function _optimize at 0x7fac1956fa30>
+  File "/usr/local/lib/python3.10/dist-packages/optuna/study/_optimize.py", line 66, in _optimize
+    _optimize_sequential(
+    └ <function _optimize_sequential at 0x7fac193911b0>
+  File "/usr/local/lib/python3.10/dist-packages/optuna/study/_optimize.py", line 163, in _optimize_sequential
+    frozen_trial = _run_trial(study, func, catch)
+                   │          │      │     └ ()
+                   │          │      └ <function run_optuna.<locals>.start_optimization.<locals>.<lambda> at 0x7fab294aec20>
+                   │          └ <optuna.study.study.Study object at 0x7fab294681f0>
+                   └ <function _run_trial at 0x7fac19391240>
+  File "/usr/local/lib/python3.10/dist-packages/optuna/study/_optimize.py", line 200, in _run_trial
+    value_or_values = func(trial)
+                      │    └ <optuna.trial._trial.Trial object at 0x7fab2936bd90>
+                      └ <function run_optuna.<locals>.start_optimization.<locals>.<lambda> at 0x7fab294aec20>
+
+  File "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/utils/hyperparameter_tuning.py", line 209, in <lambda>
+    lambda trial: objective(trial, device, config),
+           │      │         │      │       └ {'VERBOSE': True, 'CONFIG_PATH': '/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/config/config_definition.py', 'IS_SEED': False...
+           │      │         │      └ device(type='cuda')
+           │      │         └ <optuna.trial._trial.Trial object at 0x7fab2936bd90>
+           │      └ <function objective at 0x7face7233d90>
+           └ <optuna.trial._trial.Trial object at 0x7fab2936bd90>
+
+  File "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/sprt_tandem_main.py", line 59, in objective
+    best, global_step = run_one_epoch(
+    │                   └ <function run_one_epoch at 0x7fab30ab8160>
+    └ (inf, inf, inf)
+
+> File "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/utils/training.py", line 273, in run_one_epoch
+    ) = iterating_over_dataset(
+        └ <function iterating_over_dataset at 0x7fab30aa3ac0>
+
+  File "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/utils/training.py", line 131, in iterating_over_dataset
+    best, global_step = run_one_epoch(
+    │                   └ <function run_one_epoch at 0x7fab30ab8160>
+    └ (inf, inf, inf)
+
+  File "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/utils/training.py", line 268, in run_one_epoch
+    (
+
+TypeError: cannot unpack non-iterable NoneType object
+2023-05-15 04:11:46.027 | INFO     | utils.logging:investigate_log:155 - num_warning=0/num_error=1 in the .log file.
+2023-05-15 04:11:46.027 | WARNING  | utils.logging:investigate_log:161 - Found ERROR! check the .log file for debug!
+2023-05-15 04:11:46.054 | WARNING  | optuna.study._optimize:_log_failed_trial:261 - Trial 34 failed with parameters: {'LIST_IS_POSITIONAL_ENCODING': False, 'LIST_MODEL_BACKBONE': 'Transformer', 'LIST_WEIGHT_DECAY': 0.0, 'LIST_LEARNING_RATE': 8.780849263289179e-05, 'LIST_LLLR_VERSION': 'LLLR', 'LIST_ACTIVATION_FC': 'gelu', 'LIST_PARAM_MULTIPLET_LOSS': 0.8, 'LIST_PARAM_LLR_LOSS': 0.1, 'LIST_IS_ADAPTIVE_LOSS': True, 'LIST_ORDER_SPRT': 1, 'LIST_OPTIMIZER': 'adam', 'LIST_IS_NORMALIZE': False, 'LIST_NUM_THRESH': 1500, 'LIST_SPARSITY': 'linspace', 'LIST_NUM_BLOCKS': 1, 'LIST_NUM_HEADS': 4, 'LIST_DROPOUT': 0.4, 'LIST_FF_DIM': 32, 'LIST_MLP_UNITS': 64} because of the following error: TypeError('cannot unpack non-iterable NoneType object').
+Traceback (most recent call last):
+
+  File "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/sprt_tandem_main.py", line 92, in <module>
+    main()
+    └ <function main at 0x7fab30ab81f0>
+
+  File "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/sprt_tandem_main.py", line 86, in main
+    run_optuna(objective, device, config_orig)
+    │          │          │       └ {'VERBOSE': True, 'CONFIG_PATH': '/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/config/config_definition.py', 'IS_SEED': False...
+    │          │          └ device(type='cuda')
+    │          └ <function objective at 0x7face7233d90>
+    └ <function run_optuna at 0x7fab30a2d750>
+
+  File "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/utils/hyperparameter_tuning.py", line 334, in run_optuna
+    else start_optimization(objective, conf)
+         │                  │          └ <utils.misc.ConfigSubset object at 0x7fab30ab4a60>
+         │                  └ <function objective at 0x7face7233d90>
+         └ <function run_optuna.<locals>.start_optimization at 0x7fab30ab83a0>
+
+  File "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/utils/hyperparameter_tuning.py", line 208, in start_optimization
+    study.optimize(
+    │     └ <function Study.optimize at 0x7fac19391a20>
+    └ <optuna.study.study.Study object at 0x7fab294681f0>
+
+  File "/usr/local/lib/python3.10/dist-packages/optuna/study/study.py", line 425, in optimize
+    _optimize(
+    └ <function _optimize at 0x7fac1956fa30>
+  File "/usr/local/lib/python3.10/dist-packages/optuna/study/_optimize.py", line 66, in _optimize
+    _optimize_sequential(
+    └ <function _optimize_sequential at 0x7fac193911b0>
+  File "/usr/local/lib/python3.10/dist-packages/optuna/study/_optimize.py", line 163, in _optimize_sequential
+    frozen_trial = _run_trial(study, func, catch)
+                   │          │      │     └ ()
+                   │          │      └ <function run_optuna.<locals>.start_optimization.<locals>.<lambda> at 0x7fab294aec20>
+                   │          └ <optuna.study.study.Study object at 0x7fab294681f0>
+                   └ <function _run_trial at 0x7fac19391240>
+> File "/usr/local/lib/python3.10/dist-packages/optuna/study/_optimize.py", line 200, in _run_trial
+    value_or_values = func(trial)
+                      │    └ <optuna.trial._trial.Trial object at 0x7fab2936bd90>
+                      └ <function run_optuna.<locals>.start_optimization.<locals>.<lambda> at 0x7fab294aec20>
+
+  File "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/utils/hyperparameter_tuning.py", line 209, in <lambda>
+    lambda trial: objective(trial, device, config),
+           │      │         │      │       └ {'VERBOSE': True, 'CONFIG_PATH': '/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/config/config_definition.py', 'IS_SEED': False...
+           │      │         │      └ device(type='cuda')
+           │      │         └ <optuna.trial._trial.Trial object at 0x7fab2936bd90>
+           │      └ <function objective at 0x7face7233d90>
+           └ <optuna.trial._trial.Trial object at 0x7fab2936bd90>
+
+  File "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/sprt_tandem_main.py", line 59, in objective
+    best, global_step = run_one_epoch(
+    │                   └ <function run_one_epoch at 0x7fab30ab8160>
+    └ (inf, inf, inf)
+
+  File "/home/afe/Dropbox/GitHub/SPRT-TANDEM-PyTorch/utils/training.py", line 268, in run_one_epoch
+    (
+
+TypeError: cannot unpack non-iterable NoneType object
+2023-05-15 04:11:46.059 | WARNING  | optuna.study._optimize:_log_failed_trial:268 - Trial 34 failed with value None.
+2023-05-15 04:11:46.250 | INFO     | utils.misc:__exit__:207 - elapsed time:  0.001521 hours. ()
+2023-05-15 04:11:46.271 | INFO     | utils.misc:__exit__:208 - Memory usage: 1901.69 megabytes
