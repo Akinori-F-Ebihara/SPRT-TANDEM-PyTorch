@@ -37,7 +37,7 @@ The long short-term memory (LSTM, 1) with the back-to-back square root (B2Bsqrt)
 It's important to note that setting ACTIVATION_OUTPUT to "tanh" will result in a vanilla LSTM. The B2Bsqrt function was introduced in the ICASSP2023 paper as a way to precisely avoid the likelihood ratio saturation problem in SDRE.  
 
 \begin{align}
-f_{\mathrm{B2Bsqrt}}(x) := \mathrm{sign}(x)(\sqrt{\alpha+|x|}-\sqrt{\alpha})
+&\ f_{\mathrm{B2Bsqrt}}(x) := \mathrm{sign}(x)(\sqrt{\alpha+|x|}-\sqrt{\alpha})
 \end{align}
 
 <div align="center">
@@ -69,11 +69,9 @@ SPRT-TANDEM uses both the loss for sequential likelihood ratio estimation (SDRE)
 Additionally, modify the values of PARAM_LLR_LOSS and PARAM_MULTIPLET_LOSS to achieve the desired balance between likelihood estimation and cross-entropy loss.
 ### Log-sum exponential loss (LSEL, [ICML2021](http://proceedings.mlr.press/v139/miyagawa21a.html))  
 
-<!-- \begin{align} -->
-$
+\begin{align}
 \hat{L}_{\mathrm{LSEL}} (\theta; S) := \mathbb{E} \left[ \log\left(1 + \sum_{l(\neq k)} e^{ - \hat{\lambda}_{k l} ( X_i^{(1,t)}; \theta) }\right)  \right]
-$
-<!-- \end{align} -->
+\end{align}
   <!-- 1 + \sum_{ l ( \neq k ) } e^{ - \hat{\lambda}_{k l} ( X_i^{(1,t)}; \mathbb{\theta } ) }  -->
 ### Loss for log-likelihood ratio estimation (LLLR, [ICLR2021](https://openreview.net/forum?id=Rhsu5qD36cL))  
 
