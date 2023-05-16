@@ -69,9 +69,11 @@ SPRT-TANDEM uses both the loss for sequential likelihood ratio estimation (SDRE)
 Additionally, modify the values of PARAM_LLR_LOSS and PARAM_MULTIPLET_LOSS to achieve the desired balance between likelihood estimation and cross-entropy loss.
 ### Log-sum exponential loss (LSEL, [ICML2021](http://proceedings.mlr.press/v139/miyagawa21a.html))  
 
-\begin{align}
-\hat{L}_{\mathrm{LSEL}} (\mathbb{\theta}; S) := \mathbb{E} \left[ \log\left( 1  \right)  \right]
-\end{align}
+<!-- \begin{align} -->
+$
+\hat{L}_{\mathrm{LSEL}} (\theta; S) := \mathbb{E} \left[ \log\left(1 + \sum_{l(\neq k)} e^{ - \hat{\lambda}_{k l} ( X_i^{(1,t)}; \theta) }\right)  \right]
+$
+<!-- \end{align} -->
   <!-- 1 + \sum_{ l ( \neq k ) } e^{ - \hat{\lambda}_{k l} ( X_i^{(1,t)}; \mathbb{\theta } ) }  -->
 ### Loss for log-likelihood ratio estimation (LLLR, [ICLR2021](https://openreview.net/forum?id=Rhsu5qD36cL))  
 
