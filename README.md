@@ -27,9 +27,9 @@ optuna      3.1.0
 This article is best read using the Chrome browser with the [MathJax Plugin for GitHub](https://chrome.google.com/webstore/detail/mathjax-plugin-for-github/ioemnmodlmafdkllaclgeombjnmnbima?hl=en) installed.
 
 ## Supported Network Architectures  
-We support the two major architectures for processing time series data: LSTM and Transformer. To avoid the likelihood ratio saturation problem and approach asymptotic optimality (for details, see [Ebihara+, ICASSP2023](https://arxiv.org/abs/2302.09810)), we developed two novel models based on these architectures: B2Bssqrt-TANDEM (based on LSTM) and TANDEMformer (based on Transformer).
+We support the two major architectures for processing time series data: Long short-term memory (LSTM, [1]) and Transformer [2]. To avoid the likelihood ratio saturation problem and approach asymptotic optimality (for details, see [Ebihara+, ICASSP2023](https://arxiv.org/abs/2302.09810)), we developed two novel models based on these architectures: B2Bssqrt-TANDEM (based on LSTM) and TANDEMformer (based on Transformer).
 ### LSTM (B2Bsqrt-TANDEM, [ICASSP2023](https://arxiv.org/abs/2302.09810))  
-The long short-term memory (LSTM, 1) with the back-to-back square root (B2Bsqrt) activation function can be used by setting the following variables: 
+The LSTM with the back-to-back square root (B2Bsqrt) activation function can be used by setting the following variables: 
 
 - MODEL_BACKBONE: "LSTM"
 - ACTIVATION_OUTPUT: "B2Bsqrt"  
@@ -131,7 +131,7 @@ EXP_PHASE must be set as one of the followings:
 The subproject name will be suffixed with the EXP_PHASE to prevent contamination of results from different phases.
 
 ## Hyperparameter Tuning
-Optuna [1] is supported for hyperparameter tuning. To begin, edit the following variables in the [config_definition.py](https://github.com/Akinori-F-Ebihara/SPRT-TANDEM-PyTorch/blob/main/config/config_definition.py):
+Our project supports Optuna [3] for hyperparameter tuning. To begin, edit the following variables in the [config_definition.py](https://github.com/Akinori-F-Ebihara/SPRT-TANDEM-PyTorch/blob/main/config/config_definition.py):
 - EXP_PHASE: set as "tuning" to enter hyperparameter tuning mode.
 - NUM_TRIALS: set an integer that specifies the number of hyperparameter sets to experiment with.
 - PRUNER_NAME (optional): select a pruner supported by Optuna, or set it to "None."    
@@ -233,7 +233,9 @@ ___Please cite the orignal paper(s) if you use the whole or a part of our codes.
 ```
 
 ## References
-1. T. Akiba, S. Sano, T. Yanase, T. Ohta, and M. Koyama, “Optuna: A next-generation hyperparameter optimization framework,” in KDD, 2019, p. 2623–2631.
+1. S. Hochreiter and J. Schmidhuber, “Long short-term memory,” Neural Comput., vol. 9, no. 8, pp. 1735–1780, 1997.
+2. T. Akiba, S. Sano, T. Yanase, T. Ohta, and M. Koyama, “Optuna: A next-generation hyperparameter optimization framework,” in KDD, 2019, p. 2623–2631.
+3. A. Vaswani, N. Shazeer, N. Parmar, J. Uszkoreit, L. Jones, A. N. Gomez, L. u. Kaiser, and I. Polosukhin, “Attention is all you need,” in NeurIPS, 2017, vol. 30, pp. 5998–6008.
 
 ## Contacts
 SPRT-TANDEM marks its 4th anniversary. What started as a small project has now become a huge undertaking that we never imagined. Due to its complexity, it is difficult for me to explain all the details in this README section. Please feel free to reach out to me anytime if you have any questions.
