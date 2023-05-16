@@ -54,6 +54,7 @@ The Transformer is equipped with the Normalized Summation Pooling (NSP) layer, w
 \begin{definition}
 \textbf{NSP.} Let $X_i^{(t, t+w)}$ be subtokens sampled with a sliding window of size $w \in [N]$, and let $Z_i^{(t, t+w)}:=\{z_i^{(s)}\}^{t+w}_{s=t}$ be the subtokens mixed with self-attention. Given the Markov order $N$, the \texttt{NSP} layer is defined as:
 \end{definition}
+
 \begin{align}
 NSP(Z_i^{(t, t+w)}) := \sum_{s=t}^{t+w}\frac{z_i^{(s)}}{N+1}.
 \end{align}
