@@ -70,9 +70,9 @@ Additionally, modify the values of PARAM_LLR_LOSS and PARAM_MULTIPLET_LOSS to ac
 ### Log-sum exponential loss (LSEL, [ICML2021](http://proceedings.mlr.press/v139/miyagawa21a.html))  
 
 \begin{align}
-\hat{L}_{\mathrm{LSEL}} (\mathbb{\theta}; S) := \mathbb{E} \left[ \log\left( 1 + \sum \right)  \right]
+\hat{L}_{\mathrm{LSEL}} (\mathbb{\theta}; S) := \mathbb{E} \left[ \log\left( 1 + \sum e^{ - \hat{\lambda}_{k l} ( X_i^{(1,t)}; \mathbb{\theta } ) } \right)  \right]
 \end{align}
-  1 + \sum_{ l ( \neq k ) } e^{ - \hat{\lambda}_{k l} ( X_i^{(1,t)}; \mathbb{\theta } ) } 
+  <!-- \sum_{ l ( \neq k ) }   -->
 ### Loss for log-likelihood ratio estimation (LLLR, [ICLR2021](https://openreview.net/forum?id=Rhsu5qD36cL))  
 
 \begin{align}
