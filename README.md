@@ -40,6 +40,8 @@ It's important to note that setting ACTIVATION_OUTPUT to "tanh" will result in a
 f_{\mathrm{B2Bsqrt}}(x) := \mathrm{sign}(x)(\sqrt{\alpha+|x|}-\sqrt{\alpha})
 \end{align}
 
+Where $\alpha$ is a hyperparameter. 
+
 <div align="center">
 <figure>
 <img src ="./images/Conceptual_figure_B2Bsqrt.png" width=60%>  
@@ -51,9 +53,7 @@ f_{\mathrm{B2Bsqrt}}(x) := \mathrm{sign}(x)(\sqrt{\alpha+|x|}-\sqrt{\alpha})
 ### Transformer (TANDEMformer, [ICASSP2023](https://arxiv.org/abs/2302.09810))  
 The Transformer is equipped with the Normalized Summation Pooling (NSP) layer, which is incorporated by default.
 
-\begin{definition}
-\textbf{NSP.} Let $X_i^{(t, t+w)}$ be subtokens sampled with a sliding window of size $w \in [N]$, and let $Z_i^{(t, t+w)}:=\{z_i^{(s)}\}^{t+w}_{s=t}$ be the subtokens mixed with self-attention. Given the Markov order $N$, the \texttt{NSP} layer is defined as:
-\end{definition}
+Let $X_i^{(t, t+w)}$ be subtokens sampled with a sliding window of size $w \in [N]$, and let $Z_i^{(t, t+w)}:=\{z_i^{(s)}\}^{t+w}_{s=t}$ be the subtokens mixed with self-attention. Given the Markov order $N$, the \texttt{NSP} layer is defined as:
 
 \begin{align}
 NSP(Z_i^{(t, t+w)}) := \sum_{s=t}^{t+w}\frac{z_i^{(s)}}{N+1}.
