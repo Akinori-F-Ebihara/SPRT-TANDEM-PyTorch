@@ -49,7 +49,13 @@ f_{\mathrm{B2Bsqrt}}(x) := \mathrm{sign}(x)(\sqrt{\alpha+|x|}-\sqrt{\alpha})
 
 
 ### Transformer (TANDEMformer, [ICASSP2023](https://arxiv.org/abs/2302.09810))  
-The Transformer is equipped with the Normalized Summation Pooling (NSP) layer, which is incorporated by default. To use it, set the following variable:
+The Transformer is equipped with the Normalized Summation Pooling (NSP) layer, which is incorporated by default:
+
+\begin{align}
+\text{NSP} := \mathrm{sign}(x)(\sqrt{\alpha+|x|}-\sqrt{\alpha})
+\end{align}
+
+To use it, set the following variable:
 
 - MODEL_BACKBONE: "Transformer"
 
@@ -70,7 +76,7 @@ Additionally, modify the values of PARAM_LLR_LOSS and PARAM_MULTIPLET_LOSS to ac
 ### Log-sum exponential loss (LSEL, [ICML2021](http://proceedings.mlr.press/v139/miyagawa21a.html))  
 
 \begin{align}
-\hat{L}_{\mathrm{\text{LSEL}}} (\mathbb{\theta}; S) := \mathbb{E} \left[ \log \left(   1 + \sum\_{l(\neq k)} e^{ -\hat{\lambda}\_{k_l}   ( X_i^{(1,t)}; \theta)  }\right)  \right]
+\hat{L}_{\mathrm{\text{LSEL}}} (\mathbb{\theta}; S) := \mathbb{E} \left[ \log \left(   1 + \sum\_{l(\neq k)} e^{ -\hat{\lambda}\_{k,l}   ( X_i^{(1,t)}; \theta)  }\right)  \right]
 \end{align}
 
 <!-- 1 + \sum_{l(\neq k)} e^{ - \hat{\lambda}_{k l} ( X_i^{(1,t)}; \theta) } -->
@@ -78,7 +84,7 @@ Additionally, modify the values of PARAM_LLR_LOSS and PARAM_MULTIPLET_LOSS to ac
 ### Loss for log-likelihood ratio estimation (LLLR, [ICLR2021](https://openreview.net/forum?id=Rhsu5qD36cL))  
 
 \begin{align}
-\hat{L}_{\mathrm{\text{LLLR}}} (\mathbb{\theta}; S) := \mathbb{E} \left[ \left| y - \sigma\left( \hat{\lambda}\_{k_l}   ( X_i^{(1,t)}; \theta) \right) \right| \right]
+\hat{L}_{\mathrm{\text{LLLR}}} (\mathbb{\theta}; S) := \mathbb{E} \left[ \left| y - \sigma\left( \hat{\lambda}\_{k,l}   ( X_i^{(1,t)}; \theta) \right) \right| \right]
 \end{align}
 
 ## Order N of Markov assumption
