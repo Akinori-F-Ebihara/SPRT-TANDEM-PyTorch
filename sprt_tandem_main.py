@@ -1,5 +1,4 @@
 # import tensorboard # just for launching TensorBoard Session on VSCode
-import pdb
 from typing import Tuple, Dict, Any
 from tqdm import tqdm
 from termcolor import colored
@@ -15,7 +14,7 @@ from utils.training import prepare_for_training, run_one_epoch
 
 
 def objective(
-    trial: optuna.Trial, device: torch.device, config_orig: Dict[str, Any]
+    trial: optuna.Trial, device: str, config_orig: Dict[str, Any]
 ) -> Tuple[float, ...]:
     """
     Defines the objective function for Optuna to optimize.
@@ -45,7 +44,8 @@ def objective(
     # The log file will be investigated earch time the code exits from
     # the context. Error will be raised when error logs are found.
     with ContexualLogger(config, is_stop_at_error=False):
-        model, optimizer, data_loaders, tb_writer = prepare_for_training(config, device)
+        model, optimizer, data_loaders, tb_writer = prepare_for_training(
+            config, device)
 
         best = initialize_objectives(config)
         global_step = 0
