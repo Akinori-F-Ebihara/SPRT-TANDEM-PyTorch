@@ -28,7 +28,7 @@ from utils.performance_metrics import training_setup, accumulate_performance
 
 @logger.catch
 def prepare_for_training(
-    config: Dict[str, Any], device: torch.device
+    config: Dict[str, Any], device: str
 ) -> Tuple[nn.Module, optim.Optimizer, Dict[str, data.DataLoader], SummaryWriter]:
     """
     Prepare the network and data for training.
@@ -83,7 +83,7 @@ def iterating_over_dataset(
     trial: Trial,
     model: nn.Module,
     optimizer: optim.Optimizer,
-    device: torch.device,
+    device: str,
     data_loaders: Dict[str, data.DataLoader],
     tb_writer: SummaryWriter,
     config: Dict[str, Any],
@@ -113,7 +113,8 @@ def iterating_over_dataset(
     - best: A tuple of the updated best performance metrics.
     """
 
-    is_train, iter_num, performance_metrics, barcolor = training_setup(phase, config)
+    is_train, iter_num, performance_metrics, barcolor = training_setup(
+        phase, config)
 
     for local_step, data in tqdm(
         enumerate(data_loaders[phase]),
@@ -238,7 +239,7 @@ def run_one_epoch(
     trial: Trial,
     model: nn.Module,
     optimizer: optim.Optimizer,
-    device: torch.device,
+    device: str,
     data_loaders: Dict[str, data.DataLoader],
     tb_writer: SummaryWriter,
     config: Dict[str, Any],

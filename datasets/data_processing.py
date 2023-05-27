@@ -1,14 +1,16 @@
-import pdb
 import pickle
-import torch
+from types import SimpleNamespace
+from typing import Any, Iterator, List, Tuple, Union, cast
+
 import lmdb
-from termcolor import colored
-from tqdm import tqdm
-from loguru import logger
 import numpy as np
+import torch
+from torch import Tensor
+from loguru import logger
 from scipy.stats import multivariate_normal
-from utils.misc import extract_params_from_config, ConfigSubset
-from typing import Callable, Tuple, List, Iterator, Any, Union
+from tqdm import tqdm
+
+from utils.misc import extract_params_from_config
 
 
 def numpy_to_torch(*args):
@@ -50,9 +52,14 @@ def move_to_device(device, *args):
 
 
 def move_data_to_device(
-    data: Tuple[Union[torch.Tensor, Tuple[torch.Tensor, ...]], ...],
-    device: torch.device,
-) -> Tuple[torch.Tensor, ...]:
+    data: Union[
+        Tuple[Tensor, Tensor],
+        Tuple[Tensor, Tensor, Tensor],
+    ],
+    device: str,
+) -> Union[
+    Tuple[Tensor, Tensor], Tuple[Tensor, Tensor, Tensor]
+]:
     """
     Move the input data to the specified device based on the length of the input data tuple.
 
@@ -66,16 +73,20 @@ def move_data_to_device(
     Raises:
         ValueError: If the length of the input data tuple is not 2 or 3.
     """
+
     if len(data) == 3:
-        # if the dataset contains ground-truth log likelihood ratio
-        x_batch, y_batch, gt_llrs_batch = data
+        # if the dataset contains ground-truth log likelihood ratio.
+        # Casting is required to explicitly show the type to mypy. Note that it does not do any actual runtime checks.
+        x_batch, y_batch, gt_llrs_batch = cast(
+            Tuple[Tensor, Tensor, Tensor], data)
         x_batch, y_batch, gt_llrs_batch = move_to_device(
             device, x_batch, y_batch, gt_llrs_batch
         )
         return x_batch, y_batch, gt_llrs_batch
     elif len(data) == 2:
-        # data and label only: typical real-world data
-        x_batch, y_batch = data
+        # Data and label only: typical real-world data.
+        # Casting is required to explicitly show the type to mypy. Note that it does not do any actual runtime checks.
+        x_batch, y_batch = cast(Tuple[Tensor, Tensor], data)
         x_batch, y_batch = move_to_device(device, x_batch, y_batch)
         return x_batch, y_batch
     else:
@@ -125,7 +136,8 @@ class LMDBDataset(torch.utils.data.Dataset):
                     for i in range(self.data_size):
                         item = {}
                         for name in self.names:
-                            item_bytes = txn.get(f"{i:08}_{name}".encode("ascii"))
+                            item_bytes = txn.get(
+                                f"{i:08}_{name}".encode("ascii"))
                             item[name] = pickle.loads(item_bytes)
                         self.data.append(item)
 
@@ -156,7 +168,8 @@ class LMDBDataset(torch.utils.data.Dataset):
                 with env.begin(buffers=True) as txn:
                     item = {}
                     for name in self.names:
-                        item_bytes = txn.get(f"{index:08}_{name}".encode("ascii"))
+                        item_bytes = txn.get(
+                            f"{index:08}_{name}".encode("ascii"))
                         item[name] = pickle.loads(item_bytes)
         # Convert the data and label to PyTorch tensors
         _tensors = []
@@ -183,12 +196,12 @@ class LMDBIterableDataset(torch.utils.data.IterableDataset):
         self.lmdb_path = lmdb_path
         self.names = names
 
-    def __iter__(self) -> Iterator[Tuple[Any]]:
+    def __iter__(self) -> Iterator[Tuple[Tensor, ...]]:
         """
         Iterator that yields data samples from the LMDB database.
 
         Returns:
-            Iterator[Tuple[Any]]: An iterator of tuples containing PyTorch tensors.
+            Iterator[Tuple[Tensor, ...]]: An iterator of tuples containing PyTorch tensors.
         """
 
         # Open the LMDB database for each worker
@@ -212,9 +225,11 @@ class LMDBIterableDataset(torch.utils.data.IterableDataset):
                     _tensors = []
                     for name in self.names:
                         if "label" in name:
-                            _tensors.append(torch.tensor(item[name]).to(torch.int64))
+                            _tensors.append(torch.tensor(
+                                item[name]).to(torch.int64))
                         else:
-                            _tensors.append(torch.tensor(item[name]).to(torch.float32))
+                            _tensors.append(torch.tensor(
+                                item[name]).to(torch.float32))
 
                     # Yield the data before incrementing the index
                     yield tuple(_tensors)
@@ -349,13 +364,13 @@ def lmdb_dataloaders(config: dict, load_test=False) -> dict:
 
 
 def initialize_multivariate_gaussian(
-    conf: ConfigSubset,
+    conf: SimpleNamespace,
 ) -> Tuple[np.ndarray, np.ndarray, List]:
     """
     Initialize a multivariate Gaussian distribution for each class.
 
     Args:
-    - conf (ConfigSubset): an instance of the ConfigSubset class containing the following keys:
+    - conf (SimpleNamespace): an instance of the SimpleNamespace class containing the following keys:
         - num_classes (int): the number of classes.
         - feat_dim (int): the feature dimension.
         - density_offset (float): the density offset used to initialize the mean vectors.
@@ -376,7 +391,7 @@ def initialize_multivariate_gaussian(
 
 
 def compute_log_likelihood_ratio_matrix(
-    x: np.ndarray, pdfs: List, conf: ConfigSubset
+    x: np.ndarray, pdfs: List, conf: SimpleNamespace
 ) -> np.ndarray:
     """
     Compute the log-likelihood ratio matrix for each sample in x.
@@ -384,7 +399,7 @@ def compute_log_likelihood_ratio_matrix(
     Args:
     - x (ndarray): an array of shape (batch_size, feat_dim) containing the feature vectors.
     - pdfs (list): a list of multivariate normal distributions, one for each class.
-    - conf (ConfigSubset): an instance of the ConfigSubset class containing the following keys:
+    - conf (SimpleNamespace): an instance of the SimpleNamespace class containing the following keys:
         - num_classes (int): the number of classes.
         - batch_size (int): the number of samples.
         - feat_dim (int): the feature dimension.
@@ -458,7 +473,8 @@ def generate_likelihood_ratio_matrix(conf):
             x_cls = np.stack(x_time_pool, axis=1)
             # reshape into (BATCH_SIZE, TIME_STEPS, NUM_CLASSES, NUM_CLASSES)
             llrm_cls = np.stack(llrm_time_pool, axis=1)
-            assert x_cls.shape == (conf.batch_size, conf.time_steps, conf.feat_dim)
+            assert x_cls.shape == (
+                conf.batch_size, conf.time_steps, conf.feat_dim)
             assert y.shape == (conf.batch_size,)  # size y: (BATCH_SIZE)
             assert llrm_cls.shape == (
                 conf.batch_size,
@@ -503,7 +519,8 @@ def generate_likelihood_ratio_matrix(conf):
         conf.time_steps,
         conf.feat_dim,
     )
-    assert y_iter_pool.shape == (conf.num_iter * conf.num_classes * conf.batch_size,)
+    assert y_iter_pool.shape == (
+        conf.num_iter * conf.num_classes * conf.batch_size,)
     assert llrm_iter_pool.shape == (
         conf.num_iter * conf.num_classes * conf.batch_size,
         conf.time_steps,
@@ -557,47 +574,10 @@ def sequential_slice(x, y, order_sprt):
 
     for i in range(time_steps - order_sprt):
         if i == 0:
-            x_slice = x[:, i : i + order_sprt + 1, :]
+            x_slice = x[:, i: i + order_sprt + 1, :]
             y_slice = y
         else:
-            x_slice = torch.cat([x_slice, x[:, i : i + order_sprt + 1, :]], 0)
-            y_slice = torch.cat([y_slice, y], 0)
-
-    return x_slice, y_slice
-
-
-def sequential_slice(x, y, order_sprt):
-    """Slice, copy, and concat a batch to make a time-sliced, augumented batch
-    Effective batch size will be batch * (time_steps - order_sprt)).
-    e.g., nosaic MNIST and 2nd-order SPRT:
-        effective batch size is (20-2)=18 times larger than the original batch size.
-    Args:
-        x: A Tensor with shape (batch, time_steps, feature dimension).
-        y: A Tensor with shape (batch).
-        order_sprt: An int. The order of SPRT.
-    Returns:
-        x_slice: A Tensor with shape (batch*(time_steps-order_sprt), order_sprt+1, feat dim).
-        y_slice: A Tensor with shape (batch*(time_steps-order_sprt),).
-    Remark:
-        y_slice may be a confusing name, because we copy and concatenate original y to obtain y_slice.
-    """
-    x, y = numpy_to_torch(x, y)
-
-    time_steps = x.shape[1]
-
-    if time_steps < order_sprt + 1:
-        raise ValueError(
-            "order_sprt must be <= time_steps - 1. Now order_sprt={}, time_steps={} .".format(
-                order_sprt, time_steps
-            )
-        )
-
-    for i in range(time_steps - order_sprt):
-        if i == 0:
-            x_slice = x[:, i : i + order_sprt + 1, :]
-            y_slice = y
-        else:
-            x_slice = torch.cat([x_slice, x[:, i : i + order_sprt + 1, :]], 0)
+            x_slice = torch.cat([x_slice, x[:, i: i + order_sprt + 1, :]], 0)
             y_slice = torch.cat([y_slice, y], 0)
 
     return x_slice, y_slice
@@ -616,9 +596,10 @@ def sequential_slice_data(inputs, order_sprt):
 
     for i in range(time_steps - order_sprt):
         if i == 0:
-            x_slice = inputs[:, i : i + order_sprt + 1, :]
+            x_slice = inputs[:, i: i + order_sprt + 1, :]
         else:
-            x_slice = torch.cat([x_slice, inputs[:, i : i + order_sprt + 1, :]], 0)
+            x_slice = torch.cat(
+                [x_slice, inputs[:, i: i + order_sprt + 1, :]], 0)
 
     return x_slice
 
@@ -662,7 +643,8 @@ def sequential_concat_logits(
     batch_size = int(logits_slice.shape[0] / (time_steps - order_sprt))
     feat_dim = logits_slice.shape[-1]
 
-    batch_size = logits_slice.shape[0] // (time_steps - logits_slice.shape[1] + 1)
+    batch_size = logits_slice.shape[0] // (time_steps -
+                                           logits_slice.shape[1] + 1)
     feat_dim = logits_slice.shape[-1]
 
     x_concat = logits_slice.reshape(

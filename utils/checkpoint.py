@@ -1,6 +1,8 @@
 import os
 import glob
-import pdb
+from typing import List
+from types import SimpleNamespace
+
 import numpy as np
 from termcolor import colored
 from loguru import logger
@@ -50,7 +52,7 @@ def update_and_save_result(
     - best (tuple): The updated best value.
     """
 
-    def concatenate_variables(variables: tuple, n_digits: int) -> str:
+    def concatenate_variables(variables: List, n_digits: int) -> str:
         """ """
 
         def format_float(f, n_digits):
@@ -82,7 +84,7 @@ def update_and_save_result(
 
         logger.info(colored("Saved checkpoint", "cyan") + f" at step {global_step}.")
 
-    def keep_max_num_saved_models(conf: dict, max_to_keep: int = 1) -> None:
+    def keep_max_num_saved_models(conf: SimpleNamespace, max_to_keep: int = 1) -> None:
         """
         This function ensures that PyTorch saves a maximum number of checkpoint files (.pth format) in a given directory.
         If there are more saved models than the specified limit, it will delete the oldest ones, based on their creation time.

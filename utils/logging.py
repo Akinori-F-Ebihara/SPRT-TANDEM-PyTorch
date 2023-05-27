@@ -438,9 +438,9 @@ def plot_likelihood_ratio_matrix(
 
 
 def plot_llrs_with_thresholds(
-    llrs: np.array,
-    gt_labels: np.array,
-    thresholds: np.array,
+    llrs: np.ndarray,
+    gt_labels: np.ndarray,
+    thresholds: np.ndarray,
     max_traj_per_cls_pair: int = 1,
     max_traj_per_llr: int = 1,
     threshold_level: str = "max",
