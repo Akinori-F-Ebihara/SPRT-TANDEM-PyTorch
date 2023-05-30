@@ -231,6 +231,7 @@ class PositionalEncoding(nn.Module):
         forward: Applies the positional encoding to the input tensor and returns the output.
 
     """
+    pe: Tensor  # type hinting for x = x + self.pe[: x.size(0)]
 
     def __init__(self, feat_dim: int, dropout: float = 0.1, max_len: int = 5000):
         """
@@ -702,25 +703,6 @@ class TANDEMformer(BaseTANDEM):
         inputs = self.normalized_sum_pool(inputs, max_time_steps)
         inputs = self.dropout(inputs)
         return inputs
-
-    def metanet(self, inputs: Tensor):
-        """
-        inputs: (num_thresh * batch_size, time_steps, self.vec_dim)
-        """
-        outputs_pool = []
-        for i in range(self.time_steps):
-            targinputs = inputs[:, : i + 1, :]
-
-            # mix the input matrix
-            targoutputs = self.meta_encoder(targinputs)
-
-            outputs_pool.append(
-                self.meta_classifier(targoutputs, max_time_steps=self.time_steps)
-            )
-        # convert from (num_thresh * batch_size, time_steps, 1) to
-        outputs = torch.stack(outputs_pool, dim=1)
-
-        return outputs
 
     def forward(self, inputs: Tensor) -> Tensor:
         """
