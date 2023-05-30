@@ -495,9 +495,6 @@ def seqconfmx_to_macro_ave_sns(seqconfmx):
                 is equal to accuracy.
     """
     time_steps = seqconfmx.shape[0]
-    num_classes = seqconfmx.shape[-1]
-    assert num_classes == seqconfmx.shape[-2]
-
     seqconfmx = seqconfmx.to(torch.float32)  # avoids overflow
     classwise_sample_size = torch.sum(seqconfmx, dim=2)
     # shape = (time_steps, num cls)
@@ -536,7 +533,7 @@ def seqconfmx_to_macro_ave_sns(seqconfmx):
     # (time_steps, num cls)
     TN = torch.sum(TN, dim=1, keepdims=True)
     # (time_steps, 1)
-    TN = TN.repeat(1, num_classes) - (TP + FP + FN)
+    TN = TN.repeat(1, 3) - (TP + FP + FN)
     # (time_steps, num cls)
 
     # Sensitivity (Recall, Classwise accuracy)
