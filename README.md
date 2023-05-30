@@ -16,7 +16,7 @@ This repository contains the official PyTorch implementation of __SPRT-TANDEM__ 
 
 ## Tested Environment
 ```
-python      3.10.6
+python      3.8.10
 torch       2.0.0
 notebook    6.5.3
 optuna      3.1.0
