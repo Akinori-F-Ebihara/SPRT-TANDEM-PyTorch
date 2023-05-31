@@ -11,7 +11,7 @@ LOG_PATH = CONFIG_PATH[: CONFIG_PATH.find("config")] + "logs/"
 # Data info
 NUM_CLASSES = 3  # 2
 DATA_SEPARATION = "0.5"
-DATA_PATH = "/home/afe/Dropbox/PYTHON/data/SDRE_data/"  # "/your/path/to/SDRE_data/"
+DATA_PATH = "/your/path/to/SDRE_data/"
 DATA_FOLDER = f"SequentialGaussian_{NUM_CLASSES}class_offset{DATA_SEPARATION}"
 NUM_TRAIN = 60000  # 300000  # 25000 # 19000
 NUM_VAL = 6000  # 30000  # 4000 # # 990
