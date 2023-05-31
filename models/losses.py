@@ -1,7 +1,3 @@
-import pdb
-import numpy as np
-import optuna
-from loguru import logger
 import torch
 import torch.nn.functional as F
 from utils.data_processing import sequential_slice_labels
@@ -10,7 +6,7 @@ from utils.performance_metrics import (
     calc_oblivious_llrs,
     seqconfmx_to_macro_ave_sns,
 )
-from utils.misc import extract_params_from_config, ErrorHandler
+from utils.misc import extract_params_from_config
 
 
 def multiplet_crossentropy(logits_slice, labels_slice):
@@ -296,7 +292,7 @@ def adaptive_weight_loss(model, losses, constant_weights):
     return total_loss
 
 
-def compute_loss_and_metrics(model, x, labels, global_step, config):
+def compute_loss_and_metrics(model, x, labels, config):
     """Calculate loss and gradients.
     Args:
         model: A tf.keras.Model object.

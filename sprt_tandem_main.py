@@ -3,7 +3,6 @@ from typing import Tuple, Dict, Any
 from tqdm import tqdm
 from termcolor import colored
 from loguru import logger
-import torch
 import optuna
 from config.config_definition import config as config_orig
 from utils.misc import grab_gpu, parse_args
@@ -44,8 +43,7 @@ def objective(
     # The log file will be investigated earch time the code exits from
     # the context. Error will be raised when error logs are found.
     with ContexualLogger(config, is_stop_at_error=False):
-        model, optimizer, data_loaders, tb_writer = prepare_for_training(
-            config, device)
+        model, optimizer, data_loaders, tb_writer = prepare_for_training(config, device)
 
         best = initialize_objectives(config)
         global_step = 0

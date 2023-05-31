@@ -148,7 +148,7 @@ def iterating_over_dataset(
             optimizer,
             phase=phase,
             loss_func=compute_loss_and_metrics,
-            loss_args=(x_batch, y_batch, global_step),
+            loss_args=(x_batch, y_batch),
             config=config,
         ) as p:
             monitored_values = p.call_loss()

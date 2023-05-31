@@ -114,7 +114,7 @@ def training_setup(phase: str, config):
 
 
 def accumulate_performance(
-    performance_metrics, y_batch, gt_llrs_batch, monitored_values, phase_manager
+    performance_metrics, y_batch, gt_llrs_batch, monitored_values, phase_manager=None
 ):
     """ """
 
@@ -127,7 +127,8 @@ def accumulate_performance(
     )
     performance_metrics["hitting_time"].append(monitored_values["mht"])
     performance_metrics["sns_conf"].append(monitored_values["sns_from_confmx"])
-    performance_metrics["grad_norm"].append(phase_manager.grad_norm)
+    if phase_manager:
+        performance_metrics["grad_norm"].append(phase_manager.grad_norm)
 
     return performance_metrics
 
