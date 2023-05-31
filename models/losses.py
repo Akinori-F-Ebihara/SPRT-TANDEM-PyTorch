@@ -4,7 +4,7 @@ import optuna
 from loguru import logger
 import torch
 import torch.nn.functional as F
-from datasets.data_processing import sequential_slice_labels
+from utils.data_processing import sequential_slice_labels
 from utils.performance_metrics import (
     calc_llrs,
     calc_oblivious_llrs,
@@ -41,7 +41,7 @@ def compute_llrs(logits_concat: torch.Tensor, oblivious: bool = False) -> torch.
         logits_concat: A logit Tensor with shape
             (batch, (time_steps - order_sprt), order_sprt + 1, num classes).
             This is the output from
-            datasets.data_processing.sequential_concat(logit_slice, labels_slice)
+            utils.data_processing.sequential_concat(logit_slice, labels_slice)
         oblivious: A bool, whether to use the oblivion formula or not (= TANDEM formula).
 
     Returns:
@@ -326,7 +326,7 @@ def compute_loss_and_metrics(model, x, labels, global_step, config):
         logits_concat: A logit Tensor with shape
             (batch, (time_steps - order_sprt), order_sprt + 1, num classes).
             This is the output from
-            datasets.data_processing.sequential_concat(logit_slice, labels_slice).
+            utils.data_processing.sequential_concat(logit_slice, labels_slice).
     Remarks:
         - All the losses below will be calculated if not calc_grad
           for TensorBoard logs.

@@ -137,10 +137,10 @@ Our project supports Optuna [3] for hyperparameter tuning. To begin, edit the fo
 - PRUNER_NAME (optional): select a pruner supported by Optuna, or set it to "None."    
 Also, set PRUNER_STARTUP_TRIALS, PRUNER_WARMUP_STEPS, and PRUNER_INTERVAL STEPS. For details, see the [official Optuna docs](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.pruners.MedianPruner.html#optuna.pruners.MedianPruner).  
 
-Next, customize the hyperparameter space defined with variables that have prefix "LIST_". For example, [config_definition.py](https://github.com/Akinori-F-Ebihara/SPRT-TANDEM-PyTorch/blob/main/config/config_definition.py) contains an entry like this:
+Next, customize the hyperparameter space defined with variables that have prefix "SPACE_". For example, [config_definition.py](https://github.com/Akinori-F-Ebihara/SPRT-TANDEM-PyTorch/blob/main/config/config_definition.py) contains an entry like this:
 
 ```
-    "LIST_ORDER_SPRT": {
+    "SPACE_ORDER_SPRT": {
         "PARAM_SPACE": "int",
         "LOW": 0,
         "HIGH": 5,  # 10
@@ -155,7 +155,7 @@ The above entry specifies the search space of a hyperparameter "ORDER_SPRT." The
 
 For more informatin, please refer to the [official Optuna docs](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.trial.Trial.html).   
 
-To select specific values for a hyperparameter, use entries that start with "LIST_". These values will be assigned to the hyperparameter whose name is defined after "LIST_" (for example, in the above example, "ORDER_SPRT").
+To select specific values for a hyperparameter, use entries that start with "SPACE_". These values will be assigned to the hyperparameter whose name is defined after "SPACE_" (for example, in the above example, "ORDER_SPRT").
 
 ## Command-line Arguments  
 Frequently-used variables can be overwritten by specifying command-line arguments. 

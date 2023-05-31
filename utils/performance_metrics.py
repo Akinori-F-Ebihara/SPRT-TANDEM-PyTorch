@@ -54,8 +54,7 @@ def multiply_diff_mht(acc_eta, hittimes):
     # from (num thresh, batch)
     # to (num thresh,)
     _mht = torch.cat(
-        [mht[1:], torch.tensor(
-            [time_steps], dtype=torch.float32, device=_device)],
+        [mht[1:], torch.tensor([time_steps], dtype=torch.float32, device=_device)],
         dim=0,
     )
     diff_mht = _mht - mht
@@ -146,8 +145,7 @@ def summarize_performance(performance_metrics):
         return torch.mean(seqconfmx_to_macro_ave_sns(confmx))
 
     # average
-    performance_metrics["losses"] = average_dicts(
-        performance_metrics["losses"])
+    performance_metrics["losses"] = average_dicts(performance_metrics["losses"])
     performance_metrics["mean_macro_recall"] = calc_macrec(
         performance_metrics["seqconfmx_llr"]
     )
@@ -178,10 +176,10 @@ def multiplet_sequential_confmx(logits_concat, labels_concat):
         logits_concat: A logit Tensor with shape
             (batch, (time_steps - order_sprt), order_sprt + 1, num_classes).
             This is the output from
-            datasets.data_processing.sequential_concat(logit_slice, y_slice).
+            utils.data_processing.sequential_concat(logit_slice, y_slice).
         labels_concat: A non-one-hot label Tensor with shape (batch,).
             This is the output from
-            datasets.data_processing.sequential_conclogit_slice, y_slice).
+            utils.data_processing.sequential_conclogit_slice, y_slice).
     Return:
         seqconfmx_mult: A Tensor with shape
         (time_steps, num classes, num classes). This is the series of
@@ -330,8 +328,7 @@ def confmx_to_metrics(confmx):
         dict_metrics["ACC"][i] = (
             (TP + TN) / (TP + FN + TN + FP) if TP + FN + TN + FP != 0 else 0.0
         )
-        dict_metrics["BAC"][i] = (
-            dict_metrics["SNS"][i] + dict_metrics["SPC"][i]) / 2
+        dict_metrics["BAC"][i] = (dict_metrics["SNS"][i] + dict_metrics["SPC"][i]) / 2
         dict_metrics["F1"][i] = (
             2
             * (dict_metrics["PRC"][i] * dict_metrics["SNS"][i])
@@ -339,8 +336,7 @@ def confmx_to_metrics(confmx):
             if dict_metrics["PRC"][i] + dict_metrics["SNS"][i] != 0
             else 0.0
         )
-        dict_metrics["GM"][i] = np.sqrt(
-            dict_metrics["SNS"][i] * dict_metrics["SPC"][i])
+        dict_metrics["GM"][i] = np.sqrt(dict_metrics["SNS"][i] * dict_metrics["SPC"][i])
         dict_metrics["MCC"][i] = (
             ((TP * TN) - (FP * FN))
             / (np.sqrt((TP + FP) * (TP + FN) * (TN + FP) * (TN + FN)))
@@ -568,7 +564,7 @@ def calc_llrs(logits_concat):
         logits_concat: A logit Tensor with shape
             (batch, (time_steps - order_sprt), order_sprt + 1, num classes).
             This is the output from
-            datasets.data_processing.sequential_concat(
+            utils.data_processing.sequential_concat(
             logit_slice, labels_slice).
     Returns:
         llr_matrix: A Tensor
@@ -610,26 +606,21 @@ def calc_llrs(logits_concat):
         for iter_frame in range(time_steps):
             if iter_frame < order_sprt + 1:
                 llrs = (
-                    logits1[:, 0, iter_frame, :, 0:] -
-                    logits2[:, 0, iter_frame, 0:, :]
+                    logits1[:, 0, iter_frame, :, 0:] - logits2[:, 0, iter_frame, 0:, :]
                 )
                 # (batch, num cls, num cls)
                 list_llrs.append(torch.unsqueeze(llrs, dim=1))
 
             else:
                 llrs1 = (
-                    logits1[:, : iter_frame -
-                            order_sprt + 1, order_sprt, :, 0:]
-                    - logits2[:, : iter_frame -
-                              order_sprt + 1, order_sprt, 0:, :]
+                    logits1[:, : iter_frame - order_sprt + 1, order_sprt, :, 0:]
+                    - logits2[:, : iter_frame - order_sprt + 1, order_sprt, 0:, :]
                 )
                 # (batch, iter_frame-order_sprt, num cls, num cls)
                 llrs1 = torch.sum(llrs1, dim=1)  # (batch, num cls, num cls)
                 llrs2 = (
-                    logits1[:, 1: iter_frame - order_sprt +
-                            1, order_sprt - 1, :, 0:]
-                    - logits2[:, 1: iter_frame -
-                              order_sprt + 1, order_sprt - 1, 0:, :]
+                    logits1[:, 1 : iter_frame - order_sprt + 1, order_sprt - 1, :, 0:]
+                    - logits2[:, 1 : iter_frame - order_sprt + 1, order_sprt - 1, 0:, :]
                 )
                 # (batch, iter_frame-order_sprt-1, num cls, num cls)
                 llrs2 = torch.sum(llrs2, dim=1)  # (batch, num cls, num cls)
@@ -678,7 +669,7 @@ def calc_urgency_signal(u_sgnl_concat):
 
     u_sgnl = torch.zeros((bs, time, 1), device=_device)
     for i in range(sgnl_shape[1]):
-        u_sgnl[:, i: i + order_sprt + 1, :] += u_sgnl_concat[:, i, :, :]
+        u_sgnl[:, i : i + order_sprt + 1, :] += u_sgnl_concat[:, i, :, :]
 
     for i in range(time):
         if i < order_sprt and (time - i) > order_sprt:  # at the beginning
@@ -699,7 +690,7 @@ def calc_oblivious_llrs(logits_concat):
         logits_concat: A logit Tensor with shape
             (batch, (time_steps - order_sprt), order_sprt + 1, num classes).
             This is the output from
-            datasets.data_processing.sequential_concat(
+            utils.data_processing.sequential_concat(
             logit_slice, labels_slice).
     Returns:
         llr_matrix: A Tensor
@@ -739,8 +730,7 @@ def calc_oblivious_llrs(logits_concat):
         for iter_frame in range(time_steps):
             if iter_frame < order_sprt + 1:
                 llrs = (
-                    logits1[:, 0, iter_frame, :, 0:] -
-                    logits2[:, 0, iter_frame, 0:, :]
+                    logits1[:, 0, iter_frame, :, 0:] - logits2[:, 0, iter_frame, 0:, :]
                 )
                 # (batch, num cls, num cls)
                 list_llrs.append(torch.unsqueeze(llrs, 1))
@@ -846,8 +836,7 @@ def threshold_generator(llrs, num_thresh, sparsity):
         thresh = torch.rand(num_thresh, device=_device)
         thresh = torch.sort(thresh)[0]
         thresh = torch.exp(
-            ((torch.log(llrs_max) - torch.log(llrs_min))
-             * thresh) + torch.log(llrs_min)
+            ((torch.log(llrs_max) - torch.log(llrs_min)) * thresh) + torch.log(llrs_min)
         )
         # (num thresh,). Ascending order.
     else:
@@ -926,8 +915,7 @@ def get_upper_triangle(scores_full):
     assert len(scores_full.shape) == 5, "scores_full must have 5 dimensions"
     num_classes = scores_full.shape[-1]
 
-    upper_triangle_indices = torch.triu_indices(
-        num_classes, num_classes, offset=1)
+    upper_triangle_indices = torch.triu_indices(num_classes, num_classes, offset=1)
 
     scores_vec = scores_full[
         :, :, :, upper_triangle_indices[0], upper_triangle_indices[1]
@@ -1096,8 +1084,7 @@ def truncated_MSPRT(llr_mtx, labels_concat, thresh_mtx):
         preds = preds_all_trunc[:, :, 0, :]
         # (num thresh, batch, 1, num cls): one-hot vectors
 
-        labels_oh = torch.nn.functional.one_hot(
-            labels_concat, num_classes)  # dim=1
+        labels_oh = torch.nn.functional.one_hot(labels_concat, num_classes)  # dim=1
         # (batch, num cls)
         labels_oh = torch.unsqueeze(labels_oh, dim=0)
         labels_oh = labels_oh.repeat(num_thresh, 1, 1)
@@ -1119,8 +1106,7 @@ def truncated_MSPRT(llr_mtx, labels_concat, thresh_mtx):
         # (1, batch, 1, num cls)
         preds_last = preds_last.repeat(num_thresh, 1, 1, 1)
         # (num thresh, batch, 1, num cls)
-        preds_all_trunc = torch.cat(
-            [preds_all[:, :, :-1, :], preds_last], dim=2)
+        preds_all_trunc = torch.cat([preds_all[:, :, :-1, :], preds_last], dim=2)
         # (num thresh, batch, time_steps - 1, num cls)
         # + (num thresh, batch, 1, num cls)
         # = (num thresh, batch, time_steps, num cls)
@@ -1153,8 +1139,7 @@ def truncated_MSPRT(llr_mtx, labels_concat, thresh_mtx):
         preds = torch.nn.functional.one_hot(preds, num_classes)  # dim=2
         # (num thresh, batch, num cls)
 
-        labels_oh = torch.nn.functional.one_hot(
-            labels_concat, num_classes)  # dim=1
+        labels_oh = torch.nn.functional.one_hot(labels_concat, num_classes)  # dim=1
         # (batch, num cls)
         labels_oh = torch.unsqueeze(labels_oh, dim=0)
         labels_oh = labels_oh.repeat(num_thresh, 1, 1)
@@ -1178,7 +1163,7 @@ def llr_sequential_confmx(llrs, labels_concat):
             with shape (batch, time_steps, num classes, num classes).
         labels_concat: A non-one-hot label Tensor with shape (batch,).
             This is the output from
-            datasets.data_processing.sequential_concat(logit_slice, labels_slice).
+            utils.data_processing.sequential_concat(logit_slice, labels_slice).
     Returns:
         seqconfmx_llr: A Tensor with shape (time_steps, num classes, num classes).
             The sequential confusion matrices of framewise LLRs with thresh=0.
@@ -1200,8 +1185,7 @@ def llr_sequential_confmx(llrs, labels_concat):
     # (batch, time_steps, num cls)
 
     # Calc confusion matrices
-    labels_oh = torch.nn.functional.one_hot(
-        labels_concat, num_classes)  # dim=1
+    labels_oh = torch.nn.functional.one_hot(labels_concat, num_classes)  # dim=1
     # (batch, num cls)
     labels_oh = torch.unsqueeze(labels_oh, dim=1)
     labels_oh = labels_oh.repeat(1, time_steps, 1)

@@ -18,7 +18,7 @@ from utils.logging import (
 )
 from utils.hyperparameter_tuning import report_to_pruner
 from utils.checkpoint import update_and_save_result
-from datasets.data_processing import lmdb_dataloaders, move_data_to_device
+from utils.data_processing import lmdb_dataloaders, move_data_to_device
 from models.temporal_integrators import import_model, load_pretrained_states
 from models.optimizers import initialize_optimizer
 from models.losses import compute_loss_and_metrics
@@ -113,8 +113,7 @@ def iterating_over_dataset(
     - best: A tuple of the updated best performance metrics.
     """
 
-    is_train, iter_num, performance_metrics, barcolor = training_setup(
-        phase, config)
+    is_train, iter_num, performance_metrics, barcolor = training_setup(phase, config)
 
     for local_step, data in tqdm(
         enumerate(data_loaders[phase]),

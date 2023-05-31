@@ -10,8 +10,8 @@ import torch
 from torch import nn, Tensor
 from torch.nn import TransformerEncoder, TransformerEncoderLayer
 from torchinfo import summary
-from datasets.data_processing import sequential_concat_logits
-from datasets.data_processing import sequential_slice_data
+from utils.data_processing import sequential_concat_logits
+from utils.data_processing import sequential_slice_data
 from utils.misc import extract_params_from_config, ErrorHandler
 from utils.hyperparameter_tuning import format_model_name
 from utils.performance_metrics import (
@@ -231,6 +231,7 @@ class PositionalEncoding(nn.Module):
         forward: Applies the positional encoding to the input tensor and returns the output.
 
     """
+
     pe: Tensor  # type hinting for x = x + self.pe[: x.size(0)]
 
     def __init__(self, feat_dim: int, dropout: float = 0.1, max_len: int = 5000):
