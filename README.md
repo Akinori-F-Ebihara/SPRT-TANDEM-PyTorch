@@ -8,7 +8,6 @@ This repository contains the official PyTorch implementation of __SPRT-TANDEM__ 
 </div>
 <p align="center">Figure 1: Example sequential density ratio estimation (SDRE) results on a 3-class multivariate Gaussian dataset.</p>
 
-\* The tutorial is written with [TensorFlow](https://github.com/TaikiMiyagawa/MSPRT-TANDEM) but its basic behaviour is the same.
 
 ## Quickstart
 1. To create a new SDRE dataset, run the [Generate_sequential_Gaussian_as_LMDB.ipynb](https://github.com/Akinori-F-Ebihara/SPRT-TANDEM-PyTorch/blob/main/notebooks/Generate_sequential_Gaussian_as_LMDB.ipynb) notebook.
